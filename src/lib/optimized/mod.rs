@@ -2,23 +2,47 @@
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum CompiledInstr {
     // Read the value data pointer; if zero, jump to target, otherwise increment ip
-    JumpIfZero { target_ip: usize },
+    JumpIfZero {
+        target_ip: usize,
+    },
     // Read the value data pointer; if nonzero, jump to target, otherwise increment ip
-    JumpIfNonzero { target_ip: usize },
+    JumpIfNonzero {
+        target_ip: usize,
+    },
     // Adds a given amount to the data pointer.
-    AddPtr { amount: usize },
+    AddPtr {
+        amount: usize,
+    },
     // Subtracts a given amount to the data pointer.
-    SubPtr { amount: usize },
+    SubPtr {
+        amount: usize,
+    },
     // Add the given amount to the byte at the data pointer. Note that due to wrapping,
     // we can (e.g.) subtract 1 by adding 255.
     // dp_offset means "add amount to byte at dp + dp_offset". Out of bounds writes are UB and
     // not handled (sorry).
-    AddData { amount: u8, dp_offset: isize },
-    SetData { amount: u8, dp_offset: isize },
+    AddData {
+        amount: u8,
+        dp_offset: isize,
+    },
+    SetData {
+        amount: u8,
+        dp_offset: isize,
+    },
+    // data[dp + tdo] += data[dp + sdo] * sam
+    AddTwoData {
+        source_dp_offset: isize,
+        target_dp_offset: isize,
+        source_amt_mult: u8,
+    },
     // Read a byte from stdin, or whatever IO method is configured
-    ReadByte,
+    ReadByte {
+        dp_offset: isize,
+    },
     // Write a byte to stdout, or whatever IO method is configured
-    WriteByte,
+    WriteByte {
+        dp_offset: isize,
+    },
 }
 
 /// Very similar to the compiled situation, but nested for the benefit of loop folding
@@ -26,16 +50,34 @@ pub enum CompiledInstr {
 /// format for the interpreter.
 #[derive(Debug)]
 pub(crate) enum AST {
-    Loop { elements: Vec<AST> },
+    Loop {
+        elements: Vec<AST>,
+    },
     // Adds a given amount to the data pointer. Can be negative to shift left.
-    ShiftDataPtr { amount: isize },
+    ShiftDataPtr {
+        amount: isize,
+    },
     // Add the given amount to the byte at the data pointer. Note that due to wrapping,
     // we can (e.g.) subtract 1 by adding 255.
     // dp_offset means "add amount to byte at dp + dp_offset". Used to benefit swapping.
-    ModData { kind: DatamodKind, dp_offset: isize },
-    ReadByte,
+    ModData {
+        kind: DatamodKind,
+        dp_offset: isize,
+    },
+    // data[dp + tdo] += data[dp + sdo] * sam
+    CombineData {
+        source_dp_offset: isize,
+        target_dp_offset: isize,
+        source_amt_mult: u8,
+    },
+    // Read a byte from stdin, or whatever IO method is configured
+    ReadByte {
+        dp_offset: isize,
+    },
     // Write a byte to stdout, or whatever IO method is configured
-    WriteByte,
+    WriteByte {
+        dp_offset: isize,
+    },
 }
 
 #[derive(Debug, Copy, Clone)]
@@ -117,8 +159,8 @@ pub(crate) fn parse(data: &str) -> Result<Vec<AST>, ParseError> {
             BfCmd::LoopStart => {
                 parse_stack.start_loop(code_p);
             }
-            BfCmd::ReadByte => parse_stack.push_command(AST::ReadByte),
-            BfCmd::WriteByte => parse_stack.push_command(AST::WriteByte),
+            BfCmd::ReadByte => parse_stack.push_command(AST::ReadByte { dp_offset: 0 }),
+            BfCmd::WriteByte => parse_stack.push_command(AST::WriteByte { dp_offset: 0 }),
             BfCmd::DecData => parse_stack.push_command(AST::ModData {
                 kind: DatamodKind::AddData {
                     amount: 0_u8.wrapping_sub(1),
@@ -218,8 +260,19 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
                     },
                 });
             }
-            AST::ReadByte => out.push(CompiledInstr::ReadByte),
-            AST::WriteByte => out.push(CompiledInstr::WriteByte),
+            AST::ReadByte { dp_offset } => out.push(CompiledInstr::ReadByte { dp_offset: *dp_offset }),
+            AST::WriteByte { dp_offset } => out.push(CompiledInstr::WriteByte { dp_offset: *dp_offset }),
+            AST::CombineData {
+                source_dp_offset,
+                target_dp_offset,
+                source_amt_mult,
+            } => {
+                out.push(CompiledInstr::AddTwoData {
+                    source_dp_offset: *source_dp_offset,
+                    target_dp_offset: *target_dp_offset,
+                    source_amt_mult: *source_amt_mult,
+                });
+            }
         }
     }
 }

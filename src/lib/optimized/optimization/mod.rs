@@ -62,13 +62,16 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                         }
                     }
                 }
+                AST::CombineData { .. } => {
+                    return (false, offsets);
+                }
                 AST::Loop { .. } => {
                     return (false, offsets);
                 }
                 AST::ShiftDataPtr { .. } => {
                     return (false, offsets);
                 }
-                AST::ReadByte | AST::WriteByte => {
+                AST::ReadByte { .. } | AST::WriteByte { .. } => {
                     return (false, offsets);
                 }
             }
@@ -82,16 +85,17 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
     for mut cmd in old {
         if let AST::Loop { ref mut elements } = cmd {
             let (is_const, mut offsets) = only_data(elements);
+            // the "is_const" means it has no jumps; note that due to recursive sorting,
+            // jumps can often be expunged, so it means "it has no net jumps and no inner
+            // loops or funny business"
             if is_const {
                 if !offsets.contains_key(&0) {
-                    // TODO: we could I guess handle this? Add an 'infinite loop' instruction or something
-                    // It also is sort of unsound; if the start is 0, it's fine; which is important
-                    // for (e.g.) the header comment in one of the test programs
                     // TODO: this is actually wrong; it should be "if S != 0, infinite loop"
-                    panic!("Unhandled: infinite loop which does nothing");
+                    panic!("Unhandled: probable infinite loop which does nothing");
                 }
 
                 if offsets.len() == 1 {
+                    // TODO: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
                     cmds.push(AST::ModData {
                         kind: DatamodKind::SetData { amount: 0 },
                         dp_offset: 0,
@@ -99,11 +103,30 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                     total_removed += 1;
                 } else {
                     let zero_offset = offsets.remove(&0).unwrap();
-                    println!(
-                        "Found a const loop with offsets {:?}, zero offset {}, which should be an addition, which I could not kill",
-                        offsets, zero_offset
-                    );
-                    cmds.push(cmd);
+
+                    // in this case it literally just iterates exactly data[dp] times, so it's really easy
+                    // this seems like a weird special case but it's really common
+                    if zero_offset == u8::max_value() {
+                        for (target_dp_offset, source_amt_mult) in offsets {
+                            cmds.push(AST::CombineData {
+                                source_dp_offset: 0,
+                                target_dp_offset,
+                                source_amt_mult,
+                            });
+                        }
+                        cmds.push(AST::ModData {
+                            kind: DatamodKind::SetData { amount: 0 },
+                            dp_offset: 0,
+                        });
+
+                        total_removed += 1;
+                    } else {
+                        println!(
+                            "Found a const loop with offsets {:?}, zero offset {}, which should be solvable, but which I could not kill",
+                            offsets, zero_offset
+                        );
+                        cmds.push(cmd);
+                    }
                 }
             } else {
                 cmds.push(cmd);
@@ -149,30 +172,37 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
 
         match acc {
             AST::ModData { kind, dp_offset } => {
-                if let AST::ModData {
-                    kind: second_kind,
-                    dp_offset: second_dp_offset,
-                } = cmd
-                {
-                    if dp_offset == second_dp_offset {
-                        let out_kind = match (kind, second_kind) {
-                            (DatamodKind::AddData { amount: a }, DatamodKind::AddData { amount: b }) => {
-                                DatamodKind::AddData { amount: a + b }
-                            }
-                            (DatamodKind::SetData { amount: a }, DatamodKind::AddData { amount: b }) => {
-                                DatamodKind::SetData { amount: a + b }
-                            }
-                            (_, DatamodKind::SetData { amount }) => DatamodKind::SetData { amount },
-                        };
-                        accumulator = Some(AST::ModData { kind: out_kind, dp_offset });
+                match cmd {
+                    AST::ModData {
+                        kind: second_kind,
+                        dp_offset: second_dp_offset,
+                    } => {
+                        if dp_offset == second_dp_offset {
+                            let out_kind = match (kind, second_kind) {
+                                (DatamodKind::AddData { amount: a }, DatamodKind::AddData { amount: b }) => {
+                                    DatamodKind::AddData { amount: a + b }
+                                }
+                                (DatamodKind::SetData { amount: a }, DatamodKind::AddData { amount: b }) => {
+                                    DatamodKind::SetData { amount: a + b }
+                                }
+                                (_, DatamodKind::SetData { amount }) => DatamodKind::SetData { amount },
+                            };
+                            accumulator = Some(AST::ModData { kind: out_kind, dp_offset });
+                            collapsed += 1;
+                        } else {
+                            cmds.push(acc);
+                            accumulator = Some(cmd);
+                        }
+                    }
+                    AST::ReadByte { dp_offset: read_dpo } if read_dpo == dp_offset => {
+                        // the read just overwrites
+                        accumulator = Some(cmd);
                         collapsed += 1;
-                    } else {
+                    }
+                    _ => {
                         cmds.push(acc);
                         accumulator = Some(cmd);
                     }
-                } else {
-                    cmds.push(acc);
-                    accumulator = Some(cmd);
                 }
             }
             AST::ShiftDataPtr { amount } => {
@@ -190,11 +220,33 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                     accumulator = Some(cmd);
                 }
             }
-            AST::Loop { .. } => {
-                cmds.push(acc);
-                accumulator = Some(cmd);
+            AST::CombineData {
+                source_dp_offset,
+                target_dp_offset,
+                source_amt_mult,
+            } => {
+                if let AST::CombineData {
+                    source_dp_offset: other_sdo,
+                    target_dp_offset: other_tdo,
+                    source_amt_mult: other_sam,
+                } = cmd
+                {
+                    if source_dp_offset == other_sdo && target_dp_offset == other_tdo {
+                        accumulator = Some(AST::CombineData {
+                            source_dp_offset,
+                            target_dp_offset,
+                            source_amt_mult: source_amt_mult + other_sam,
+                        });
+                    } else {
+                        cmds.push(acc);
+                        accumulator = Some(cmd);
+                    }
+                } else {
+                    cmds.push(acc);
+                    accumulator = Some(cmd);
+                }
             }
-            AST::ReadByte | AST::WriteByte => {
+            AST::Loop { .. } | AST::ReadByte { .. } | AST::WriteByte { .. } => {
                 cmds.push(acc);
                 accumulator = Some(cmd);
             }
@@ -239,10 +291,13 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
 
     let mut changed = 0;
 
+    // First read/write, then modData, then addData, then shiftPtr
+    // Loop is considered unswappable for now
+    // Note that the order of IO operations is not swappable
     fn maybe_swap(first: &mut AST, second: &mut AST) -> usize {
         let mut swap = false;
         match first {
-            AST::WriteByte | AST::ReadByte | AST::Loop { .. } => {}
+            AST::WriteByte { .. } | AST::ReadByte { .. } | AST::Loop { .. } => {}
             AST::ModData { kind: _, dp_offset } => match second {
                 AST::ModData {
                     kind: _,
@@ -252,6 +307,54 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
                         swap = true;
                     }
                 }
+                AST::ReadByte { dp_offset: io_offset } if io_offset != dp_offset => {
+                    swap = true;
+                }
+                AST::WriteByte { dp_offset: io_offset } if io_offset != dp_offset => {
+                    swap = true;
+                }
+                _ => {}
+            },
+            AST::CombineData {
+                source_dp_offset,
+                target_dp_offset,
+                source_amt_mult: _,
+            } => match second {
+                AST::CombineData {
+                    source_dp_offset: other_sdo,
+                    target_dp_offset: other_tdo,
+                    source_amt_mult: _,
+                } => {
+                    if source_dp_offset == other_sdo {
+                        // pretty simple, if they're the same source, order doesn't matter; subsort by target
+                        if target_dp_offset > other_tdo {
+                            swap = true;
+                        }
+                    } else if target_dp_offset == other_tdo {
+                        // if they have the same target, order doesn't matter; sort by source
+                        if source_dp_offset > other_sdo {
+                            swap = true;
+                        }
+                    } else if source_dp_offset != other_tdo && target_dp_offset != other_sdo {
+                        // if they have nothing to do with each other, order doesn't matter; sort by source
+                        if source_dp_offset > other_sdo {
+                            swap = true;
+                        }
+                    }
+                }
+                AST::ModData { kind: _, dp_offset } => {
+                    // we want complex things after simple things (I guess?) but not everything swaps easily
+                    // basically A += B; C += x can be swapped so long as C and B aren't pointing to the same place
+                    if source_dp_offset != dp_offset {
+                        swap = true;
+                    }
+                }
+                AST::ReadByte { dp_offset: io_offset } if io_offset != source_dp_offset && io_offset != target_dp_offset => {
+                    swap = true;
+                }
+                AST::WriteByte { dp_offset: io_offset } if io_offset != source_dp_offset && io_offset != target_dp_offset => {
+                    swap = true;
+                }
                 _ => {}
             },
             AST::ShiftDataPtr { amount: shift_amount } => match second {
@@ -259,6 +362,30 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
                     *second = AST::ModData {
                         kind: *kind,
                         dp_offset: *dp_offset + *shift_amount,
+                    };
+                    swap = true;
+                }
+                AST::CombineData {
+                    source_dp_offset,
+                    target_dp_offset,
+                    source_amt_mult,
+                } => {
+                    *second = AST::CombineData {
+                        source_dp_offset: *source_dp_offset + *shift_amount,
+                        target_dp_offset: *target_dp_offset + *shift_amount,
+                        source_amt_mult: *source_amt_mult,
+                    };
+                    swap = true;
+                }
+                AST::ReadByte { dp_offset: io_offset } => {
+                    *second = AST::ReadByte {
+                        dp_offset: *io_offset + *shift_amount,
+                    };
+                    swap = true;
+                }
+                AST::WriteByte { dp_offset: io_offset } => {
+                    *second = AST::WriteByte {
+                        dp_offset: *io_offset + *shift_amount,
                     };
                     swap = true;
                 }
@@ -278,7 +405,7 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
         if let [ref mut a, ref mut b] = cmds[i..i + 2] {
             changed += maybe_swap(a, b);
         } else {
-            // The slice has length two, but the rust compiler doesn't (yet) know how to deal with that
+            // The slice has length two, but the rust compiler doesn't (yet) know how to know that
             unreachable!()
         }
     }
