@@ -3,10 +3,12 @@
 pub enum CompiledInstr {
     // Read the value data pointer; if zero, jump to target, otherwise increment ip
     JumpIfZero {
+        cond_dp_offset: isize,
         target_ip: usize,
     },
     // Read the value data pointer; if nonzero, jump to target, otherwise increment ip
     JumpIfNonzero {
+        cond_dp_offset: isize,
         target_ip: usize,
     },
     // Adds a given amount to the data pointer.
@@ -52,6 +54,7 @@ pub enum CompiledInstr {
 pub(crate) enum AST {
     Loop {
         elements: Vec<AST>,
+        cond_dp_offset: isize,
     },
     // Adds a given amount to the data pointer. Can be negative to shift left.
     ShiftDataPtr {
@@ -150,7 +153,10 @@ pub(crate) fn parse(data: &str) -> Result<Vec<AST>, ParseError> {
         match token {
             BfCmd::LoopEnd => {
                 if let Some((_, running_loop)) = parse_stack.pop_loop() {
-                    let next = AST::Loop { elements: running_loop };
+                    let next = AST::Loop {
+                        elements: running_loop,
+                        cond_dp_offset: 0,
+                    };
                     parse_stack.push_command(next);
                 } else {
                     return Err(ParseError::EndLoopWithoutStart { code_p });
@@ -224,19 +230,28 @@ pub(crate) fn compile_ast(cmds: &[AST]) -> Vec<CompiledInstr> {
 fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
     for cmd in cmds {
         match cmd {
-            AST::Loop { elements } => {
+            AST::Loop { elements, cond_dp_offset } => {
                 let start_ip = out.len();
 
                 // we need to fix this target_ip but only know what it is after we compile it
-                out.push(CompiledInstr::JumpIfZero { target_ip: 0 });
+                out.push(CompiledInstr::JumpIfZero {
+                    target_ip: 0,
+                    cond_dp_offset: *cond_dp_offset,
+                });
 
                 compile_ast_helper(out, elements);
 
                 let end_ip = out.len();
 
-                out.push(CompiledInstr::JumpIfNonzero { target_ip: start_ip });
+                out.push(CompiledInstr::JumpIfNonzero {
+                    target_ip: start_ip,
+                    cond_dp_offset: *cond_dp_offset,
+                });
 
-                *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero { target_ip: end_ip };
+                *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero {
+                    target_ip: end_ip,
+                    cond_dp_offset: *cond_dp_offset,
+                };
             }
             AST::ShiftDataPtr { amount } => {
                 let amount = *amount;

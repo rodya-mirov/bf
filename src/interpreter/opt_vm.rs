@@ -27,15 +27,17 @@ impl OptVM {
         while self.ip < self.instr.len() {
             total_instructions += 1;
             match self.instr.get(self.ip).unwrap() {
-                CompiledInstr::JumpIfNonzero { target_ip } => {
-                    if self.data[self.dp] != 0 {
+                CompiledInstr::JumpIfNonzero { target_ip, cond_dp_offset } => {
+                    let actual_dp = (self.dp as isize + cond_dp_offset) as usize;
+                    if self.data[actual_dp] != 0 {
                         self.ip = *target_ip;
                     } else {
                         self.ip += 1;
                     }
                 }
-                CompiledInstr::JumpIfZero { target_ip } => {
-                    if self.data[self.dp] == 0 {
+                CompiledInstr::JumpIfZero { target_ip, cond_dp_offset } => {
+                    let actual_dp = (self.dp as isize + cond_dp_offset) as usize;
+                    if self.data[actual_dp] == 0 {
                         self.ip = *target_ip;
                     } else {
                         self.ip += 1;

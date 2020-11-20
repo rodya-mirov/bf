@@ -37,13 +37,37 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
     let mut total_removed = 0;
 
     for cmd in cmds.iter_mut() {
-        if let AST::Loop { ref mut elements } = cmd {
+        if let AST::Loop {
+            ref mut elements,
+            cond_dp_offset: _,
+        } = cmd
+        {
             total_removed += const_loop_remove(elements);
         }
     }
 
-    fn only_data(cmds: &[AST]) -> (bool, HashMap<isize, u8>) {
+    // Ordered top to bottom; so if it contains Sets and Shifts it comes back as Shifts
+    #[derive(Copy, Clone, Eq, PartialEq, Debug, Ord, PartialOrd)]
+    enum NonConstResult {
+        Sets,
+        ComplexArithmetic,
+        Shifts,
+        InnerLoops,
+        IO,
+    }
+
+    fn only_data(cmds: &[AST]) -> Result<HashMap<isize, u8>, NonConstResult> {
         let mut offsets: HashMap<isize, u8> = HashMap::new();
+
+        let mut running_error: Option<NonConstResult> = None;
+
+        let mut update_err = |e| {
+            if let Some(old) = running_error {
+                running_error = Some(old.max(e));
+            } else {
+                running_error = Some(e);
+            }
+        };
 
         for cmd in cmds {
             match cmd {
@@ -58,78 +82,88 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                         }
                         DatamodKind::SetData { amount: _ } => {
                             // TODO this is sort of a mess for now; Set can be fixed but it requires a conditional
-                            return (false, offsets);
+                            return Err(NonConstResult::Sets);
                         }
                     }
                 }
                 AST::CombineData { .. } => {
-                    return (false, offsets);
+                    update_err(NonConstResult::ComplexArithmetic);
                 }
                 AST::Loop { .. } => {
-                    return (false, offsets);
+                    update_err(NonConstResult::InnerLoops);
                 }
                 AST::ShiftDataPtr { .. } => {
-                    return (false, offsets);
+                    update_err(NonConstResult::Shifts);
                 }
                 AST::ReadByte { .. } | AST::WriteByte { .. } => {
-                    return (false, offsets);
+                    update_err(NonConstResult::IO);
                 }
             }
         }
 
-        (true, offsets)
+        match running_error {
+            Some(e) => Err(e),
+            None => Ok(offsets),
+        }
     }
 
     let old = std::mem::replace(cmds, Vec::new());
 
     for mut cmd in old {
-        if let AST::Loop { ref mut elements } = cmd {
-            let (is_const, mut offsets) = only_data(elements);
-            // the "is_const" means it has no jumps; note that due to recursive sorting,
-            // jumps can often be expunged, so it means "it has no net jumps and no inner
-            // loops or funny business"
-            if is_const {
-                if !offsets.contains_key(&0) {
-                    // TODO: this is actually wrong; it should be "if S != 0, infinite loop"
-                    panic!("Unhandled: probable infinite loop which does nothing");
-                }
+        if let AST::Loop {
+            ref mut elements,
+            cond_dp_offset,
+        } = cmd
+        {
+            match only_data(elements) {
+                Ok(mut offsets) => {
+                    // the "is_const" means it has no jumps; note that due to recursive sorting,
+                    // jumps can often be expunged, so it means "it has no net jumps and no inner
+                    // loops or funny business"
+                    if !offsets.contains_key(&cond_dp_offset) {
+                        // TODO: this is actually wrong; it should be "if S != 0, infinite loop"
+                        panic!("Unhandled: probable infinite loop which does nothing");
+                    }
 
-                if offsets.len() == 1 {
-                    // TODO: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
-                    cmds.push(AST::ModData {
-                        kind: DatamodKind::SetData { amount: 0 },
-                        dp_offset: 0,
-                    });
-                    total_removed += 1;
-                } else {
-                    let zero_offset = offsets.remove(&0).unwrap();
-
-                    // in this case it literally just iterates exactly data[dp] times, so it's really easy
-                    // this seems like a weird special case but it's really common
-                    if zero_offset == u8::max_value() {
-                        for (target_dp_offset, source_amt_mult) in offsets {
-                            cmds.push(AST::CombineData {
-                                source_dp_offset: 0,
-                                target_dp_offset,
-                                source_amt_mult,
-                            });
-                        }
+                    if offsets.len() == 1 {
+                        // TODO: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
                         cmds.push(AST::ModData {
                             kind: DatamodKind::SetData { amount: 0 },
-                            dp_offset: 0,
+                            dp_offset: cond_dp_offset,
                         });
-
                         total_removed += 1;
                     } else {
-                        println!(
-                            "Found a const loop with offsets {:?}, zero offset {}, which should be solvable, but which I could not kill",
-                            offsets, zero_offset
-                        );
-                        cmds.push(cmd);
+                        let zero_offset = offsets.remove(&cond_dp_offset).unwrap();
+
+                        // in this case it literally just iterates exactly data[dp] times, so it's really easy
+                        // this seems like a weird special case but it's really common
+                        if zero_offset == u8::max_value() {
+                            for (target_dp_offset, source_amt_mult) in offsets {
+                                cmds.push(AST::CombineData {
+                                    source_dp_offset: cond_dp_offset,
+                                    target_dp_offset,
+                                    source_amt_mult,
+                                });
+                            }
+                            cmds.push(AST::ModData {
+                                kind: DatamodKind::SetData { amount: 0 },
+                                dp_offset: cond_dp_offset,
+                            });
+
+                            total_removed += 1;
+                        } else {
+                            println!(
+                                "Found a const loop with offsets {:?}, zero offset {}, which should be solvable, but which I could not kill",
+                                offsets, zero_offset
+                            );
+                            cmds.push(cmd);
+                        }
                     }
                 }
-            } else {
-                cmds.push(cmd);
+                Err(reason) => {
+                    println!("Could not destroy loop for reason {:?}", reason);
+                    cmds.push(cmd);
+                }
             }
         } else {
             cmds.push(cmd);
@@ -156,7 +190,11 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
 
     // First, recursively apply to loops
     for cmd in old.iter_mut() {
-        if let AST::Loop { ref mut elements } = cmd {
+        if let AST::Loop {
+            ref mut elements,
+            cond_dp_offset: _,
+        } = cmd
+        {
             collapsed += collapse_consecutive(elements);
         }
     }
@@ -262,7 +300,11 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
 
 fn sort_commands(cmds: &mut [AST]) -> usize {
     for cmd in cmds.iter_mut() {
-        if let AST::Loop { ref mut elements } = cmd {
+        if let AST::Loop {
+            ref mut elements,
+            cond_dp_offset: _,
+        } = cmd
+        {
             sort_commands(elements);
         }
     }
@@ -357,39 +399,11 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
                 }
                 _ => {}
             },
-            AST::ShiftDataPtr { amount: shift_amount } => match second {
-                AST::ModData { kind, dp_offset } => {
-                    *second = AST::ModData {
-                        kind: *kind,
-                        dp_offset: *dp_offset + *shift_amount,
-                    };
+            AST::ShiftDataPtr { amount: shift_amount } => {
+                if !matches!(second, AST::ShiftDataPtr {..}) {
+                    shift_command(second, *shift_amount);
                     swap = true;
                 }
-                AST::CombineData {
-                    source_dp_offset,
-                    target_dp_offset,
-                    source_amt_mult,
-                } => {
-                    *second = AST::CombineData {
-                        source_dp_offset: *source_dp_offset + *shift_amount,
-                        target_dp_offset: *target_dp_offset + *shift_amount,
-                        source_amt_mult: *source_amt_mult,
-                    };
-                    swap = true;
-                }
-                AST::ReadByte { dp_offset: io_offset } => {
-                    *second = AST::ReadByte {
-                        dp_offset: *io_offset + *shift_amount,
-                    };
-                    swap = true;
-                }
-                AST::WriteByte { dp_offset: io_offset } => {
-                    *second = AST::WriteByte {
-                        dp_offset: *io_offset + *shift_amount,
-                    };
-                    swap = true;
-                }
-                _ => {}
             },
         }
 
@@ -411,4 +425,35 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
     }
 
     changed
+}
+
+fn shift_command(cmd: &mut AST, dp_shift: isize) {
+    match cmd {
+        AST::Loop { ref mut elements, ref mut cond_dp_offset } => {
+            *cond_dp_offset += dp_shift;
+            shift_commands(elements, dp_shift);
+        }
+        AST::ShiftDataPtr { amount: _ } => {
+            // nothing to shift here
+        }
+        AST::ModData { kind: _, ref mut dp_offset } => {
+            *dp_offset += dp_shift;
+        }
+        AST::CombineData { source_dp_offset, target_dp_offset, source_amt_mult: _ } => {
+            *source_dp_offset += dp_shift;
+            *target_dp_offset += dp_shift;
+        }
+        AST::ReadByte { dp_offset } => {
+            *dp_offset +=dp_shift;
+        }
+        AST::WriteByte { dp_offset } => {
+            *dp_offset += dp_shift;
+        }
+    }
+}
+
+fn shift_commands(cmds: &mut[AST], dp_shift: isize) {
+    for cmd in cmds.iter_mut() {
+        shift_command(cmd, dp_shift);
+    }
 }
