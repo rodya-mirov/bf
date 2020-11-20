@@ -30,7 +30,7 @@ fn opt_step(cmds: &mut Vec<AST>) -> usize {
 }
 
 // Precondition: everything is sorted and collapsed
-fn const_loop_remove(cmds: &mut [AST]) -> usize {
+fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
     // first, apply recursively; so we have loops that could be removed, but not loops that
     // have removable loops as elements
 
@@ -77,7 +77,9 @@ fn const_loop_remove(cmds: &mut [AST]) -> usize {
         (true, offsets)
     }
 
-    for cmd in cmds.iter_mut() {
+    let old = std::mem::replace(cmds, Vec::new());
+
+    for mut cmd in old {
         if let AST::Loop { ref mut elements } = cmd {
             let (is_const, mut offsets) = only_data(elements);
             if is_const {
@@ -90,10 +92,10 @@ fn const_loop_remove(cmds: &mut [AST]) -> usize {
                 }
 
                 if offsets.len() == 1 {
-                    *cmd = AST::ModData {
+                    cmds.push(AST::ModData {
                         kind: DatamodKind::SetData { amount: 0 },
                         dp_offset: 0,
-                    };
+                    });
                     total_removed += 1;
                 } else {
                     let zero_offset = offsets.remove(&0).unwrap();
@@ -101,8 +103,13 @@ fn const_loop_remove(cmds: &mut [AST]) -> usize {
                         "Found a const loop with offsets {:?}, zero offset {}, which should be an addition, which I could not kill",
                         offsets, zero_offset
                     );
+                    cmds.push(cmd);
                 }
+            } else {
+                cmds.push(cmd);
             }
+        } else {
+            cmds.push(cmd);
         }
     }
 
