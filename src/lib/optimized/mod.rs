@@ -250,12 +250,13 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
 
                 compile_ast_helper(out, elements);
 
-                let end_ip = out.len();
-
                 out.push(CompiledInstr::JumpIfNonzero {
                     target_ip: start_ip,
                     cond_dp_offset: *cond_dp_offset,
                 });
+
+                // Jump to the next instruction after the loop is over
+                let end_ip = out.len();
 
                 *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero {
                     target_ip: end_ip,
@@ -273,7 +274,8 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
 
                 compile_ast_helper(out, elements);
 
-                let end_ip = out.len() - 1; // TODO: is this right?
+                // Jump to the next instruction after the branch stuff is over
+                let end_ip = out.len();
 
                 *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero {
                     target_ip: end_ip,

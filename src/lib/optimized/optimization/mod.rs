@@ -180,7 +180,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                     }
                 }
                 Err(reason) => {
-                    println!("Could not destroy loop for reason {:?}", reason);
+                    // println!("Could not destroy loop for reason {:?}", reason);
                     cmds.push(cmd);
                 }
             }
