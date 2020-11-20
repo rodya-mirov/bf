@@ -6,7 +6,7 @@ edition = "2018"
 
 [lib]
 name = "bf_lib"
-path = "src/lib.rs"
+path = "src/lib/lib.rs"
 
 [[bin]]
 name = "bf_interpreter"

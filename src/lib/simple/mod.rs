@@ -1,5 +1,5 @@
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
-pub enum Instr {
+pub enum BfInstr {
     IncPtr { code_p: usize },
     DecPtr { code_p: usize },
     IncByte { code_p: usize },
@@ -10,8 +10,11 @@ pub enum Instr {
     LoopEnd { code_p: usize, start_ip: usize },
 }
 
-pub fn parse(input_str: &str) -> Result<Vec<Instr>, ()> {
-    use crate::Instr::*;
+/// This produces a parsed list of instructions in a "one pass" manner.
+/// No optimizations are applied, but (e.g.) loops are linked up correctly, and the instructions
+/// can be executed immediately and directly.
+pub fn parse(input_str: &str) -> Result<Vec<BfInstr>, ()> {
+    use crate::BfInstr::*;
 
     let mut code = Vec::new();
 
@@ -53,7 +56,10 @@ pub fn parse(input_str: &str) -> Result<Vec<Instr>, ()> {
                         *end_ip = ip;
                     }
                     Some(other) => {
-                        println!("At codepoint {}, loop start pointer {} is pointing to {:?} which is not a loop start", code_p, start_ip, other);
+                        println!(
+                            "At codepoint {}, loop start pointer {} is pointing to {:?} which is not a loop start",
+                            code_p, start_ip, other
+                        );
                         return Err(());
                     }
                 }
@@ -70,10 +76,7 @@ pub fn parse(input_str: &str) -> Result<Vec<Instr>, ()> {
     }
 
     if !loop_stack.is_empty() {
-        println!(
-            "At end of parsing, {} loops remain unclosed, which is an error.",
-            loop_stack.len()
-        );
+        println!("At end of parsing, {} loops remain unclosed, which is an error.", loop_stack.len());
         return Err(());
     }
 
