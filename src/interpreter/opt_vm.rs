@@ -63,13 +63,7 @@ impl OptVM {
 
                     let addend = u8::wrapping_mul(self.data[source_dp], *source_amt_mult);
 
-                    // Note this addend business is essential -- it's possible target_dp is an
-                    // illegal address and the code is "fine" because the interior of the loop is
-                    // never executed
-                    // TODO: i don't like encoding this magic knowledge in the VM, it should be in the compiled instructions
-                    if addend != 0 {
-                        self.data[target_dp] = u8::wrapping_add(self.data[target_dp], addend);
-                    }
+                    self.data[target_dp] = u8::wrapping_add(self.data[target_dp], addend);
                     self.ip += 1;
                 }
                 CompiledInstr::AddPtr { amount } => {
@@ -91,6 +85,10 @@ impl OptVM {
                     let write = self.data[actual_dp];
                     output.write_byte(write)?;
                     self.ip += 1;
+                }
+                CompiledInstr::InfiniteLoop => {
+                    println!("ERR: Infinite non-IO loop detected (spin-loop); crashing out");
+                    break;
                 }
             }
         }

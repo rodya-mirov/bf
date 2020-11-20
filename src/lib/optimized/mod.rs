@@ -11,6 +11,8 @@ pub enum CompiledInstr {
         cond_dp_offset: isize,
         target_ip: usize,
     },
+    // Happens with bad code; interpreter can just bomb out if they want
+    InfiniteLoop,
     // Adds a given amount to the data pointer.
     AddPtr {
         amount: usize,
@@ -56,6 +58,13 @@ pub(crate) enum AST {
         elements: Vec<AST>,
         cond_dp_offset: isize,
     },
+    // only executes the interior if the conditional address' value is nonzero
+    IfNonZero {
+        elements: Vec<AST>,
+        cond_dp_offset: isize,
+    },
+    // Happens with bad code; required to make the loop unrolling sound
+    InfiniteLoop,
     // Adds a given amount to the data pointer. Can be negative to shift left.
     ShiftDataPtr {
         amount: isize,
@@ -252,6 +261,27 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
                     target_ip: end_ip,
                     cond_dp_offset: *cond_dp_offset,
                 };
+            }
+            AST::IfNonZero { elements, cond_dp_offset } => {
+                let start_ip = out.len();
+
+                // we need to fix this target_ip but only know what it is after we compile it
+                out.push(CompiledInstr::JumpIfZero {
+                    target_ip: 0,
+                    cond_dp_offset: *cond_dp_offset,
+                });
+
+                compile_ast_helper(out, elements);
+
+                let end_ip = out.len() - 1; // TODO: is this right?
+
+                *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero {
+                    target_ip: end_ip,
+                    cond_dp_offset: *cond_dp_offset,
+                };
+            }
+            AST::InfiniteLoop => {
+                out.push(CompiledInstr::InfiniteLoop);
             }
             AST::ShiftDataPtr { amount } => {
                 let amount = *amount;
