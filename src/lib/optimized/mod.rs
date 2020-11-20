@@ -57,6 +57,9 @@ pub(crate) enum AST {
     Loop {
         elements: Vec<AST>,
         cond_dp_offset: isize,
+        // If this is true, it is known that it will be executed at least once
+        // If this is false, nothing is known
+        known_to_be_nontrivial: bool,
     },
     // only executes the interior if the conditional address' value is nonzero
     IfNonZero {
@@ -92,7 +95,7 @@ pub(crate) enum AST {
     },
 }
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub(crate) enum DatamodKind {
     SetData { amount: u8 },
     AddData { amount: u8 },
@@ -165,6 +168,7 @@ pub(crate) fn parse(data: &str) -> Result<Vec<AST>, ParseError> {
                     let next = AST::Loop {
                         elements: running_loop,
                         cond_dp_offset: 0,
+                        known_to_be_nontrivial: false,
                     };
                     parse_stack.push_command(next);
                 } else {
@@ -227,6 +231,7 @@ enum BfCmd {
 }
 
 pub(crate) fn compile_ast(cmds: &[AST]) -> Vec<CompiledInstr> {
+    // println!("optimized AST {:#?}", cmds);
     let mut out = Vec::new();
 
     // Note: we assume brackets are matched, so we don't ever check for it
@@ -239,7 +244,11 @@ pub(crate) fn compile_ast(cmds: &[AST]) -> Vec<CompiledInstr> {
 fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
     for cmd in cmds {
         match cmd {
-            AST::Loop { elements, cond_dp_offset } => {
+            AST::Loop {
+                elements,
+                cond_dp_offset,
+                known_to_be_nontrivial: _,
+            } => {
                 let start_ip = out.len();
 
                 // we need to fix this target_ip but only know what it is after we compile it

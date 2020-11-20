@@ -1,7 +1,8 @@
 use std::collections::HashMap;
 
-use super::AST;
 use crate::optimized::DatamodKind;
+
+use super::AST;
 
 pub(crate) fn optimize(cmds: &mut Vec<AST>) {
     let mut step = 0;
@@ -21,12 +22,217 @@ fn opt_step(cmds: &mut Vec<AST>) -> usize {
     let swap = sort_commands(cmds);
     let coll = collapse_consecutive(cmds);
     let deloop = const_loop_remove(cmds);
+    let simulate_removal = eval_const(cmds);
 
     println!("Swapped {} commands total", swap);
     println!("Collapse {} consecutive pure commands total", coll);
     println!("Killed {} const loops!", deloop);
+    println!("Killed {} instructions by simulation.", simulate_removal);
 
-    swap + coll + deloop
+    swap + coll + deloop + simulate_removal
+}
+
+// Do a one-pass simulation to see if we can use const analysis to eliminate branches, etc.
+fn eval_const(cmds: &mut Vec<AST>) -> usize {
+    let mut removed = 0; // or simplified, or whatever
+
+    #[derive(Copy, Clone)]
+    enum DataState {
+        Unknown, // result of ReadByte, or any static analysis we simply do not wish to do
+        Known(u8),
+    }
+
+    struct SimState {
+        dp: isize,
+        data: [DataState; 30_000],
+    }
+
+    impl SimState {
+        fn get_data(&self, ind: isize) -> DataState {
+            self.data[ind as usize]
+        }
+
+        fn set_data(&mut self, ind: isize, val: DataState) {
+            self.data[ind as usize] = val;
+        }
+    }
+
+    let mut state = SimState {
+        dp: 0,
+        data: [DataState::Known(0); 30_000],
+    };
+
+    let old = std::mem::replace(cmds, Vec::new());
+
+    // We can "lose track" of the simulation any time we want; this will just mindlessly copy
+    // the rest of the commands into the buffer and stop
+    let mut lost_track = false;
+
+    for cmd in old {
+        if lost_track {
+            cmds.push(cmd);
+            continue;
+        }
+
+        println!("Simulating {:?}", cmd);
+
+        match cmd {
+            AST::IfNonZero { cond_dp_offset, elements } => {
+                match state.get_data(state.dp + cond_dp_offset) {
+                    DataState::Unknown => {
+                        cmds.push(AST::IfNonZero { cond_dp_offset, elements });
+                        lost_track = true;
+                    }
+                    DataState::Known(val) => {
+                        if val != 0 {
+                            println!("Eliminated branch (executed)");
+                            // successive passes will manage this? I guess
+                            for elt in elements {
+                                cmds.push(elt);
+                            }
+                            lost_track = true;
+                        } else {
+                            println!("Eliminated branch {:?} (not executed)", elements);
+                        }
+
+                        // if val == 0, entire thing is skipped
+                        removed += 1;
+                    }
+                }
+            }
+            AST::Loop {
+                cond_dp_offset,
+                elements,
+                known_to_be_nontrivial,
+            } => {
+                match state.get_data(state.dp + cond_dp_offset) {
+                    DataState::Known(0) => {
+                        println!("Eliminated loop (not executed)");
+                        removed += 1;
+                    }
+                    DataState::Known(_other) => {
+                        if known_to_be_nontrivial {
+                            println!("Gave up on a loop, it already had the hint");
+                        } else {
+                            println!("Gave up on a loop, but emitted a 'will be executed' hint");
+                        }
+                        cmds.push(AST::Loop {
+                            cond_dp_offset,
+                            elements,
+                            known_to_be_nontrivial: true,
+                        });
+                        lost_track = true;
+                    }
+                    DataState::Unknown => {
+                        println!("Gave up on a loop, no hint could be emitted anyway");
+                        cmds.push(AST::Loop {
+                            cond_dp_offset,
+                            elements,
+                            known_to_be_nontrivial,
+                        });
+                        lost_track = true;
+                    }
+                }
+            }
+            AST::ReadByte { dp_offset } => {
+                state.set_data(state.dp + dp_offset, DataState::Unknown);
+                cmds.push(AST::ReadByte { dp_offset });
+            }
+            AST::WriteByte { dp_offset } => {
+                // Note -- we could actually constant-ize these things, if the data is known in advance
+                cmds.push(AST::WriteByte { dp_offset });
+            }
+            AST::CombineData {
+                source_dp_offset,
+                target_dp_offset,
+                source_amt_mult,
+            } => {
+                let start_data = state.get_data(state.dp + source_dp_offset);
+                let end_data = state.get_data(state.dp + target_dp_offset);
+
+                if source_amt_mult != 0 {
+                    let end_state = match end_data {
+                        DataState::Unknown => DataState::Unknown,
+                        DataState::Known(b) => match start_data {
+                            DataState::Unknown => DataState::Unknown,
+                            DataState::Known(a) => DataState::Known(u8::wrapping_add(b, u8::wrapping_mul(a, source_amt_mult))),
+                        },
+                    };
+
+                    state.set_data(state.dp + target_dp_offset, end_state);
+
+                    match end_state {
+                        DataState::Known(amount) => {
+                            removed += 1;
+                            println!("Constant-ized a combine data!");
+                            cmds.push(AST::ModData {
+                                kind: DatamodKind::SetData { amount },
+                                dp_offset: target_dp_offset,
+                            });
+                        }
+                        DataState::Unknown => {
+                            cmds.push(AST::CombineData {
+                                source_dp_offset,
+                                target_dp_offset,
+                                source_amt_mult,
+                            });
+                        }
+                    }
+                } else {
+                    // else, skip the command entirely, it's a no-op
+                    // but i think this is actually unreachable in practice? other optimizations
+                    // shouldn't emit a no-op
+                    removed += 1;
+                }
+            }
+            AST::ModData { kind, dp_offset } => {
+                match kind {
+                    DatamodKind::SetData { amount } => {
+                        state.set_data(state.dp + dp_offset, DataState::Known(amount));
+                        // this is already about as optimized as you can get?
+                        cmds.push(AST::ModData {
+                            kind: DatamodKind::SetData { amount },
+                            dp_offset,
+                        });
+                    }
+                    DatamodKind::AddData { amount } => match state.get_data(state.dp + dp_offset) {
+                        DataState::Unknown => {
+                            cmds.push(AST::ModData {
+                                kind: DatamodKind::AddData { amount },
+                                dp_offset,
+                            });
+                        }
+                        DataState::Known(old) => {
+                            let new_val = u8::wrapping_add(old, amount);
+                            state.set_data(state.dp + dp_offset, DataState::Known(new_val));
+                            cmds.push(AST::ModData {
+                                kind: DatamodKind::SetData { amount: new_val },
+                                dp_offset,
+                            });
+                        }
+                    },
+                }
+            }
+            _ => {
+                lost_track = true;
+                println!("Gave up on {:?}", cmd);
+                cmds.push(cmd);
+            }
+        }
+    }
+
+    removed
+}
+
+// the result of "a, then b" on the same offset
+fn collapse_kinds(a: DatamodKind, b: DatamodKind) -> DatamodKind {
+    match b {
+        DatamodKind::SetData { amount } => DatamodKind::SetData { amount },
+        DatamodKind::AddData { amount: b_amt } => match a {
+            DatamodKind::SetData { amount } => DatamodKind::SetData { amount: amount + b_amt },
+            DatamodKind::AddData { amount } => DatamodKind::AddData { amount: amount + b_amt },
+        },
+    }
 }
 
 // Precondition: everything is sorted and collapsed
@@ -40,6 +246,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
         if let AST::Loop {
             ref mut elements,
             cond_dp_offset: _,
+            known_to_be_nontrivial: _,
         } = cmd
         {
             total_removed += const_loop_remove(elements);
@@ -49,7 +256,6 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
     // Ordered top to bottom; so if it contains Sets and Shifts it comes back as Shifts
     #[derive(Copy, Clone, Eq, PartialEq, Debug, Ord, PartialOrd)]
     enum NonConstResult {
-        Sets,
         ComplexArithmetic,
         Shifts,
         InnerCond,
@@ -58,8 +264,8 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
         InfiniteLoop,
     }
 
-    fn only_data(cmds: &[AST]) -> Result<HashMap<isize, u8>, NonConstResult> {
-        let mut offsets: HashMap<isize, u8> = HashMap::new();
+    fn only_data(cmds: &[AST]) -> Result<HashMap<isize, DatamodKind>, NonConstResult> {
+        let mut offsets: HashMap<isize, DatamodKind> = HashMap::new();
 
         let mut running_error: Option<NonConstResult> = None;
 
@@ -74,18 +280,10 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
         for cmd in cmds {
             match cmd {
                 AST::ModData { kind, dp_offset } => {
-                    match kind {
-                        DatamodKind::AddData { amount } => {
-                            let val = offsets.entry(*dp_offset).or_insert(0);
-                            *val = val.wrapping_add(*amount);
-                            if *val == 0 {
-                                offsets.remove(dp_offset);
-                            }
-                        }
-                        DatamodKind::SetData { amount: _ } => {
-                            // TODO this is sort of a mess for now; Set can be fixed but it requires a conditional
-                            return Err(NonConstResult::Sets);
-                        }
+                    let val = offsets.entry(*dp_offset).or_insert(DatamodKind::AddData { amount: 0 });
+                    *val = collapse_kinds(*val, *kind);
+                    if *val == (DatamodKind::AddData { amount: 0 }) {
+                        offsets.remove(dp_offset);
                     }
                 }
                 AST::CombineData { .. } => {
@@ -94,7 +292,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 AST::Loop { .. } => {
                     update_err(NonConstResult::InnerLoops);
                 }
-                AST::IfNonZero {..} => {
+                AST::IfNonZero { .. } => {
                     update_err(NonConstResult::InnerCond);
                 }
                 AST::ShiftDataPtr { .. } => {
@@ -121,43 +319,63 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
         if let AST::Loop {
             ref mut elements,
             cond_dp_offset,
+            known_to_be_nontrivial,
         } = cmd
         {
             match only_data(elements) {
                 Ok(mut offsets) => {
-                    // the "is_const" means it has no jumps; note that due to recursive sorting,
-                    // jumps can often be expunged, so it means "it has no net jumps and no inner
-                    // loops or funny business"
                     if !offsets.contains_key(&cond_dp_offset) {
-                        cmds.push(AST::IfNonZero {
-                            elements: vec![AST::InfiniteLoop],
-                            cond_dp_offset,
-                        });
+                        if known_to_be_nontrivial {
+                            cmds.push(AST::InfiniteLoop);
+                        } else {
+                            cmds.push(AST::IfNonZero {
+                                elements: vec![AST::InfiniteLoop],
+                                cond_dp_offset,
+                            });
+                        }
                     }
 
                     if offsets.len() == 1 {
                         // TODO: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
-                        cmds.push(AST::IfNonZero {
-                            elements: vec![AST::ModData {
-                                kind: DatamodKind::SetData { amount: 0 },
-                                dp_offset: cond_dp_offset,
-                            }],
-                            cond_dp_offset,
-                        });
+                        // this won't actually detect an infinite loop, sadly
+                        let inner = AST::ModData {
+                            kind: DatamodKind::SetData { amount: 0 },
+                            dp_offset: cond_dp_offset,
+                        };
+
+                        if known_to_be_nontrivial {
+                            cmds.push(inner);
+                        } else {
+                            cmds.push(AST::IfNonZero {
+                                elements: vec![inner],
+                                cond_dp_offset,
+                            });
+                        }
                         total_removed += 1;
                     } else {
                         let zero_offset = offsets.remove(&cond_dp_offset).unwrap();
 
                         // in this case it literally just iterates exactly data[dp] times, so it's really easy
                         // this seems like a weird special case but it's really common
-                        if zero_offset == u8::max_value() {
+                        if zero_offset == (DatamodKind::AddData { amount: u8::max_value() }) {
                             let mut loop_adds = Vec::new();
-                            for (target_dp_offset, source_amt_mult) in offsets {
-                                loop_adds.push(AST::CombineData {
-                                    source_dp_offset: cond_dp_offset,
-                                    target_dp_offset,
-                                    source_amt_mult,
-                                });
+                            for (target_dp_offset, kind) in offsets {
+                                match kind {
+                                    DatamodKind::AddData { amount: source_amt_mult } => {
+                                        loop_adds.push(AST::CombineData {
+                                            source_dp_offset: cond_dp_offset,
+                                            target_dp_offset,
+                                            source_amt_mult,
+                                        });
+                                    }
+                                    // Disappointingly never seems to happen?
+                                    DatamodKind::SetData { amount: target_set_amt } => {
+                                        loop_adds.push(AST::ModData {
+                                            kind: DatamodKind::SetData { amount: target_set_amt },
+                                            dp_offset: target_dp_offset,
+                                        });
+                                    }
+                                }
                             }
                             loop_adds.push(AST::ModData {
                                 kind: DatamodKind::SetData { amount: 0 },
@@ -166,20 +384,27 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
 
                             total_removed += 1;
 
-                            cmds.push(AST::IfNonZero {
-                                cond_dp_offset,
-                                elements: loop_adds,
-                            });
+                            if known_to_be_nontrivial {
+                                for inner in loop_adds {
+                                    cmds.push(inner);
+                                }
+                            } else {
+                                cmds.push(AST::IfNonZero {
+                                    cond_dp_offset,
+                                    elements: loop_adds,
+                                });
+                            }
                         } else {
+                            // I mean this literally never happens in my benchmark???
                             println!(
-                                "Found a const loop with offsets {:?}, zero offset {}, which should be solvable, but which I could not kill",
+                                "Found a const loop with offsets {:?}, zero offset {:?}, which should be solvable, but which I could not kill",
                                 offsets, zero_offset
                             );
                             cmds.push(cmd);
                         }
                     }
                 }
-                Err(reason) => {
+                Err(_reason) => {
                     // println!("Could not destroy loop for reason {:?}", reason);
                     cmds.push(cmd);
                 }
@@ -212,6 +437,7 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
         if let AST::Loop {
             ref mut elements,
             cond_dp_offset: _,
+            known_to_be_nontrivial: _,
         } = cmd
         {
             collapsed += collapse_consecutive(elements);
@@ -322,6 +548,7 @@ fn sort_commands(cmds: &mut [AST]) -> usize {
         if let AST::Loop {
             ref mut elements,
             cond_dp_offset: _,
+            known_to_be_nontrivial: _,
         } = cmd
         {
             sort_commands(elements);
@@ -453,6 +680,7 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
         AST::Loop {
             ref mut elements,
             ref mut cond_dp_offset,
+            known_to_be_nontrivial: _,
         } => {
             *cond_dp_offset += dp_shift;
             shift_commands(elements, dp_shift);
