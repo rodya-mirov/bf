@@ -13,6 +13,8 @@ pub enum CompiledInstr {
     },
     // Happens with bad code; interpreter can just bomb out if they want
     InfiniteLoop,
+    // Happens with bad code; interpreter can just bomb out if they want
+    AccessOutOfBounds,
     // Adds a given amount to the data pointer.
     AddPtr {
         amount: usize,
@@ -47,6 +49,9 @@ pub enum CompiledInstr {
     WriteByte {
         dp_offset: isize,
     },
+    WriteConst {
+        out: u8,
+    },
 }
 
 /// Very similar to the compiled situation, but nested for the benefit of loop folding
@@ -55,19 +60,22 @@ pub enum CompiledInstr {
 #[derive(Debug)]
 pub(crate) enum AST {
     Loop {
-        elements: Vec<AST>,
         cond_dp_offset: isize,
+        elements: Vec<AST>,
         // If this is true, it is known that it will be executed at least once
         // If this is false, nothing is known
         known_to_be_nontrivial: bool,
     },
     // only executes the interior if the conditional address' value is nonzero
     IfNonZero {
-        elements: Vec<AST>,
         cond_dp_offset: isize,
+        elements: Vec<AST>,
     },
     // Happens with bad code; required to make the loop unrolling sound
     InfiniteLoop,
+    // Best-case emission; in theory this could still slip through, but making it explicit
+    // makes my life simpler
+    AccessOutOfBounds,
     // Adds a given amount to the data pointer. Can be negative to shift left.
     ShiftDataPtr {
         amount: isize,
@@ -92,6 +100,9 @@ pub(crate) enum AST {
     // Write a byte to stdout, or whatever IO method is configured
     WriteByte {
         dp_offset: isize,
+    },
+    WriteConst {
+        out: u8,
     },
 }
 
@@ -231,7 +242,7 @@ enum BfCmd {
 }
 
 pub(crate) fn compile_ast(cmds: &[AST]) -> Vec<CompiledInstr> {
-    // println!("optimized AST {:#?}", cmds);
+    println!("optimized AST {:#?}", cmds);
     let mut out = Vec::new();
 
     // Note: we assume brackets are matched, so we don't ever check for it
@@ -294,6 +305,9 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
             AST::InfiniteLoop => {
                 out.push(CompiledInstr::InfiniteLoop);
             }
+            AST::AccessOutOfBounds => {
+                out.push(CompiledInstr::AccessOutOfBounds);
+            }
             AST::ShiftDataPtr { amount } => {
                 let amount = *amount;
                 if amount > 0 {
@@ -318,6 +332,7 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
             }
             AST::ReadByte { dp_offset } => out.push(CompiledInstr::ReadByte { dp_offset: *dp_offset }),
             AST::WriteByte { dp_offset } => out.push(CompiledInstr::WriteByte { dp_offset: *dp_offset }),
+            AST::WriteConst { out: out_byte } => out.push(CompiledInstr::WriteConst { out: *out_byte }),
             AST::CombineData {
                 source_dp_offset,
                 target_dp_offset,

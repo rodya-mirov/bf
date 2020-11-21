@@ -86,8 +86,16 @@ impl OptVM {
                     output.write_byte(write)?;
                     self.ip += 1;
                 }
+                CompiledInstr::WriteConst { out } => {
+                    output.write_byte(*out)?;
+                    self.ip += 1;
+                }
                 CompiledInstr::InfiniteLoop => {
                     println!("ERR: Infinite non-IO loop detected (spin-loop); crashing out");
+                    break;
+                }
+                CompiledInstr::AccessOutOfBounds => {
+                    println!("ERR: Access-out-of-bounds detected; crashing out");
                     break;
                 }
             }

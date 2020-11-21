@@ -9,37 +9,53 @@ pub(crate) fn optimize(cmds: &mut Vec<AST>) {
 
     loop {
         let step_count = opt_step(cmds);
+
+        println!("Step {} did {} changes.\n", step, step_count);
+
         if step_count == 0 {
             break;
         }
 
-        println!("Step {} did {} changes", step, step_count);
         step += 1;
     }
 }
 
 fn opt_step(cmds: &mut Vec<AST>) -> usize {
     let swap = sort_commands(cmds);
-    let coll = collapse_consecutive(cmds);
-    let deloop = const_loop_remove(cmds);
-    let simulate_removal = eval_const(cmds);
-
     println!("Swapped {} commands total", swap);
+
+    let coll = collapse_consecutive(cmds);
     println!("Collapse {} consecutive pure commands total", coll);
+
+    let deloop = const_loop_remove(cmds);
     println!("Killed {} const loops!", deloop);
+
+    let simulate_removal = eval_const(cmds);
     println!("Killed {} instructions by simulation.", simulate_removal);
 
     swap + coll + deloop + simulate_removal
 }
 
 // Do a one-pass simulation to see if we can use const analysis to eliminate branches, etc.
+// This is NOT gonna just be a "run the thing at compile time" situation because I consider that
+// cheating; this will be an O(n) operation where n is cmds.len(); we just sweep through and anything
+// we can sort of determine in advance, we collapse
 fn eval_const(cmds: &mut Vec<AST>) -> usize {
     let mut removed = 0; // or simplified, or whatever
 
-    #[derive(Copy, Clone)]
+    #[derive(Copy, Clone, Eq, PartialEq)]
     enum DataState {
         Unknown, // result of ReadByte, or any static analysis we simply do not wish to do
         Known(u8),
+    }
+
+    impl std::fmt::Debug for DataState {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            match self {
+                DataState::Unknown => write!(f, "?"),
+                DataState::Known(v) => write!(f, "{}", v),
+            }
+        }
     }
 
     struct SimState {
@@ -54,6 +70,27 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
 
         fn set_data(&mut self, ind: isize, val: DataState) {
             self.data[ind as usize] = val;
+        }
+    }
+
+    impl std::fmt::Debug for SimState {
+        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+            write!(f, "{{ dp: {}, [", self.dp)?;
+
+            let mut first = true;
+            for i in 0..self.data.len() {
+                let v = self.data[i];
+                if v != DataState::Known(0) {
+                    if first {
+                        first = false;
+                    } else {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}: {:?}", i, &v)?;
+                }
+            }
+
+            write!(f, "]}}")
         }
     }
 
@@ -74,7 +111,7 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
             continue;
         }
 
-        println!("Simulating {:?}", cmd);
+        // println!("Simulating {:?}", cmd);
 
         match cmd {
             AST::IfNonZero { cond_dp_offset, elements } => {
@@ -100,47 +137,64 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                     }
                 }
             }
+            AST::ShiftDataPtr { amount } => {
+                state.dp += amount;
+                cmds.push(cmd);
+            }
             AST::Loop {
                 cond_dp_offset,
                 elements,
                 known_to_be_nontrivial,
-            } => {
-                match state.get_data(state.dp + cond_dp_offset) {
-                    DataState::Known(0) => {
-                        println!("Eliminated loop (not executed)");
+            } => match state.get_data(state.dp + cond_dp_offset) {
+                DataState::Known(0) => {
+                    println!("Eliminated loop (not executed)");
+                    removed += 1;
+                }
+                DataState::Known(_other) => {
+                    if known_to_be_nontrivial {
+                        println!(
+                            "Gave up on a loop, it already had the hint. State: {:?}, CDO: {}, Elts: {:#?}",
+                            state,
+                            cond_dp_offset, elements
+                        );
+                    } else {
+                        println!("Gave up on a loop, but emitted a 'will be executed' hint");
+                        // not really removed, but at least simplified / improved?
                         removed += 1;
                     }
-                    DataState::Known(_other) => {
-                        if known_to_be_nontrivial {
-                            println!("Gave up on a loop, it already had the hint");
-                        } else {
-                            println!("Gave up on a loop, but emitted a 'will be executed' hint");
-                        }
-                        cmds.push(AST::Loop {
-                            cond_dp_offset,
-                            elements,
-                            known_to_be_nontrivial: true,
-                        });
-                        lost_track = true;
-                    }
-                    DataState::Unknown => {
-                        println!("Gave up on a loop, no hint could be emitted anyway");
-                        cmds.push(AST::Loop {
-                            cond_dp_offset,
-                            elements,
-                            known_to_be_nontrivial,
-                        });
-                        lost_track = true;
-                    }
+                    cmds.push(AST::Loop {
+                        cond_dp_offset,
+                        elements,
+                        known_to_be_nontrivial: true,
+                    });
+                    lost_track = true;
                 }
-            }
+                DataState::Unknown => {
+                    println!("Gave up on a loop, no hint could be emitted anyway");
+                    cmds.push(AST::Loop {
+                        cond_dp_offset,
+                        elements,
+                        known_to_be_nontrivial,
+                    });
+                    lost_track = true;
+                }
+            },
             AST::ReadByte { dp_offset } => {
                 state.set_data(state.dp + dp_offset, DataState::Unknown);
                 cmds.push(AST::ReadByte { dp_offset });
             }
             AST::WriteByte { dp_offset } => {
                 // Note -- we could actually constant-ize these things, if the data is known in advance
-                cmds.push(AST::WriteByte { dp_offset });
+                match state.get_data(state.dp + dp_offset) {
+                    DataState::Unknown => {
+                        cmds.push(AST::WriteByte { dp_offset });
+                    }
+                    DataState::Known(val) => {
+                        removed += 1;
+                        println!("Constantized a write");
+                        cmds.push(AST::WriteConst { out: val });
+                    }
+                }
             }
             AST::CombineData {
                 source_dp_offset,
@@ -188,12 +242,21 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
             AST::ModData { kind, dp_offset } => {
                 match kind {
                     DatamodKind::SetData { amount } => {
-                        state.set_data(state.dp + dp_offset, DataState::Known(amount));
-                        // this is already about as optimized as you can get?
-                        cmds.push(AST::ModData {
-                            kind: DatamodKind::SetData { amount },
-                            dp_offset,
-                        });
+                        match state.get_data(state.dp + dp_offset) {
+                            DataState::Known(x) if x == amount => {
+                                // no-op, it was already this
+                                println!("Removed useless set to {}; was already set to that", x);
+                                removed += 1;
+                            }
+                            _ => {
+                                state.set_data(state.dp + dp_offset, DataState::Known(amount));
+                                // this is already about as optimized as you can get?
+                                cmds.push(AST::ModData {
+                                    kind: DatamodKind::SetData { amount },
+                                    dp_offset,
+                                });
+                            }
+                        }
                     }
                     DatamodKind::AddData { amount } => match state.get_data(state.dp + dp_offset) {
                         DataState::Unknown => {
@@ -262,6 +325,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
         InnerLoops,
         IO,
         InfiniteLoop,
+        AccessOutOfBounds,
     }
 
     fn only_data(cmds: &[AST]) -> Result<HashMap<isize, DatamodKind>, NonConstResult> {
@@ -298,11 +362,14 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 AST::ShiftDataPtr { .. } => {
                     update_err(NonConstResult::Shifts);
                 }
-                AST::ReadByte { .. } | AST::WriteByte { .. } => {
+                AST::ReadByte { .. } | AST::WriteByte { .. } | AST::WriteConst { .. } => {
                     update_err(NonConstResult::IO);
                 }
                 AST::InfiniteLoop => {
                     update_err(NonConstResult::InfiniteLoop);
+                }
+                AST::AccessOutOfBounds => {
+                    update_err(NonConstResult::AccessOutOfBounds);
                 }
             }
         }
@@ -338,19 +405,14 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                     if offsets.len() == 1 {
                         // TODO: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
                         // this won't actually detect an infinite loop, sadly
-                        let inner = AST::ModData {
+
+                        // Note we don't need the hint to eliminate the branch -- we know the offset
+                        // is valid (assuming the loop is evaluable) so "if x != 0 { x = 0 }" is
+                        // more simply stated as "x = 0"
+                        cmds.push(AST::ModData {
                             kind: DatamodKind::SetData { amount: 0 },
                             dp_offset: cond_dp_offset,
-                        };
-
-                        if known_to_be_nontrivial {
-                            cmds.push(inner);
-                        } else {
-                            cmds.push(AST::IfNonZero {
-                                elements: vec![inner],
-                                cond_dp_offset,
-                            });
-                        }
+                        });
                         total_removed += 1;
                     } else {
                         let zero_offset = offsets.remove(&cond_dp_offset).unwrap();
@@ -403,6 +465,14 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                             cmds.push(cmd);
                         }
                     }
+                }
+                Err(NonConstResult::InfiniteLoop) => {
+                    println!("Could not destroy loop, but reason was {:?}", NonConstResult::InfiniteLoop);
+                    cmds.push(cmd);
+                }
+                Err(NonConstResult::AccessOutOfBounds) => {
+                    println!("Could not destroy loop, but reason was {:?}", NonConstResult::AccessOutOfBounds);
+                    cmds.push(cmd);
                 }
                 Err(_reason) => {
                     // println!("Could not destroy loop for reason {:?}", reason);
@@ -529,7 +599,19 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                     accumulator = Some(cmd);
                 }
             }
-            AST::Loop { .. } | AST::ReadByte { .. } | AST::WriteByte { .. } | AST::InfiniteLoop | AST::IfNonZero { .. } => {
+            // Infinite loops never terminate, so any following commands can be dropped
+            AST::InfiniteLoop => {
+                println!("Deleted command following an infinite loop");
+                accumulator = Some(acc);
+                collapsed += 1;
+            }
+            // Similarly, errors stop execution, so any following commands can be ignored
+            AST::AccessOutOfBounds => {
+                println!("Deleted command following an OOB");
+                accumulator = Some(acc);
+                collapsed += 1;
+            }
+            AST::Loop { .. } | AST::ReadByte { .. } | AST::WriteByte { .. } | AST::WriteConst { .. } | AST::IfNonZero { .. } => {
                 cmds.push(acc);
                 accumulator = Some(cmd);
             }
@@ -585,7 +667,13 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
     fn maybe_swap(first: &mut AST, second: &mut AST) -> usize {
         let mut swap = false;
         match first {
-            AST::WriteByte { .. } | AST::ReadByte { .. } | AST::Loop { .. } | AST::IfNonZero { .. } | AST::InfiniteLoop => {}
+            AST::WriteByte { .. }
+            | AST::WriteConst { .. }
+            | AST::ReadByte { .. }
+            | AST::Loop { .. }
+            | AST::IfNonZero { .. }
+            | AST::InfiniteLoop
+            | AST::AccessOutOfBounds => {}
             AST::ModData { kind: _, dp_offset } => match second {
                 AST::InfiniteLoop => swap = true,
                 AST::ModData {
@@ -649,8 +737,10 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
             },
             AST::ShiftDataPtr { amount: shift_amount } => {
                 if !matches!(second, AST::ShiftDataPtr {..}) {
-                    shift_command(second, *shift_amount);
-                    swap = true;
+                    if can_shift(second) {
+                        shift_command(second, *shift_amount);
+                        swap = true;
+                    }
                 }
             }
         }
@@ -675,6 +765,21 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
     changed
 }
 
+fn can_shift(cmd: &AST) -> bool {
+    match cmd {
+        AST::Loop { ref elements, .. } => elements.iter().all(can_shift),
+        AST::IfNonZero { ref elements, .. } => elements.iter().all(can_shift),
+        AST::InfiniteLoop => false,
+        AST::AccessOutOfBounds => false,
+        AST::ModData { .. } => true,
+        AST::CombineData { .. } => true,
+        AST::ReadByte { .. } => true,
+        AST::WriteByte { .. } => true,
+        AST::ShiftDataPtr { .. } => false,
+        AST::WriteConst { .. } => false,
+    }
+}
+
 fn shift_command(cmd: &mut AST, dp_shift: isize) {
     match cmd {
         AST::Loop {
@@ -686,7 +791,9 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
             shift_commands(elements, dp_shift);
         }
         AST::ShiftDataPtr { amount: _ } => {
-            // nothing to shift here
+            // Strictly speaking, you can easily swap two shifts (although you have no reason to)
+            // but in general you can't shift it
+            panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
         }
         AST::ModData {
             kind: _,
@@ -715,8 +822,13 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
             shift_commands(elements, dp_shift);
             *cond_dp_offset += dp_shift;
         }
-        AST::InfiniteLoop => {
-            // it's fine
+        AST::WriteConst { .. } => {
+            // This is a compile optimization only, and only makes sense if dp is in a known spot
+            panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
+        }
+        AST::InfiniteLoop | AST::AccessOutOfBounds => {
+            // Who knows, really, just don't
+            panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
         }
     }
 }
