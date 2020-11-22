@@ -13,3 +13,4 @@ name = "bf_interpreter"
 path = "src/interpreter/main.rs"
 
 [dependencies]
+smallset = "0.1.1"
