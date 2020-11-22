@@ -813,8 +813,6 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
 fn can_shift(cmd: &AST) -> bool {
     match cmd {
         AST::Loop { ref elements, .. } => elements.iter().all(can_shift),
-        // TODO: can this be shifted? I'm not sure; maybe with an AST extension
-        // TODO: this can be shifted ONLY assuming the unshifted variant wouldn't cause OOB; which we do assume
         AST::ShiftLoop { .. } => true,
         AST::IfNonZero { ref elements, .. } => elements.iter().all(can_shift),
         AST::InfiniteLoop => false,
@@ -822,9 +820,7 @@ fn can_shift(cmd: &AST) -> bool {
         AST::CombineData { .. } => true,
         AST::ReadByte { .. } => true,
         AST::WriteByte { .. } => true,
-        // Strictly speaking this CAN be shifted as stated, but if it's an element of a loop
-        // it gets screwed up; need a better hypothesis statement to make this more rigorous
-        AST::ShiftDataPtr { .. } => false,
+        AST::ShiftDataPtr { .. } => true,
         AST::WriteConst { .. } => false,
     }
 }
@@ -845,9 +841,7 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
             *cond_dp_offset += dp_shift;
         }
         AST::ShiftDataPtr { amount: _ } => {
-            // Strictly speaking, you can easily swap two shifts (although you have no reason to)
-            // but in general you can't shift it
-            panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
+            // It's fine, no need to shift, they commute
         }
         AST::ModData {
             kind: _,
@@ -882,7 +876,7 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
         }
         AST::InfiniteLoop => {
             // Who knows, really, just don't
-            panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
+            panic!("Runtime error: Cannot shift through an IL, because it doesn't have an offset");
         }
     }
 }
