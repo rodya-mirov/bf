@@ -1,0 +1,555 @@
+Swapped 33 commands total
+Collapse 102 consecutive pure commands total
+Killed 5 const loops!
+Gave up on a loop, but emitted a 'will be executed' hint
+Killed 1 instructions by simulation.
+Step 0 did 141 changes.
+
+Swapped 0 commands total
+Collapse 0 consecutive pure commands total
+Killed 0 const loops!
+Gave up on a loop, it already had the hint. State: { dp: 0, [1: 1, 2: 1, 3: 1, 4: 1, 5: 2]}, Elts: [
+    Loop {
+        known_to_be_nontrivial: false,
+        cond_dp_offset: 5,
+        elements: [
+            ModData {
+                kind: AddData {
+                    amount: 3,
+                },
+                dp_offset: 4,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 255,
+                },
+                dp_offset: 5,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 11,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 12,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 13,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 14,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 2,
+                },
+                dp_offset: 15,
+            },
+            Loop {
+                known_to_be_nontrivial: false,
+                cond_dp_offset: 14,
+                elements: [
+                    Loop {
+                        known_to_be_nontrivial: false,
+                        cond_dp_offset: 15,
+                        elements: [
+                            ModData {
+                                kind: AddData {
+                                    amount: 3,
+                                },
+                                dp_offset: 14,
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 255,
+                                },
+                                dp_offset: 15,
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 1,
+                                },
+                                dp_offset: 21,
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 1,
+                                },
+                                dp_offset: 22,
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 1,
+                                },
+                                dp_offset: 23,
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 1,
+                                },
+                                dp_offset: 24,
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 2,
+                                },
+                                dp_offset: 25,
+                            },
+                            Loop {
+                                known_to_be_nontrivial: false,
+                                cond_dp_offset: 24,
+                                elements: [
+                                    Loop {
+                                        known_to_be_nontrivial: false,
+                                        cond_dp_offset: 25,
+                                        elements: [
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 3,
+                                                },
+                                                dp_offset: 24,
+                                            },
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 255,
+                                                },
+                                                dp_offset: 25,
+                                            },
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 1,
+                                                },
+                                                dp_offset: 31,
+                                            },
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 1,
+                                                },
+                                                dp_offset: 32,
+                                            },
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 1,
+                                                },
+                                                dp_offset: 33,
+                                            },
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 1,
+                                                },
+                                                dp_offset: 34,
+                                            },
+                                            ModData {
+                                                kind: AddData {
+                                                    amount: 2,
+                                                },
+                                                dp_offset: 35,
+                                            },
+                                            Loop {
+                                                known_to_be_nontrivial: false,
+                                                cond_dp_offset: 34,
+                                                elements: [
+                                                    Loop {
+                                                        known_to_be_nontrivial: false,
+                                                        cond_dp_offset: 35,
+                                                        elements: [
+                                                            ModData {
+                                                                kind: AddData {
+                                                                    amount: 3,
+                                                                },
+                                                                dp_offset: 34,
+                                                            },
+                                                            ModData {
+                                                                kind: AddData {
+                                                                    amount: 255,
+                                                                },
+                                                                dp_offset: 35,
+                                                            },
+                                                            ModData {
+                                                                kind: AddData {
+                                                                    amount: 3,
+                                                                },
+                                                                dp_offset: 40,
+                                                            },
+                                                            IfNonZero {
+                                                                cond_dp_offset: 40,
+                                                                elements: [
+                                                                    CombineData {
+                                                                        source_dp_offset: 40,
+                                                                        target_dp_offset: 41,
+                                                                        source_amt_mult: 5,
+                                                                    },
+                                                                    ModData {
+                                                                        kind: SetData {
+                                                                            amount: 0,
+                                                                        },
+                                                                        dp_offset: 40,
+                                                                    },
+                                                                ],
+                                                            },
+                                                            ModData {
+                                                                kind: SetData {
+                                                                    amount: 0,
+                                                                },
+                                                                dp_offset: 41,
+                                                            },
+                                                        ],
+                                                    },
+                                                    ShiftDataPtr {
+                                                        amount: -1,
+                                                    },
+                                                ],
+                                            },
+                                            ModData {
+                                                kind: SetData {
+                                                    amount: 0,
+                                                },
+                                                dp_offset: 35,
+                                            },
+                                            ShiftDataPtr {
+                                                amount: 5,
+                                            },
+                                        ],
+                                    },
+                                    ShiftDataPtr {
+                                        amount: -1,
+                                    },
+                                ],
+                            },
+                            ModData {
+                                kind: SetData {
+                                    amount: 0,
+                                },
+                                dp_offset: 25,
+                            },
+                            ShiftDataPtr {
+                                amount: 5,
+                            },
+                        ],
+                    },
+                    ShiftDataPtr {
+                        amount: -1,
+                    },
+                ],
+            },
+            ModData {
+                kind: SetData {
+                    amount: 0,
+                },
+                dp_offset: 15,
+            },
+            ShiftDataPtr {
+                amount: 5,
+            },
+        ],
+    },
+    ShiftDataPtr {
+        amount: -1,
+    },
+]
+Killed 0 instructions by simulation.
+Step 1 did 0 changes.
+
+optimized AST [
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 1,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 2,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 3,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 4,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 5,
+    },
+    Loop {
+        known_to_be_nontrivial: true,
+        cond_dp_offset: 4,
+        elements: [
+            Loop {
+                known_to_be_nontrivial: false,
+                cond_dp_offset: 5,
+                elements: [
+                    ModData {
+                        kind: AddData {
+                            amount: 3,
+                        },
+                        dp_offset: 4,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 255,
+                        },
+                        dp_offset: 5,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 1,
+                        },
+                        dp_offset: 11,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 1,
+                        },
+                        dp_offset: 12,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 1,
+                        },
+                        dp_offset: 13,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 1,
+                        },
+                        dp_offset: 14,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 2,
+                        },
+                        dp_offset: 15,
+                    },
+                    Loop {
+                        known_to_be_nontrivial: false,
+                        cond_dp_offset: 14,
+                        elements: [
+                            Loop {
+                                known_to_be_nontrivial: false,
+                                cond_dp_offset: 15,
+                                elements: [
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 3,
+                                        },
+                                        dp_offset: 14,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 255,
+                                        },
+                                        dp_offset: 15,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 1,
+                                        },
+                                        dp_offset: 21,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 1,
+                                        },
+                                        dp_offset: 22,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 1,
+                                        },
+                                        dp_offset: 23,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 1,
+                                        },
+                                        dp_offset: 24,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 2,
+                                        },
+                                        dp_offset: 25,
+                                    },
+                                    Loop {
+                                        known_to_be_nontrivial: false,
+                                        cond_dp_offset: 24,
+                                        elements: [
+                                            Loop {
+                                                known_to_be_nontrivial: false,
+                                                cond_dp_offset: 25,
+                                                elements: [
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 3,
+                                                        },
+                                                        dp_offset: 24,
+                                                    },
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 255,
+                                                        },
+                                                        dp_offset: 25,
+                                                    },
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 1,
+                                                        },
+                                                        dp_offset: 31,
+                                                    },
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 1,
+                                                        },
+                                                        dp_offset: 32,
+                                                    },
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 1,
+                                                        },
+                                                        dp_offset: 33,
+                                                    },
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 1,
+                                                        },
+                                                        dp_offset: 34,
+                                                    },
+                                                    ModData {
+                                                        kind: AddData {
+                                                            amount: 2,
+                                                        },
+                                                        dp_offset: 35,
+                                                    },
+                                                    Loop {
+                                                        known_to_be_nontrivial: false,
+                                                        cond_dp_offset: 34,
+                                                        elements: [
+                                                            Loop {
+                                                                known_to_be_nontrivial: false,
+                                                                cond_dp_offset: 35,
+                                                                elements: [
+                                                                    ModData {
+                                                                        kind: AddData {
+                                                                            amount: 3,
+                                                                        },
+                                                                        dp_offset: 34,
+                                                                    },
+                                                                    ModData {
+                                                                        kind: AddData {
+                                                                            amount: 255,
+                                                                        },
+                                                                        dp_offset: 35,
+                                                                    },
+                                                                    ModData {
+                                                                        kind: AddData {
+                                                                            amount: 3,
+                                                                        },
+                                                                        dp_offset: 40,
+                                                                    },
+                                                                    IfNonZero {
+                                                                        cond_dp_offset: 40,
+                                                                        elements: [
+                                                                            CombineData {
+                                                                                source_dp_offset: 40,
+                                                                                target_dp_offset: 41,
+                                                                                source_amt_mult: 5,
+                                                                            },
+                                                                            ModData {
+                                                                                kind: SetData {
+                                                                                    amount: 0,
+                                                                                },
+                                                                                dp_offset: 40,
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                    ModData {
+                                                                        kind: SetData {
+                                                                            amount: 0,
+                                                                        },
+                                                                        dp_offset: 41,
+                                                                    },
+                                                                ],
+                                                            },
+                                                            ShiftDataPtr {
+                                                                amount: -1,
+                                                            },
+                                                        ],
+                                                    },
+                                                    ModData {
+                                                        kind: SetData {
+                                                            amount: 0,
+                                                        },
+                                                        dp_offset: 35,
+                                                    },
+                                                    ShiftDataPtr {
+                                                        amount: 5,
+                                                    },
+                                                ],
+                                            },
+                                            ShiftDataPtr {
+                                                amount: -1,
+                                            },
+                                        ],
+                                    },
+                                    ModData {
+                                        kind: SetData {
+                                            amount: 0,
+                                        },
+                                        dp_offset: 25,
+                                    },
+                                    ShiftDataPtr {
+                                        amount: 5,
+                                    },
+                                ],
+                            },
+                            ShiftDataPtr {
+                                amount: -1,
+                            },
+                        ],
+                    },
+                    ModData {
+                        kind: SetData {
+                            amount: 0,
+                        },
+                        dp_offset: 15,
+                    },
+                    ShiftDataPtr {
+                        amount: 5,
+                    },
+                ],
+            },
+            ShiftDataPtr {
+                amount: -1,
+            },
+        ],
+    },
+    WriteByte {
+        dp_offset: 5,
+    },
+    ShiftDataPtr {
+        amount: 5,
+    },
+]
+Post optimization, executing 61 code lines
+ÊProcess took 854893419 instructions

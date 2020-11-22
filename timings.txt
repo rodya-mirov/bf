@@ -1,0 +1,5 @@
+
+( ./target/release/bf_interpreter ./input/mandelbrot.b opt > ; )  5.71s user 0.03s system 99% cpu 5.754 total
+( ./target/release/bf_interpreter ./input/hanoi.b opt > out.hanoi.txt; )  0.20s user 0.07s system 95% cpu 0.292 total
+( ./target/release/bf_interpreter ./input/long.b opt > out.long.txt; )  1.52s user 0.00s system 99% cpu 1.527 total
+( echo 13333333333337 | ./target/release/bf_interpreter ./input/factor.b opt )  3.51s user 0.01s system 99% cpu 3.528 total
