@@ -154,8 +154,7 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                     if known_to_be_nontrivial {
                         println!(
                             "Gave up on a loop, it already had the hint. State: {:?}, CDO: {}, Elts: {:#?}",
-                            state,
-                            cond_dp_offset, elements
+                            state, cond_dp_offset, elements
                         );
                     } else {
                         println!("Gave up on a loop, but emitted a 'will be executed' hint");
@@ -325,7 +324,6 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
         InnerLoops,
         IO,
         InfiniteLoop,
-        AccessOutOfBounds,
     }
 
     fn only_data(cmds: &[AST]) -> Result<HashMap<isize, DatamodKind>, NonConstResult> {
@@ -368,9 +366,6 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 AST::InfiniteLoop => {
                     update_err(NonConstResult::InfiniteLoop);
                 }
-                AST::AccessOutOfBounds => {
-                    update_err(NonConstResult::AccessOutOfBounds);
-                }
             }
         }
 
@@ -393,8 +388,10 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 Ok(mut offsets) => {
                     if !offsets.contains_key(&cond_dp_offset) {
                         if known_to_be_nontrivial {
+                            println!("Emitted IL");
                             cmds.push(AST::InfiniteLoop);
                         } else {
+                            println!("Emitted cond IL");
                             cmds.push(AST::IfNonZero {
                                 elements: vec![AST::InfiniteLoop],
                                 cond_dp_offset,
@@ -468,10 +465,6 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 }
                 Err(NonConstResult::InfiniteLoop) => {
                     println!("Could not destroy loop, but reason was {:?}", NonConstResult::InfiniteLoop);
-                    cmds.push(cmd);
-                }
-                Err(NonConstResult::AccessOutOfBounds) => {
-                    println!("Could not destroy loop, but reason was {:?}", NonConstResult::AccessOutOfBounds);
                     cmds.push(cmd);
                 }
                 Err(_reason) => {
@@ -552,14 +545,19 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                         accumulator = Some(cmd);
                         collapsed += 1;
                     }
+                    AST::InfiniteLoop => {
+                        println!("Swallowed by IL");
+                        accumulator = Some(AST::InfiniteLoop);
+                        collapsed += 1;
+                    }
                     _ => {
                         cmds.push(acc);
                         accumulator = Some(cmd);
                     }
                 }
             }
-            AST::ShiftDataPtr { amount } => {
-                if let AST::ShiftDataPtr { amount: other_amount } = cmd {
+            AST::ShiftDataPtr { amount } => match cmd {
+                AST::ShiftDataPtr { amount: other_amount } => {
                     let new_amount = amount + other_amount;
                     if new_amount == 0 {
                         accumulator = None;
@@ -568,22 +566,27 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                         accumulator = Some(AST::ShiftDataPtr { amount: new_amount });
                         collapsed += 1;
                     }
-                } else {
+                }
+                AST::InfiniteLoop => {
+                    println!("Swallowed by IL");
+                    accumulator = Some(AST::InfiniteLoop);
+                    collapsed += 1;
+                }
+                _ => {
                     cmds.push(acc);
                     accumulator = Some(cmd);
                 }
-            }
+            },
             AST::CombineData {
                 source_dp_offset,
                 target_dp_offset,
                 source_amt_mult,
-            } => {
-                if let AST::CombineData {
+            } => match cmd {
+                AST::CombineData {
                     source_dp_offset: other_sdo,
                     target_dp_offset: other_tdo,
                     source_amt_mult: other_sam,
-                } = cmd
-                {
+                } => {
                     if source_dp_offset == other_sdo && target_dp_offset == other_tdo {
                         accumulator = Some(AST::CombineData {
                             source_dp_offset,
@@ -594,20 +597,20 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                         cmds.push(acc);
                         accumulator = Some(cmd);
                     }
-                } else {
+                }
+                AST::InfiniteLoop => {
+                    println!("Swallowed by IL");
+                    accumulator = Some(AST::InfiniteLoop);
+                    collapsed += 1;
+                }
+                _ => {
                     cmds.push(acc);
                     accumulator = Some(cmd);
                 }
-            }
+            },
             // Infinite loops never terminate, so any following commands can be dropped
             AST::InfiniteLoop => {
                 println!("Deleted command following an infinite loop");
-                accumulator = Some(acc);
-                collapsed += 1;
-            }
-            // Similarly, errors stop execution, so any following commands can be ignored
-            AST::AccessOutOfBounds => {
-                println!("Deleted command following an OOB");
                 accumulator = Some(acc);
                 collapsed += 1;
             }
@@ -672,8 +675,7 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
             | AST::ReadByte { .. }
             | AST::Loop { .. }
             | AST::IfNonZero { .. }
-            | AST::InfiniteLoop
-            | AST::AccessOutOfBounds => {}
+            | AST::InfiniteLoop => {}
             AST::ModData { kind: _, dp_offset } => match second {
                 AST::InfiniteLoop => swap = true,
                 AST::ModData {
@@ -770,7 +772,6 @@ fn can_shift(cmd: &AST) -> bool {
         AST::Loop { ref elements, .. } => elements.iter().all(can_shift),
         AST::IfNonZero { ref elements, .. } => elements.iter().all(can_shift),
         AST::InfiniteLoop => false,
-        AST::AccessOutOfBounds => false,
         AST::ModData { .. } => true,
         AST::CombineData { .. } => true,
         AST::ReadByte { .. } => true,
@@ -826,7 +827,7 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
             // This is a compile optimization only, and only makes sense if dp is in a known spot
             panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
         }
-        AST::InfiniteLoop | AST::AccessOutOfBounds => {
+        AST::InfiniteLoop => {
             // Who knows, really, just don't
             panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
         }

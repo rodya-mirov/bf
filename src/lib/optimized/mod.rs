@@ -13,8 +13,6 @@ pub enum CompiledInstr {
     },
     // Happens with bad code; interpreter can just bomb out if they want
     InfiniteLoop,
-    // Happens with bad code; interpreter can just bomb out if they want
-    AccessOutOfBounds,
     // Adds a given amount to the data pointer.
     AddPtr {
         amount: usize,
@@ -73,9 +71,6 @@ pub(crate) enum AST {
     },
     // Happens with bad code; required to make the loop unrolling sound
     InfiniteLoop,
-    // Best-case emission; in theory this could still slip through, but making it explicit
-    // makes my life simpler
-    AccessOutOfBounds,
     // Adds a given amount to the data pointer. Can be negative to shift left.
     ShiftDataPtr {
         amount: isize,
@@ -304,9 +299,6 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
             }
             AST::InfiniteLoop => {
                 out.push(CompiledInstr::InfiniteLoop);
-            }
-            AST::AccessOutOfBounds => {
-                out.push(CompiledInstr::AccessOutOfBounds);
             }
             AST::ShiftDataPtr { amount } => {
                 let amount = *amount;

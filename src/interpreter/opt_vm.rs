@@ -94,10 +94,6 @@ impl OptVM {
                     println!("ERR: Infinite non-IO loop detected (spin-loop); crashing out");
                     break;
                 }
-                CompiledInstr::AccessOutOfBounds => {
-                    println!("ERR: Access-out-of-bounds detected; crashing out");
-                    break;
-                }
             }
         }
 
