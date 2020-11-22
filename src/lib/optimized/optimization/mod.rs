@@ -4,8 +4,6 @@ use crate::optimized::DatamodKind;
 
 use super::AST;
 
-type SmallSet<T> = smallset::SmallSet<[T; 10]>;
-
 pub(crate) fn optimize(cmds: &mut Vec<AST>) {
     let mut step = 0;
 
@@ -192,11 +190,11 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                     }
                     DataState::Known(val) => {
                         removed += 1;
-                        println!("Constantized a write");
                         cmds.push(AST::WriteConst { out: val });
                     }
                 }
             }
+            AST::WriteConst { .. } => {}
             AST::CombineData {
                 source_dp_offset,
                 target_dp_offset,
@@ -646,7 +644,6 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                     cond_dp_offset: other_cdo, ..
                 } if other_cdo == cond_dp_offset => {
                     // If that is "while nonzero" on the same thing as this one, we can skip it
-                    println!("Killed a subsequent loop");
                     accumulator = Some(acc);
                     collapsed += 1;
                 }
@@ -781,10 +778,8 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
             },
             AST::ShiftDataPtr { amount: shift_amount } => {
                 if !matches!(second, AST::ShiftDataPtr {..}) {
-                    if can_shift(second) {
-                        shift_command(second, *shift_amount);
-                        swap = true;
-                    }
+                    shift_command(second, *shift_amount);
+                    swap = true;
                 }
             }
         }
@@ -807,22 +802,6 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
     }
 
     changed
-}
-
-/// Return true if there is a way to transform (shiftPtr then x) to (x' then shiftPtr)
-fn can_shift(cmd: &AST) -> bool {
-    match cmd {
-        AST::Loop { ref elements, .. } => elements.iter().all(can_shift),
-        AST::ShiftLoop { .. } => true,
-        AST::IfNonZero { ref elements, .. } => elements.iter().all(can_shift),
-        AST::InfiniteLoop => false,
-        AST::ModData { .. } => true,
-        AST::CombineData { .. } => true,
-        AST::ReadByte { .. } => true,
-        AST::WriteByte { .. } => true,
-        AST::ShiftDataPtr { .. } => true,
-        AST::WriteConst { .. } => false,
-    }
 }
 
 fn shift_command(cmd: &mut AST, dp_shift: isize) {
@@ -871,91 +850,10 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
             elements.iter_mut().for_each(|e| shift_command(e, dp_shift));
         }
         AST::WriteConst { .. } => {
-            // This is a compile optimization only, and only makes sense if dp is in a known spot
-            panic!("Runtime error: Cannot shift through a shift, because it doesn't have an offset");
+            // It's fine, it's done
         }
         AST::InfiniteLoop => {
-            // Who knows, really, just don't
-            panic!("Runtime error: Cannot shift through an IL, because it doesn't have an offset");
+            // It's fine, it's done
         }
-    }
-}
-
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-enum NetDpShift {
-    // The dp shift varies (or appears to), or some paths error and some don't
-    Varies,
-    // It is always the same answer; this is the shift
-    Known(isize),
-    // It is known that this code path results in an infinite loop or OOB
-    ExecutionError,
-}
-
-fn net_dp_shifts(cmds: &[AST]) -> NetDpShift {
-    use NetDpShift::*;
-
-    let mut total_inner = Known(0);
-    for elt_shift in cmds.iter().map(net_dp_shift) {
-        total_inner = match elt_shift {
-            ExecutionError => ExecutionError,
-            Varies => match total_inner {
-                ExecutionError => ExecutionError,
-                Known(_) | Varies => Varies,
-            },
-            Known(v) => match total_inner {
-                ExecutionError => ExecutionError,
-                Varies => Varies,
-                Known(old) => Known(v + old),
-            },
-        }
-    }
-
-    total_inner
-}
-
-/// Returns the net DP shift of executing the command.
-/// If the command
-fn net_dp_shift(cmd: &AST) -> NetDpShift {
-    use NetDpShift::*;
-
-    match cmd {
-        AST::Loop {
-            ref elements,
-            cond_dp_offset: _,
-            known_to_be_nontrivial,
-        } => {
-            // If the inside is totally consistent, great; if there's any net change
-            // then the whole thing is a big question mark
-            match net_dp_shifts(elements) {
-                Known(0) => Known(0),
-                ExecutionError => {
-                    if *known_to_be_nontrivial {
-                        ExecutionError
-                    } else {
-                        Varies
-                    }
-                }
-                _ => Varies,
-            }
-        }
-        AST::IfNonZero {
-            ref elements,
-            cond_dp_offset: _,
-        } => {
-            match net_dp_shifts(elements) {
-                // Basically the only way for it to be known is if the inside is net 0; otherwise
-                // the leading branch kills it
-                Known(0) => Known(0),
-                _ => Varies,
-            }
-        }
-        AST::ShiftLoop { .. } => Varies,
-        AST::InfiniteLoop => ExecutionError,
-        AST::ShiftDataPtr { amount } => Known(*amount),
-        AST::ModData { .. } => Known(0),
-        AST::CombineData { .. } => Known(0),
-        AST::ReadByte { .. } => Known(0),
-        AST::WriteByte { .. } => Known(0),
-        AST::WriteConst { .. } => Known(0),
     }
 }

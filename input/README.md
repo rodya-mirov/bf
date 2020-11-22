@@ -4,4 +4,7 @@ I got the good ones from https://github.com/pretzelhammer/brainfuck_compilers/tr
 which was released under this license: https://github.com/pretzelhammer/brainfuck_compilers/blob/master/license-apache
 which is fine.
 
+I got some benchmarking ones from https://github.com/matslina/bfoptimization which has no license
+which I guess is also fine.
+
 I might add some of my own tests later?
