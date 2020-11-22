@@ -58,7 +58,6 @@ pub enum CompiledInstr {
 #[derive(Debug)]
 pub(crate) enum AST {
     Loop {
-        cond_dp_offset: isize,
         elements: Vec<AST>,
         // If this is true, it is known that it will be executed at least once
         // If this is false, nothing is known
@@ -66,8 +65,12 @@ pub(crate) enum AST {
     },
     // only executes the interior if the conditional address' value is nonzero
     IfNonZero {
-        cond_dp_offset: isize,
         elements: Vec<AST>,
+    },
+    // Simplified loop variant; just "until data[dp+offset] == 0, apply shift"
+    ShiftLoop {
+        dp_shift: isize,
+        known_to_be_nontrivial: bool,
     },
     // Happens with bad code; required to make the loop unrolling sound
     InfiniteLoop,
@@ -173,7 +176,6 @@ pub(crate) fn parse(data: &str) -> Result<Vec<AST>, ParseError> {
                 if let Some((_, running_loop)) = parse_stack.pop_loop() {
                     let next = AST::Loop {
                         elements: running_loop,
-                        cond_dp_offset: 0,
                         known_to_be_nontrivial: false,
                     };
                     parse_stack.push_command(next);
@@ -252,7 +254,6 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
         match cmd {
             AST::Loop {
                 elements,
-                cond_dp_offset,
                 known_to_be_nontrivial: _,
             } => {
                 let start_ip = out.len();
@@ -260,14 +261,14 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
                 // we need to fix this target_ip but only know what it is after we compile it
                 out.push(CompiledInstr::JumpIfZero {
                     target_ip: 0,
-                    cond_dp_offset: *cond_dp_offset,
+                    cond_dp_offset: 0,
                 });
 
                 compile_ast_helper(out, elements);
 
                 out.push(CompiledInstr::JumpIfNonzero {
                     target_ip: start_ip,
-                    cond_dp_offset: *cond_dp_offset,
+                    cond_dp_offset: 0,
                 });
 
                 // Jump to the next instruction after the loop is over
@@ -275,16 +276,26 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
 
                 *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero {
                     target_ip: end_ip,
-                    cond_dp_offset: *cond_dp_offset,
+                    cond_dp_offset: 0,
                 };
             }
-            AST::IfNonZero { elements, cond_dp_offset } => {
+            AST::ShiftLoop {
+                dp_shift,
+                known_to_be_nontrivial,
+            } => {
+                let compile_as = AST::Loop {
+                    elements: vec![AST::ShiftDataPtr { amount: *dp_shift }],
+                    known_to_be_nontrivial: *known_to_be_nontrivial,
+                };
+                compile_ast_helper(out, &[compile_as]);
+            }
+            AST::IfNonZero { elements } => {
                 let start_ip = out.len();
 
                 // we need to fix this target_ip but only know what it is after we compile it
                 out.push(CompiledInstr::JumpIfZero {
                     target_ip: 0,
-                    cond_dp_offset: *cond_dp_offset,
+                    cond_dp_offset: 0,
                 });
 
                 compile_ast_helper(out, elements);
@@ -294,7 +305,7 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
 
                 *out.get_mut(start_ip).unwrap() = CompiledInstr::JumpIfZero {
                     target_ip: end_ip,
-                    cond_dp_offset: *cond_dp_offset,
+                    cond_dp_offset: 0,
                 };
             }
             AST::InfiniteLoop => {

@@ -114,10 +114,10 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
         // println!("Simulating {:?}", cmd);
 
         match cmd {
-            AST::IfNonZero { cond_dp_offset, elements } => {
-                match state.get_data(state.dp + cond_dp_offset) {
+            AST::IfNonZero { elements } => {
+                match state.get_data(state.dp) {
                     DataState::Unknown => {
-                        cmds.push(AST::IfNonZero { cond_dp_offset, elements });
+                        cmds.push(AST::IfNonZero { elements });
                         lost_track = true;
                     }
                     DataState::Known(val) => {
@@ -142,10 +142,9 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                 cmds.push(cmd);
             }
             AST::Loop {
-                cond_dp_offset,
                 elements,
                 known_to_be_nontrivial,
-            } => match state.get_data(state.dp + cond_dp_offset) {
+            } => match state.get_data(state.dp) {
                 DataState::Known(0) => {
                     println!("Eliminated loop (not executed)");
                     removed += 1;
@@ -153,8 +152,8 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                 DataState::Known(_other) => {
                     if known_to_be_nontrivial {
                         println!(
-                            "Gave up on a loop, it already had the hint. State: {:?}, CDO: {}, Elts: {:#?}",
-                            state, cond_dp_offset, elements
+                            "Gave up on a loop, it already had the hint. State: {:?}, Elts: {:#?}",
+                            state, elements
                         );
                     } else {
                         println!("Gave up on a loop, but emitted a 'will be executed' hint");
@@ -162,7 +161,6 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                         removed += 1;
                     }
                     cmds.push(AST::Loop {
-                        cond_dp_offset,
                         elements,
                         known_to_be_nontrivial: true,
                     });
@@ -171,7 +169,6 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                 DataState::Unknown => {
                     println!("Gave up on a loop, no hint could be emitted anyway");
                     cmds.push(AST::Loop {
-                        cond_dp_offset,
                         elements,
                         known_to_be_nontrivial,
                     });
@@ -307,7 +304,6 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
     for cmd in cmds.iter_mut() {
         if let AST::Loop {
             ref mut elements,
-            cond_dp_offset: _,
             known_to_be_nontrivial: _,
         } = cmd
         {
@@ -354,6 +350,9 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 AST::Loop { .. } => {
                     update_err(NonConstResult::InnerLoops);
                 }
+                AST::ShiftLoop { .. } => {
+                    update_err(NonConstResult::InnerLoops);
+                }
                 AST::IfNonZero { .. } => {
                     update_err(NonConstResult::InnerCond);
                 }
@@ -380,13 +379,12 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
     for mut cmd in old {
         if let AST::Loop {
             ref mut elements,
-            cond_dp_offset,
             known_to_be_nontrivial,
         } = cmd
         {
             match only_data(elements) {
                 Ok(mut offsets) => {
-                    if !offsets.contains_key(&cond_dp_offset) {
+                    if !offsets.contains_key(&0) {
                         if known_to_be_nontrivial {
                             println!("Emitted IL");
                             cmds.push(AST::InfiniteLoop);
@@ -394,7 +392,6 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                             println!("Emitted cond IL");
                             cmds.push(AST::IfNonZero {
                                 elements: vec![AST::InfiniteLoop],
-                                cond_dp_offset,
                             });
                         }
                     }
@@ -408,11 +405,11 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                         // more simply stated as "x = 0"
                         cmds.push(AST::ModData {
                             kind: DatamodKind::SetData { amount: 0 },
-                            dp_offset: cond_dp_offset,
+                            dp_offset: 0,
                         });
                         total_removed += 1;
                     } else {
-                        let zero_offset = offsets.remove(&cond_dp_offset).unwrap();
+                        let zero_offset = offsets.remove(&0).unwrap();
 
                         // in this case it literally just iterates exactly data[dp] times, so it's really easy
                         // this seems like a weird special case but it's really common
@@ -422,7 +419,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                                 match kind {
                                     DatamodKind::AddData { amount: source_amt_mult } => {
                                         loop_adds.push(AST::CombineData {
-                                            source_dp_offset: cond_dp_offset,
+                                            source_dp_offset: 0,
                                             target_dp_offset,
                                             source_amt_mult,
                                         });
@@ -438,7 +435,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                             }
                             loop_adds.push(AST::ModData {
                                 kind: DatamodKind::SetData { amount: 0 },
-                                dp_offset: cond_dp_offset,
+                                dp_offset: 0,
                             });
 
                             total_removed += 1;
@@ -448,10 +445,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                                     cmds.push(inner);
                                 }
                             } else {
-                                cmds.push(AST::IfNonZero {
-                                    cond_dp_offset,
-                                    elements: loop_adds,
-                                });
+                                cmds.push(AST::IfNonZero { elements: loop_adds });
                             }
                         } else {
                             // I mean this literally never happens in my benchmark???
@@ -463,13 +457,30 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                         }
                     }
                 }
-                Err(NonConstResult::InfiniteLoop) => {
-                    println!("Could not destroy loop, but reason was {:?}", NonConstResult::InfiniteLoop);
-                    cmds.push(cmd);
-                }
                 Err(_reason) => {
-                    // println!("Could not destroy loop for reason {:?}", reason);
-                    cmds.push(cmd);
+                    if elements.is_empty() {
+                        println!("Emitted infinite loop (empty loop)");
+                        cmds.push(AST::IfNonZero {
+                            elements: vec![AST::InfiniteLoop],
+                        });
+                        total_removed += 1;
+                    } else if elements.len() == 1 {
+                        match elements.get(0).unwrap() {
+                            AST::ShiftDataPtr { amount } => {
+                                cmds.push(AST::ShiftLoop {
+                                    dp_shift: *amount,
+                                    known_to_be_nontrivial,
+                                });
+                                total_removed += 1;
+                            }
+                            other => {
+                                println!("Singleton loop, non eliminable: {:?}", other);
+                            }
+                        }
+                    } else {
+                        // println!("Could not destroy loop for reason {:?}", reason);
+                        cmds.push(cmd);
+                    }
                 }
             }
         } else {
@@ -499,7 +510,6 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
     for cmd in old.iter_mut() {
         if let AST::Loop {
             ref mut elements,
-            cond_dp_offset: _,
             known_to_be_nontrivial: _,
         } = cmd
         {
@@ -614,7 +624,18 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                 accumulator = Some(acc);
                 collapsed += 1;
             }
-            AST::Loop { .. } | AST::ReadByte { .. } | AST::WriteByte { .. } | AST::WriteConst { .. } | AST::IfNonZero { .. } => {
+            AST::Loop { .. } | AST::ShiftLoop { .. } => match cmd {
+                AST::Loop { .. } | AST::ShiftLoop { .. } => {
+                    println!("Killed a subsequent loop");
+                    accumulator = Some(acc);
+                    collapsed += 1;
+                }
+                _ => {
+                    cmds.push(acc);
+                    accumulator = Some(cmd);
+                }
+            },
+            AST::ReadByte { .. } | AST::WriteByte { .. } | AST::WriteConst { .. } | AST::IfNonZero { .. } => {
                 cmds.push(acc);
                 accumulator = Some(cmd);
             }
@@ -632,7 +653,6 @@ fn sort_commands(cmds: &mut [AST]) -> usize {
     for cmd in cmds.iter_mut() {
         if let AST::Loop {
             ref mut elements,
-            cond_dp_offset: _,
             known_to_be_nontrivial: _,
         } = cmd
         {
@@ -674,6 +694,7 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
             | AST::WriteConst { .. }
             | AST::ReadByte { .. }
             | AST::Loop { .. }
+            | AST::ShiftLoop { .. }
             | AST::IfNonZero { .. }
             | AST::InfiniteLoop => {}
             AST::ModData { kind: _, dp_offset } => match second {
@@ -769,8 +790,9 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
 
 fn can_shift(cmd: &AST) -> bool {
     match cmd {
-        AST::Loop { ref elements, .. } => elements.iter().all(can_shift),
-        AST::IfNonZero { ref elements, .. } => elements.iter().all(can_shift),
+        AST::Loop { .. } => false,
+        AST::ShiftLoop { .. } => false,
+        AST::IfNonZero { .. } => false,
         AST::InfiniteLoop => false,
         AST::ModData { .. } => true,
         AST::CombineData { .. } => true,
@@ -783,13 +805,11 @@ fn can_shift(cmd: &AST) -> bool {
 
 fn shift_command(cmd: &mut AST, dp_shift: isize) {
     match cmd {
-        AST::Loop {
-            ref mut elements,
-            ref mut cond_dp_offset,
-            known_to_be_nontrivial: _,
-        } => {
-            *cond_dp_offset += dp_shift;
-            shift_commands(elements, dp_shift);
+        AST::Loop { .. } => {
+            panic!("Runtime error: Cannot shift a loop");
+        }
+        AST::ShiftLoop { .. } => {
+            panic!("Runtime error: Cannot shift a shiftloop");
         }
         AST::ShiftDataPtr { amount: _ } => {
             // Strictly speaking, you can easily swap two shifts (although you have no reason to)
@@ -816,12 +836,8 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
         AST::WriteByte { dp_offset } => {
             *dp_offset += dp_shift;
         }
-        AST::IfNonZero {
-            ref mut elements,
-            ref mut cond_dp_offset,
-        } => {
-            shift_commands(elements, dp_shift);
-            *cond_dp_offset += dp_shift;
+        AST::IfNonZero { .. } => {
+            panic!("Runtime error: cannot shift a conditional");
         }
         AST::WriteConst { .. } => {
             // This is a compile optimization only, and only makes sense if dp is in a known spot
