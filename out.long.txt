@@ -8,7 +8,7 @@ Step 0 did 141 changes.
 Swapped 0 commands total
 Collapse 0 consecutive pure commands total
 Killed 0 const loops!
-Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [3: 1, 5: 2, 1: 1, 2: 1, 4: 1]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [1: 1, 2: 1, 3: 1, 4: 1, 5: 2]}, Elts: [
     Loop {
         known_to_be_nontrivial: false,
         cond_dp_offset: 5,

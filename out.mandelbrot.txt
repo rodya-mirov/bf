@@ -4,14 +4,12 @@ Killed 471 const loops!
 Eliminated branch (executed)
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, but emitted a 'will be executed' hint
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 7, dp_shift: -9 }
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 25, dp_shift: -9 }
 Gave up on a loop, but emitted a 'will be executed' hint
 Killed 3 instructions by simulation.
 Step 0 did 10399 changes.
 
-Swapped 2 commands total
+Swapped 4 commands total
 Collapse 30 consecutive pure commands total
 Killed 0 const loops!
 Constant-ized a combine data!
@@ -30,10 +28,8 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [16: 1]}
         amount: 9,
     },
 ]
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 7, dp_shift: -9 }
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 25, dp_shift: -9 }
-Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [0: 0, 28: 1]}, Elts: [
     Loop {
         known_to_be_nontrivial: false,
         cond_dp_offset: 34,
@@ -186,17 +182,17 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 26,
+                                target_dp_offset: 27,
+                                source_amt_mult: 1,
+                            },
+                            CombineData {
+                                source_dp_offset: 26,
                                 target_dp_offset: 30,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 26,
                                 target_dp_offset: 32,
-                                source_amt_mult: 1,
-                            },
-                            CombineData {
-                                source_dp_offset: 26,
-                                target_dp_offset: 27,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -242,17 +238,17 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 26,
+                                target_dp_offset: 28,
+                                source_amt_mult: 1,
+                            },
+                            CombineData {
+                                source_dp_offset: 26,
                                 target_dp_offset: 31,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 26,
                                 target_dp_offset: 33,
-                                source_amt_mult: 1,
-                            },
-                            CombineData {
-                                source_dp_offset: 26,
-                                target_dp_offset: 28,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -294,12 +290,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                 elements: [
                     CombineData {
                         source_dp_offset: 16,
-                        target_dp_offset: 23,
+                        target_dp_offset: 21,
                         source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 16,
-                        target_dp_offset: 21,
+                        target_dp_offset: 23,
                         source_amt_mult: 1,
                     },
                     ModData {
@@ -500,12 +496,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 25,
-                                                target_dp_offset: 29,
+                                                target_dp_offset: 27,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 25,
-                                                target_dp_offset: 27,
+                                                target_dp_offset: 29,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -1304,13 +1300,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                 elements: [
                     CombineData {
                         source_dp_offset: 36,
-                        target_dp_offset: 40,
-                        source_amt_mult: 255,
+                        target_dp_offset: 37,
+                        source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 36,
-                        target_dp_offset: 37,
-                        source_amt_mult: 1,
+                        target_dp_offset: 40,
+                        source_amt_mult: 255,
                     },
                     ModData {
                         kind: SetData {
@@ -1345,16 +1341,16 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
             IfNonZero {
                 cond_dp_offset: 43,
                 elements: [
-                    CombineData {
-                        source_dp_offset: 43,
-                        target_dp_offset: 47,
-                        source_amt_mult: 1,
-                    },
                     ModData {
                         kind: SetData {
                             amount: 0,
                         },
                         dp_offset: 45,
+                    },
+                    CombineData {
+                        source_dp_offset: 43,
+                        target_dp_offset: 47,
+                        source_amt_mult: 1,
                     },
                     ModData {
                         kind: SetData {
@@ -1506,12 +1502,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 56,
+                                        target_dp_offset: 53,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 53,
+                                        target_dp_offset: 56,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -1969,12 +1965,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 57,
+                                        target_dp_offset: 53,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 53,
+                                        target_dp_offset: 57,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -2219,13 +2215,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 37,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 37,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -2465,13 +2461,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 47,
-                                target_dp_offset: 46,
-                                source_amt_mult: 255,
+                                target_dp_offset: 42,
+                                source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 47,
-                                target_dp_offset: 42,
-                                source_amt_mult: 1,
+                                target_dp_offset: 46,
+                                source_amt_mult: 255,
                             },
                             ModData {
                                 kind: SetData {
@@ -2496,13 +2492,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 42,
-                                        target_dp_offset: 47,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 46,
+                                        source_amt_mult: 2,
                                     },
                                     CombineData {
                                         source_dp_offset: 42,
-                                        target_dp_offset: 46,
-                                        source_amt_mult: 2,
+                                        target_dp_offset: 47,
+                                        source_amt_mult: 1,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -3051,13 +3047,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -3248,13 +3244,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -3287,13 +3283,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -3438,13 +3434,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 48,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 48,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -3477,13 +3473,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 48,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 48,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -3803,12 +3799,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 54,
+                                                        target_dp_offset: 53,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 53,
+                                                        target_dp_offset: 54,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -3934,13 +3930,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 36,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 36,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -4462,13 +4458,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 46,
-                                                        target_dp_offset: 44,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 46,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 44,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -4692,13 +4688,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 44,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 44,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -5425,13 +5421,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -5698,13 +5694,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -5931,13 +5927,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 47,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 47,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -6125,12 +6121,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 57,
+                                        target_dp_offset: 54,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 54,
+                                        target_dp_offset: 57,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -6341,12 +6337,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 55,
+                                                        target_dp_offset: 53,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 53,
+                                                        target_dp_offset: 55,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -6472,13 +6468,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 37,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 37,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -8575,13 +8571,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 16,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 15,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 15,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 16,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -8756,13 +8752,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 16,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 15,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 15,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 16,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -9179,13 +9175,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
     },
 ]
 Killed 5 instructions by simulation.
-Step 1 did 37 changes.
+Step 1 did 39 changes.
 
 Swapped 5 commands total
 Collapse 3 consecutive pure commands total
 Killed 0 const loops!
 Removed useless set to 0; was already set to that
-Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [5: 32, 1: 26, 6: 10, 16: 15, 4: 65]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [1: 26, 4: 65, 5: 32, 6: 10, 16: 15]}, Elts: [
     ShiftLoop {
         known_to_be_nontrivial: false,
         cond_dp_offset: 16,
@@ -9223,10 +9219,8 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [16: 1]}
         amount: 9,
     },
 ]
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 7, dp_shift: -9 }
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 25, dp_shift: -9 }
-Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [0: 0, 28: 1]}, Elts: [
     Loop {
         known_to_be_nontrivial: false,
         cond_dp_offset: 34,
@@ -9379,17 +9373,17 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 26,
+                                target_dp_offset: 27,
+                                source_amt_mult: 1,
+                            },
+                            CombineData {
+                                source_dp_offset: 26,
                                 target_dp_offset: 30,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 26,
                                 target_dp_offset: 32,
-                                source_amt_mult: 1,
-                            },
-                            CombineData {
-                                source_dp_offset: 26,
-                                target_dp_offset: 27,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -9435,17 +9429,17 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 26,
+                                target_dp_offset: 28,
+                                source_amt_mult: 1,
+                            },
+                            CombineData {
+                                source_dp_offset: 26,
                                 target_dp_offset: 31,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 26,
                                 target_dp_offset: 33,
-                                source_amt_mult: 1,
-                            },
-                            CombineData {
-                                source_dp_offset: 26,
-                                target_dp_offset: 28,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -9487,12 +9481,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                 elements: [
                     CombineData {
                         source_dp_offset: 16,
-                        target_dp_offset: 23,
+                        target_dp_offset: 21,
                         source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 16,
-                        target_dp_offset: 21,
+                        target_dp_offset: 23,
                         source_amt_mult: 1,
                     },
                     ModData {
@@ -9693,12 +9687,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 25,
-                                                target_dp_offset: 29,
+                                                target_dp_offset: 27,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 25,
-                                                target_dp_offset: 27,
+                                                target_dp_offset: 29,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -10497,13 +10491,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                 elements: [
                     CombineData {
                         source_dp_offset: 36,
-                        target_dp_offset: 40,
-                        source_amt_mult: 255,
+                        target_dp_offset: 37,
+                        source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 36,
-                        target_dp_offset: 37,
-                        source_amt_mult: 1,
+                        target_dp_offset: 40,
+                        source_amt_mult: 255,
                     },
                     ModData {
                         kind: SetData {
@@ -10538,16 +10532,16 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
             IfNonZero {
                 cond_dp_offset: 43,
                 elements: [
-                    CombineData {
-                        source_dp_offset: 43,
-                        target_dp_offset: 47,
-                        source_amt_mult: 1,
-                    },
                     ModData {
                         kind: SetData {
                             amount: 0,
                         },
                         dp_offset: 45,
+                    },
+                    CombineData {
+                        source_dp_offset: 43,
+                        target_dp_offset: 47,
+                        source_amt_mult: 1,
                     },
                     ModData {
                         kind: SetData {
@@ -10699,12 +10693,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 56,
+                                        target_dp_offset: 53,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 53,
+                                        target_dp_offset: 56,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -11162,12 +11156,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 57,
+                                        target_dp_offset: 53,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 53,
+                                        target_dp_offset: 57,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -11412,13 +11406,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 37,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 37,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -11658,13 +11652,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 47,
-                                target_dp_offset: 46,
-                                source_amt_mult: 255,
+                                target_dp_offset: 42,
+                                source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 47,
-                                target_dp_offset: 42,
-                                source_amt_mult: 1,
+                                target_dp_offset: 46,
+                                source_amt_mult: 255,
                             },
                             ModData {
                                 kind: SetData {
@@ -11689,13 +11683,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 42,
-                                        target_dp_offset: 47,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 46,
+                                        source_amt_mult: 2,
                                     },
                                     CombineData {
                                         source_dp_offset: 42,
-                                        target_dp_offset: 46,
-                                        source_amt_mult: 2,
+                                        target_dp_offset: 47,
+                                        source_amt_mult: 1,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -12244,13 +12238,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -12441,13 +12435,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -12480,13 +12474,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -12631,13 +12625,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 48,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 48,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -12670,13 +12664,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 48,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 48,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -12996,12 +12990,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 54,
+                                                        target_dp_offset: 53,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 53,
+                                                        target_dp_offset: 54,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -13127,13 +13121,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 36,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 36,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -13655,13 +13649,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 46,
-                                                        target_dp_offset: 44,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 46,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 44,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -13885,13 +13879,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 44,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 44,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -14618,13 +14612,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -14891,13 +14885,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -15124,13 +15118,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 47,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 47,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -15318,12 +15312,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 57,
+                                        target_dp_offset: 54,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 54,
+                                        target_dp_offset: 57,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -15534,12 +15528,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 55,
+                                                        target_dp_offset: 53,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 53,
+                                                        target_dp_offset: 55,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -15665,13 +15659,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 37,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 37,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -17768,13 +17762,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 16,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 15,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 15,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 16,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -17949,13 +17943,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 16,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 15,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 15,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 16,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -18377,7 +18371,7 @@ Step 2 did 9 changes.
 Swapped 0 commands total
 Collapse 0 consecutive pure commands total
 Killed 0 const loops!
-Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [4: 65, 16: 15, 1: 26, 5: 32, 6: 10]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [1: 26, 4: 65, 5: 32, 6: 10, 16: 15]}, Elts: [
     ShiftLoop {
         known_to_be_nontrivial: false,
         cond_dp_offset: 16,
@@ -18415,10 +18409,8 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [16: 1]}
         amount: 9,
     },
 ]
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 7, dp_shift: -9 }
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 25, dp_shift: -9 }
-Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [0: 0, 28: 1]}, Elts: [
     Loop {
         known_to_be_nontrivial: false,
         cond_dp_offset: 34,
@@ -18571,17 +18563,17 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 26,
+                                target_dp_offset: 27,
+                                source_amt_mult: 1,
+                            },
+                            CombineData {
+                                source_dp_offset: 26,
                                 target_dp_offset: 30,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 26,
                                 target_dp_offset: 32,
-                                source_amt_mult: 1,
-                            },
-                            CombineData {
-                                source_dp_offset: 26,
-                                target_dp_offset: 27,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -18627,17 +18619,17 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 26,
+                                target_dp_offset: 28,
+                                source_amt_mult: 1,
+                            },
+                            CombineData {
+                                source_dp_offset: 26,
                                 target_dp_offset: 31,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 26,
                                 target_dp_offset: 33,
-                                source_amt_mult: 1,
-                            },
-                            CombineData {
-                                source_dp_offset: 26,
-                                target_dp_offset: 28,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -18679,12 +18671,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                 elements: [
                     CombineData {
                         source_dp_offset: 16,
-                        target_dp_offset: 23,
+                        target_dp_offset: 21,
                         source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 16,
-                        target_dp_offset: 21,
+                        target_dp_offset: 23,
                         source_amt_mult: 1,
                     },
                     ModData {
@@ -18885,12 +18877,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 25,
-                                                target_dp_offset: 29,
+                                                target_dp_offset: 27,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 25,
-                                                target_dp_offset: 27,
+                                                target_dp_offset: 29,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -19689,13 +19681,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                 elements: [
                     CombineData {
                         source_dp_offset: 36,
-                        target_dp_offset: 40,
-                        source_amt_mult: 255,
+                        target_dp_offset: 37,
+                        source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 36,
-                        target_dp_offset: 37,
-                        source_amt_mult: 1,
+                        target_dp_offset: 40,
+                        source_amt_mult: 255,
                     },
                     ModData {
                         kind: SetData {
@@ -19730,16 +19722,16 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
             IfNonZero {
                 cond_dp_offset: 43,
                 elements: [
-                    CombineData {
-                        source_dp_offset: 43,
-                        target_dp_offset: 47,
-                        source_amt_mult: 1,
-                    },
                     ModData {
                         kind: SetData {
                             amount: 0,
                         },
                         dp_offset: 45,
+                    },
+                    CombineData {
+                        source_dp_offset: 43,
+                        target_dp_offset: 47,
+                        source_amt_mult: 1,
                     },
                     ModData {
                         kind: SetData {
@@ -19891,12 +19883,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 56,
+                                        target_dp_offset: 53,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 53,
+                                        target_dp_offset: 56,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -20354,12 +20346,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 57,
+                                        target_dp_offset: 53,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 53,
+                                        target_dp_offset: 57,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -20604,13 +20596,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 37,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 37,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -20850,13 +20842,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                         elements: [
                             CombineData {
                                 source_dp_offset: 47,
-                                target_dp_offset: 46,
-                                source_amt_mult: 255,
+                                target_dp_offset: 42,
+                                source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 47,
-                                target_dp_offset: 42,
-                                source_amt_mult: 1,
+                                target_dp_offset: 46,
+                                source_amt_mult: 255,
                             },
                             ModData {
                                 kind: SetData {
@@ -20881,13 +20873,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 42,
-                                        target_dp_offset: 47,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 46,
+                                        source_amt_mult: 2,
                                     },
                                     CombineData {
                                         source_dp_offset: 42,
-                                        target_dp_offset: 46,
-                                        source_amt_mult: 2,
+                                        target_dp_offset: 47,
+                                        source_amt_mult: 1,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -21436,13 +21428,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -21633,13 +21625,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -21672,13 +21664,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -21823,13 +21815,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 48,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 48,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -21862,13 +21854,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 48,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 48,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -22188,12 +22180,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 54,
+                                                        target_dp_offset: 53,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 53,
+                                                        target_dp_offset: 54,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -22319,13 +22311,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 36,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 36,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -22847,13 +22839,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 46,
-                                                        target_dp_offset: 44,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 46,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 44,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -23077,13 +23069,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 44,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 44,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -23810,13 +23802,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 44,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -24083,13 +24075,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -24316,13 +24308,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 47,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 34,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 45,
-                                                        target_dp_offset: 34,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 47,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -24510,12 +24502,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 57,
+                                        target_dp_offset: 54,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 52,
-                                        target_dp_offset: 54,
+                                        target_dp_offset: 57,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -24726,12 +24718,12 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 55,
+                                                        target_dp_offset: 53,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 51,
-                                                        target_dp_offset: 53,
+                                                        target_dp_offset: 55,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -24857,13 +24849,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 42,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 37,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 43,
-                                                target_dp_offset: 37,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 42,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -26960,13 +26952,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 16,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 15,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 15,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 16,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -27141,13 +27133,13 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [28: 1]}
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 16,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 15,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 17,
-                                        target_dp_offset: 15,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 16,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -27876,17 +27868,17 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 26,
+                                        target_dp_offset: 27,
+                                        source_amt_mult: 1,
+                                    },
+                                    CombineData {
+                                        source_dp_offset: 26,
                                         target_dp_offset: 30,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 26,
                                         target_dp_offset: 32,
-                                        source_amt_mult: 1,
-                                    },
-                                    CombineData {
-                                        source_dp_offset: 26,
-                                        target_dp_offset: 27,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -27932,17 +27924,17 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 26,
+                                        target_dp_offset: 28,
+                                        source_amt_mult: 1,
+                                    },
+                                    CombineData {
+                                        source_dp_offset: 26,
                                         target_dp_offset: 31,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 26,
                                         target_dp_offset: 33,
-                                        source_amt_mult: 1,
-                                    },
-                                    CombineData {
-                                        source_dp_offset: 26,
-                                        target_dp_offset: 28,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -27984,12 +27976,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 16,
-                                target_dp_offset: 23,
+                                target_dp_offset: 21,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 16,
-                                target_dp_offset: 21,
+                                target_dp_offset: 23,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -28190,12 +28182,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 25,
-                                                        target_dp_offset: 29,
+                                                        target_dp_offset: 27,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 25,
-                                                        target_dp_offset: 27,
+                                                        target_dp_offset: 29,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -28994,13 +28986,13 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 36,
-                                target_dp_offset: 40,
-                                source_amt_mult: 255,
+                                target_dp_offset: 37,
+                                source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 36,
-                                target_dp_offset: 37,
-                                source_amt_mult: 1,
+                                target_dp_offset: 40,
+                                source_amt_mult: 255,
                             },
                             ModData {
                                 kind: SetData {
@@ -29035,16 +29027,16 @@ optimized AST [
                     IfNonZero {
                         cond_dp_offset: 43,
                         elements: [
-                            CombineData {
-                                source_dp_offset: 43,
-                                target_dp_offset: 47,
-                                source_amt_mult: 1,
-                            },
                             ModData {
                                 kind: SetData {
                                     amount: 0,
                                 },
                                 dp_offset: 45,
+                            },
+                            CombineData {
+                                source_dp_offset: 43,
+                                target_dp_offset: 47,
+                                source_amt_mult: 1,
                             },
                             ModData {
                                 kind: SetData {
@@ -29196,12 +29188,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 56,
+                                                target_dp_offset: 53,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 53,
+                                                target_dp_offset: 56,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -29659,12 +29651,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 57,
+                                                target_dp_offset: 53,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 53,
+                                                target_dp_offset: 57,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -29909,13 +29901,13 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 42,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 37,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 37,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 42,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -30155,13 +30147,13 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 47,
-                                        target_dp_offset: 46,
-                                        source_amt_mult: 255,
+                                        target_dp_offset: 42,
+                                        source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 47,
-                                        target_dp_offset: 42,
-                                        source_amt_mult: 1,
+                                        target_dp_offset: 46,
+                                        source_amt_mult: 255,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -30186,13 +30178,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 42,
-                                                target_dp_offset: 47,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 46,
+                                                source_amt_mult: 2,
                                             },
                                             CombineData {
                                                 source_dp_offset: 42,
-                                                target_dp_offset: 46,
-                                                source_amt_mult: 2,
+                                                target_dp_offset: 47,
+                                                source_amt_mult: 1,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -30741,13 +30733,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 48,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 48,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -30938,13 +30930,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 48,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 48,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -30977,13 +30969,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 48,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 48,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -31128,13 +31120,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -31167,13 +31159,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 48,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 48,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -31493,12 +31485,12 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 51,
-                                                                target_dp_offset: 54,
+                                                                target_dp_offset: 53,
                                                                 source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 51,
-                                                                target_dp_offset: 53,
+                                                                target_dp_offset: 54,
                                                                 source_amt_mult: 1,
                                                             },
                                                             ModData {
@@ -31624,13 +31616,13 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 42,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 36,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 36,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 42,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -32152,13 +32144,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 46,
-                                                                target_dp_offset: 44,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 46,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 44,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -32382,13 +32374,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 44,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 44,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -33115,13 +33107,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 47,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 47,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -33388,13 +33380,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 47,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 47,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -33621,13 +33613,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -33815,12 +33807,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 57,
+                                                target_dp_offset: 54,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 54,
+                                                target_dp_offset: 57,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -34031,12 +34023,12 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 51,
-                                                                target_dp_offset: 55,
+                                                                target_dp_offset: 53,
                                                                 source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 51,
-                                                                target_dp_offset: 53,
+                                                                target_dp_offset: 55,
                                                                 source_amt_mult: 1,
                                                             },
                                                             ModData {
@@ -34162,13 +34154,13 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 42,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 37,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 37,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 42,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -36265,13 +36257,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 16,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 15,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 15,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 16,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -36446,13 +36438,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 16,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 15,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 15,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 16,
+                                                source_amt_mult: 255,
                                             },
                                             ModData {
                                                 kind: SetData {

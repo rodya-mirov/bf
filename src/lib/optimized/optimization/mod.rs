@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use crate::optimized::DatamodKind;
 
 use super::AST;
+use crate::optimized::optimization::data_usage::{DataUsage, DataUsageTracker};
 
 pub(crate) fn optimize(cmds: &mut Vec<AST>) {
     let mut step = 0;
@@ -38,6 +39,7 @@ fn opt_step(cmds: &mut Vec<AST>) -> usize {
 
 mod sim_state {
     use std::collections::HashMap;
+    use std::fmt;
 
     #[derive(Copy, Clone, Eq, PartialEq)]
     pub enum DataState {
@@ -45,8 +47,8 @@ mod sim_state {
         Known(u8),
     }
 
-    impl std::fmt::Debug for DataState {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    impl fmt::Debug for DataState {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             match self {
                 DataState::Unknown => write!(f, "?"),
                 DataState::Known(v) => write!(f, "{}", v),
@@ -91,20 +93,21 @@ mod sim_state {
         }
     }
 
-    impl std::fmt::Debug for SimState {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    impl fmt::Debug for SimState {
+        fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             write!(f, "{{ default: {:?}, dp: {}, [", self.def_value, self.dp)?;
 
             let mut first = true;
-            for (k, v) in self.data.iter() {
-                if *v != self.def_value {
-                    if first {
-                        first = false;
-                    } else {
-                        write!(f, ", ")?;
-                    }
-                    write!(f, "{}: {:?}", k, &v)?;
+            let mut to_write = self.data.iter().filter(|(_k, v)| **v != self.def_value).collect::<Vec<_>>();
+            to_write.sort_by_key(|(k, _)| **k);
+
+            for (k, v) in to_write {
+                if first {
+                    first = false;
+                } else {
+                    write!(f, ", ")?;
                 }
+                write!(f, "{}: {:?}", k, &v)?;
             }
 
             write!(f, "]}}")
@@ -130,8 +133,18 @@ fn run_simulation(cmds: &mut Vec<AST>) -> usize {
             AST::IfNonZero { cond_dp_offset, elements } => {
                 match state.get_data(cond_dp_offset) {
                     DataState::Unknown => {
-                        cmds.push(AST::IfNonZero { cond_dp_offset, elements });
-                        state.clear_knowledge();
+                        let cmd = AST::IfNonZero { cond_dp_offset, elements };
+                        let usage = track_usage(&cmd);
+                        cmds.push(cmd);
+
+                        match usage {
+                            DataUsage::DataTracked { dp_shift: 0, data_mods } => {
+                                for m in data_mods {
+                                    state.set_data(m, DataState::Unknown);
+                                }
+                            }
+                            _ => state.clear_knowledge(),
+                        }
                     }
                     DataState::Known(val) => {
                         if val != 0 {
@@ -162,12 +175,15 @@ fn run_simulation(cmds: &mut Vec<AST>) -> usize {
             AST::Loop {
                 cond_dp_offset,
                 elements,
-                known_to_be_nontrivial,
+                mut known_to_be_nontrivial,
             } => {
+                let keep_loop: bool;
+
                 match state.get_data(cond_dp_offset) {
                     DataState::Known(0) => {
                         println!("Eliminated loop (not executed)");
                         removed += 1;
+                        keep_loop = false;
                     }
                     DataState::Known(_other) => {
                         if known_to_be_nontrivial {
@@ -175,25 +191,35 @@ fn run_simulation(cmds: &mut Vec<AST>) -> usize {
                                 "Gave up on a loop, it already had the hint. State: {:?}, Elts: {:#?}",
                                 state, elements
                             );
+                            keep_loop = true;
                         } else {
                             println!("Gave up on a loop, but emitted a 'will be executed' hint");
                             // not really removed, but at least simplified / improved?
+                            keep_loop = true;
+                            known_to_be_nontrivial = true;
                             removed += 1;
                         }
-                        cmds.push(AST::Loop {
-                            elements,
-                            cond_dp_offset,
-                            known_to_be_nontrivial: true,
-                        });
-                        state.clear_knowledge();
                     }
                     DataState::Unknown => {
                         println!("Gave up on a loop, no hint could be emitted anyway");
-                        cmds.push(AST::Loop {
-                            elements,
-                            known_to_be_nontrivial,
-                            cond_dp_offset,
-                        });
+                        keep_loop = true;
+                    }
+                }
+
+                if keep_loop {
+                    let cmd = AST::Loop {
+                        known_to_be_nontrivial,
+                        elements,
+                        cond_dp_offset,
+                    };
+                    let usage = track_usage(&cmd);
+                    cmds.push(cmd);
+
+                    if let DataUsage::DataTracked { dp_shift: 0, data_mods } = usage {
+                        for m in data_mods {
+                            state.set_data(m, DataState::Unknown);
+                        }
+                    } else {
                         state.clear_knowledge();
                     }
                 }
@@ -760,6 +786,10 @@ fn sort_commands(cmds: &mut [AST]) -> usize {
             ref mut elements,
             cond_dp_offset: _,
             known_to_be_nontrivial: _,
+        }
+        | AST::IfNonZero {
+            ref mut elements,
+            cond_dp_offset: _,
         } = cmd
         {
             sort_commands(elements);
@@ -944,4 +974,131 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
             // It's fine, it's done
         }
     }
+}
+
+mod data_usage {
+    use std::collections::HashSet;
+
+    pub struct DataUsageTracker(DataUsage);
+
+    pub enum DataUsage {
+        // Data pointer was lost, usually due to control flow confusion, so
+        // no detailed results can be shown. Note that infinite loops / OOBs
+        // don't "use data" or "lose dp"
+        DpLost,
+        DataTracked { dp_shift: isize, data_mods: HashSet<isize> },
+    }
+
+    impl DataUsageTracker {
+        pub fn new() -> Self {
+            DataUsageTracker(DataUsage::DataTracked {
+                dp_shift: 0,
+                data_mods: HashSet::new(),
+            })
+        }
+
+        pub fn shift(&mut self, shift_amount: isize) {
+            match &mut self.0 {
+                DataUsage::DpLost => {}
+                DataUsage::DataTracked {
+                    ref mut dp_shift,
+                    ref mut data_mods,
+                } => {
+                    *dp_shift += shift_amount;
+                    *data_mods = data_mods.iter().map(|dp| dp + shift_amount).collect()
+                }
+            }
+        }
+
+        pub fn complete(self) -> DataUsage {
+            self.0
+        }
+
+        // This is data (potentially) modified
+        pub fn data_used(&mut self, dp_offset: isize) {
+            match &mut self.0 {
+                DataUsage::DpLost => {}
+                DataUsage::DataTracked {
+                    dp_shift: _,
+                    ref mut data_mods,
+                } => {
+                    data_mods.insert(dp_offset);
+                }
+            }
+        }
+
+        pub fn lose_dp(&mut self) {
+            self.0 = DataUsage::DpLost;
+        }
+    }
+}
+
+fn track_usage(cmd: &AST) -> DataUsage {
+    fn track_usage_step(cmd: &AST, tracker: &mut DataUsageTracker) {
+        match cmd {
+            // For a loop or a branch; if there is no net dp shift inside
+            // we can just say "well we altered these data points and that's all"
+            AST::Loop {
+                known_to_be_nontrivial: _,
+                cond_dp_offset,
+                ref elements,
+            }
+            | AST::IfNonZero {
+                cond_dp_offset,
+                ref elements,
+            } => {
+                tracker.data_used(*cond_dp_offset);
+
+                let mut inside_tracker = DataUsageTracker::new();
+                for elt in elements {
+                    track_usage_step(elt, &mut inside_tracker);
+                }
+
+                match inside_tracker.complete() {
+                    DataUsage::DpLost => {
+                        tracker.lose_dp();
+                    }
+                    DataUsage::DataTracked { dp_shift, data_mods } => {
+                        if dp_shift != 0 {
+                            tracker.lose_dp();
+                        }
+
+                        for dm in data_mods {
+                            tracker.data_used(dm);
+                        }
+                    }
+                }
+            }
+            AST::ShiftLoop { .. } => {
+                tracker.lose_dp();
+            }
+            AST::ShiftDataPtr { amount } => {
+                tracker.shift(*amount);
+            }
+            AST::ModData { kind: _, dp_offset } => {
+                tracker.data_used(*dp_offset);
+            }
+            AST::CombineData {
+                source_dp_offset: _,
+                target_dp_offset,
+                source_amt_mult: _,
+            } => {
+                tracker.data_used(*target_dp_offset);
+            }
+            AST::ReadByte { dp_offset } => {
+                tracker.data_used(*dp_offset);
+            }
+            AST::WriteByte { dp_offset } => {
+                tracker.data_used(*dp_offset);
+            }
+            AST::InfiniteLoop => {}
+            AST::WriteConst { .. } => {}
+        }
+    }
+
+    let mut tracker = DataUsageTracker::new();
+
+    track_usage_step(cmd, &mut tracker);
+
+    tracker.complete()
 }

@@ -35,10 +35,10 @@ Available optimizations:
             nonzero at the first point which can do some loop hinting
             and if-branch collapsing
     
-    [ ] If we can't collapse a loop, but it's dp-neutral, just 
+    [x] If we can't collapse a loop, but it's dp-neutral, just 
         "unknown" out every datapoint it touches and continue on
         
-    [ ] If we can't collapse a loop, and it's not dp-neutral, just
+    [x] If we can't collapse a loop, and it's not dp-neutral, just
         "unknown" out everything, and continue on
     
     [x] Following a loop, we can assume the cond_dp is zero

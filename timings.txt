@@ -1,6 +1,6 @@
 
-( ./target/release/bf_interpreter ./input/mandelbrot.b opt > ; )  5.98s user 0.09s system 97% cpu 6.251 total
-( ./target/release/bf_interpreter ./input/hanoi.b opt > out.hanoi.txt; )  0.31s user 0.24s system 99% cpu 0.546 total
-( ./target/release/bf_interpreter ./input/long.b opt > out.long.txt; )  1.58s user 0.01s system 99% cpu 1.585 total
-( ./target/release/bf_interpreter ./input/quine.b opt > out.quine.txt; )  0.00s user 0.00s system 35% cpu 0.018 total
-( echo 13333333333337 | ./target/release/bf_interpreter ./input/factor.b opt )  3.54s user 0.01s system 99% cpu 3.553 total
+( ./target/release/bf_interpreter ./input/mandelbrot.b opt > ; )  5.86s user 0.09s system 96% cpu 6.136 total
+( ./target/release/bf_interpreter ./input/hanoi.b opt > out.hanoi.txt; )  0.31s user 0.23s system 99% cpu 0.542 total
+( ./target/release/bf_interpreter ./input/long.b opt > out.long.txt; )  1.53s user 0.01s system 99% cpu 1.548 total
+( ./target/release/bf_interpreter ./input/quine.b opt > out.quine.txt; )  0.00s user 0.00s system 47% cpu 0.015 total
+( echo 13333333333337 | ./target/release/bf_interpreter ./input/factor.b opt )  3.50s user 0.01s system 99% cpu 3.514 total

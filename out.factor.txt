@@ -6,7 +6,6 @@ Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, but emitted a 'will be executed' hint
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 40, dp_shift: 10 }
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, but emitted a 'will be executed' hint
 Killed 6 instructions by simulation.
@@ -85,7 +84,6 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255
     },
 ]
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 40, dp_shift: 10 }
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255]}, Elts: [
     ModData {
@@ -177,7 +175,6 @@ Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255
     },
 ]
 Gave up on a loop, no hint could be emitted anyway
-Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 40, dp_shift: 10 }
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255]}, Elts: [
     ModData {
@@ -2660,12 +2657,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 43,
-                                target_dp_offset: 48,
+                                target_dp_offset: 47,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 43,
-                                target_dp_offset: 47,
+                                target_dp_offset: 48,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -2921,16 +2918,16 @@ optimized AST [
                                                                                                 cond_dp_offset: 38,
                                                                                                 elements: [
                                                                                                     ModData {
-                                                                                                        kind: AddData {
-                                                                                                            amount: 1,
-                                                                                                        },
-                                                                                                        dp_offset: 39,
-                                                                                                    },
-                                                                                                    ModData {
                                                                                                         kind: SetData {
                                                                                                             amount: 0,
                                                                                                         },
                                                                                                         dp_offset: 38,
+                                                                                                    },
+                                                                                                    ModData {
+                                                                                                        kind: AddData {
+                                                                                                            amount: 1,
+                                                                                                        },
+                                                                                                        dp_offset: 39,
                                                                                                     },
                                                                                                 ],
                                                                                             },
