@@ -2,13 +2,20 @@ Swapped 6076 commands total
 Collapse 3011 consecutive pure commands total
 Killed 82 const loops!
 Gave up on a loop, but emitted a 'will be executed' hint
-Killed 1 instructions by simulation.
-Step 0 did 9170 changes.
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, but emitted a 'will be executed' hint
+Gave up on a loop, no hint could be emitted anyway
+Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 40, dp_shift: 10 }
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, but emitted a 'will be executed' hint
+Killed 6 instructions by simulation.
+Step 0 did 9175 changes.
 
 Swapped 0 commands total
 Collapse 2 consecutive pure commands total
 Killed 0 const loops!
-Gave up on a loop, it already had the hint. State: { dp: 0, [21: 1, 30: 255]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [21: 1, 30: 255]}, Elts: [
     ModData {
         kind: AddData {
             amount: 255,
@@ -55,13 +62,52 @@ Gave up on a loop, it already had the hint. State: { dp: 0, [21: 1, 30: 255]}, E
         dp_offset: 21,
     },
 ]
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255]}, Elts: [
+    ModData {
+        kind: AddData {
+            amount: 48,
+        },
+        dp_offset: 31,
+    },
+    WriteByte {
+        dp_offset: 31,
+    },
+    ModData {
+        kind: AddData {
+            amount: 208,
+        },
+        dp_offset: 31,
+    },
+    ShiftDataPtr {
+        amount: -10,
+    },
+]
+Gave up on a loop, no hint could be emitted anyway
+Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 40, dp_shift: 10 }
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255]}, Elts: [
+    ModData {
+        kind: AddData {
+            amount: 48,
+        },
+        dp_offset: 31,
+    },
+    WriteByte {
+        dp_offset: 31,
+    },
+    ShiftDataPtr {
+        amount: -10,
+    },
+]
 Killed 0 instructions by simulation.
 Step 1 did 2 changes.
 
 Swapped 0 commands total
 Collapse 0 consecutive pure commands total
 Killed 0 const loops!
-Gave up on a loop, it already had the hint. State: { dp: 0, [21: 1, 30: 255]}, Elts: [
+Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [21: 1, 30: 255]}, Elts: [
     ModData {
         kind: AddData {
             amount: 255,
@@ -106,6 +152,45 @@ Gave up on a loop, it already had the hint. State: { dp: 0, [21: 1, 30: 255]}, E
             amount: 246,
         },
         dp_offset: 21,
+    },
+]
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255]}, Elts: [
+    ModData {
+        kind: AddData {
+            amount: 48,
+        },
+        dp_offset: 31,
+    },
+    WriteByte {
+        dp_offset: 31,
+    },
+    ModData {
+        kind: AddData {
+            amount: 208,
+        },
+        dp_offset: 31,
+    },
+    ShiftDataPtr {
+        amount: -10,
+    },
+]
+Gave up on a loop, no hint could be emitted anyway
+Gave up on ShiftLoop { known_to_be_nontrivial: false, cond_dp_offset: 40, dp_shift: 10 }
+Gave up on a loop, no hint could be emitted anyway
+Gave up on a loop, it already had the hint. State: { default: ?, dp: 0, [30: 255]}, Elts: [
+    ModData {
+        kind: AddData {
+            amount: 48,
+        },
+        dp_offset: 31,
+    },
+    WriteByte {
+        dp_offset: 31,
+    },
+    ShiftDataPtr {
+        amount: -10,
     },
 ]
 Killed 0 instructions by simulation.
@@ -233,13 +318,13 @@ optimized AST [
         ],
     },
     ModData {
-        kind: AddData {
+        kind: SetData {
             amount: 255,
         },
         dp_offset: 30,
     },
     Loop {
-        known_to_be_nontrivial: false,
+        known_to_be_nontrivial: true,
         cond_dp_offset: 30,
         elements: [
             ModData {
@@ -263,22 +348,22 @@ optimized AST [
         ],
     },
     ModData {
-        kind: AddData {
+        kind: SetData {
             amount: 58,
         },
         dp_offset: 30,
     },
-    WriteByte {
-        dp_offset: 30,
+    WriteConst {
+        out: 58,
     },
     ModData {
-        kind: AddData {
-            amount: 230,
+        kind: SetData {
+            amount: 32,
         },
         dp_offset: 30,
     },
-    WriteByte {
-        dp_offset: 30,
+    WriteConst {
+        out: 32,
     },
     ModData {
         kind: SetData {
@@ -1312,12 +1397,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 44,
-                                        target_dp_offset: 48,
+                                        target_dp_offset: 47,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 44,
-                                        target_dp_offset: 47,
+                                        target_dp_offset: 48,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -1358,12 +1443,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 35,
-                                        target_dp_offset: 39,
+                                        target_dp_offset: 38,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 35,
-                                        target_dp_offset: 38,
+                                        target_dp_offset: 39,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -2575,12 +2660,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 43,
-                                target_dp_offset: 47,
+                                target_dp_offset: 48,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 43,
-                                target_dp_offset: 48,
+                                target_dp_offset: 47,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -2621,12 +2706,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 32,
-                                target_dp_offset: 39,
+                                target_dp_offset: 37,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 32,
-                                target_dp_offset: 37,
+                                target_dp_offset: 39,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -3362,13 +3447,13 @@ optimized AST [
         ],
     },
     ModData {
-        kind: AddData {
+        kind: SetData {
             amount: 255,
         },
         dp_offset: 30,
     },
     Loop {
-        known_to_be_nontrivial: false,
+        known_to_be_nontrivial: true,
         cond_dp_offset: 30,
         elements: [
             ModData {
@@ -3386,13 +3471,13 @@ optimized AST [
         ],
     },
     ModData {
-        kind: AddData {
+        kind: SetData {
             amount: 10,
         },
         dp_offset: 30,
     },
-    WriteByte {
-        dp_offset: 30,
+    WriteConst {
+        out: 10,
     },
     ShiftDataPtr {
         amount: 30,

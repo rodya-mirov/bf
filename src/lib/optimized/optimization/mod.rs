@@ -30,21 +30,17 @@ fn opt_step(cmds: &mut Vec<AST>) -> usize {
     let deloop = const_loop_remove(cmds);
     println!("Killed {} const loops!", deloop);
 
-    let simulate_removal = eval_const(cmds);
+    let simulate_removal = run_simulation(cmds);
     println!("Killed {} instructions by simulation.", simulate_removal);
 
     swap + coll + deloop + simulate_removal
 }
 
-// Do a one-pass simulation to see if we can use const analysis to eliminate branches, etc.
-// This is NOT gonna just be a "run the thing at compile time" situation because I consider that
-// cheating; this will be an O(n) operation where n is cmds.len(); we just sweep through and anything
-// we can sort of determine in advance, we collapse
-fn eval_const(cmds: &mut Vec<AST>) -> usize {
-    let mut removed = 0; // or simplified, or whatever
+mod sim_state {
+    use std::collections::HashMap;
 
     #[derive(Copy, Clone, Eq, PartialEq)]
-    enum DataState {
+    pub enum DataState {
         Unknown, // result of ReadByte, or any static analysis we simply do not wish to do
         Known(u8),
     }
@@ -58,67 +54,84 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
         }
     }
 
-    struct SimState {
+    pub struct SimState {
+        data: HashMap<isize, DataState>,
+        def_value: DataState,
         dp: isize,
-        data: [DataState; 30_000],
     }
 
     impl SimState {
-        fn get_data(&self, ind: isize) -> DataState {
-            self.data[ind as usize]
+        pub fn new(def_value: DataState) -> Self {
+            SimState {
+                data: HashMap::new(),
+                def_value,
+                dp: 0,
+            }
         }
 
-        fn set_data(&mut self, ind: isize, val: DataState) {
-            self.data[ind as usize] = val;
+        pub fn get_data(&self, ind: isize) -> DataState {
+            let ind = self.dp + ind;
+            self.data.get(&ind).copied().unwrap_or(self.def_value)
+        }
+
+        pub fn set_data(&mut self, ind: isize, val: DataState) {
+            let ind = self.dp + ind;
+            self.data.insert(ind, val);
+        }
+
+        pub fn shift_ptr(&mut self, shift: isize) {
+            self.dp += shift;
+        }
+
+        pub fn clear_knowledge(&mut self) {
+            self.data.clear();
+            // Everything is relative anyway; dp is only maintained to address into the known datastores
+            self.dp = 0;
+            self.def_value = DataState::Unknown;
         }
     }
 
     impl std::fmt::Debug for SimState {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-            write!(f, "{{ dp: {}, [", self.dp)?;
+            write!(f, "{{ default: {:?}, dp: {}, [", self.def_value, self.dp)?;
 
             let mut first = true;
-            for i in 0..self.data.len() {
-                let v = self.data[i];
-                if v != DataState::Known(0) {
+            for (k, v) in self.data.iter() {
+                if *v != self.def_value {
                     if first {
                         first = false;
                     } else {
                         write!(f, ", ")?;
                     }
-                    write!(f, "{}: {:?}", i, &v)?;
+                    write!(f, "{}: {:?}", k, &v)?;
                 }
             }
 
             write!(f, "]}}")
         }
     }
+}
 
-    let mut state = SimState {
-        dp: 0,
-        data: [DataState::Known(0); 30_000],
-    };
+// Do a one-pass simulation to see if we can use const analysis to eliminate branches, etc.
+// This is NOT gonna just be a "run the thing at compile time" situation because I consider that
+// cheating; this will be an O(n) operation where n is cmds.len(); we just sweep through and anything
+// we can sort of determine in advance, we collapse
+fn run_simulation(cmds: &mut Vec<AST>) -> usize {
+    use sim_state::{DataState, SimState};
+
+    let mut removed = 0; // or simplified, or whatever
+
+    let mut state = SimState::new(DataState::Known(0));
 
     let old = std::mem::replace(cmds, Vec::new());
 
-    // We can "lose track" of the simulation any time we want; this will just mindlessly copy
-    // the rest of the commands into the buffer and stop
-    let mut lost_track = false;
-
     for cmd in old {
-        if lost_track {
-            cmds.push(cmd);
-            continue;
-        }
-
-        // println!("Simulating {:?}", cmd);
-
         match cmd {
             AST::IfNonZero { cond_dp_offset, elements } => {
-                match state.get_data(state.dp + cond_dp_offset) {
+                match state.get_data(cond_dp_offset) {
                     DataState::Unknown => {
                         cmds.push(AST::IfNonZero { cond_dp_offset, elements });
-                        lost_track = true;
+                        state.clear_knowledge();
                     }
                     DataState::Known(val) => {
                         if val != 0 {
@@ -127,7 +140,7 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                             for elt in elements {
                                 cmds.push(elt);
                             }
-                            lost_track = true;
+                            state.clear_knowledge();
                         } else {
                             println!("Eliminated branch {:?} (not executed)", elements);
                         }
@@ -138,53 +151,61 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                 }
             }
             AST::ShiftDataPtr { amount } => {
-                state.dp += amount;
+                state.shift_ptr(amount);
                 cmds.push(cmd);
+            }
+            AST::ShiftLoop { .. } => {
+                cmds.push(cmd);
+                state.clear_knowledge();
+                state.set_data(0, DataState::Known(0));
             }
             AST::Loop {
                 cond_dp_offset,
                 elements,
                 known_to_be_nontrivial,
-            } => match state.get_data(state.dp + cond_dp_offset) {
-                DataState::Known(0) => {
-                    println!("Eliminated loop (not executed)");
-                    removed += 1;
-                }
-                DataState::Known(_other) => {
-                    if known_to_be_nontrivial {
-                        println!(
-                            "Gave up on a loop, it already had the hint. State: {:?}, Elts: {:#?}",
-                            state, elements
-                        );
-                    } else {
-                        println!("Gave up on a loop, but emitted a 'will be executed' hint");
-                        // not really removed, but at least simplified / improved?
+            } => {
+                match state.get_data(cond_dp_offset) {
+                    DataState::Known(0) => {
+                        println!("Eliminated loop (not executed)");
                         removed += 1;
                     }
-                    cmds.push(AST::Loop {
-                        elements,
-                        cond_dp_offset,
-                        known_to_be_nontrivial: true,
-                    });
-                    lost_track = true;
+                    DataState::Known(_other) => {
+                        if known_to_be_nontrivial {
+                            println!(
+                                "Gave up on a loop, it already had the hint. State: {:?}, Elts: {:#?}",
+                                state, elements
+                            );
+                        } else {
+                            println!("Gave up on a loop, but emitted a 'will be executed' hint");
+                            // not really removed, but at least simplified / improved?
+                            removed += 1;
+                        }
+                        cmds.push(AST::Loop {
+                            elements,
+                            cond_dp_offset,
+                            known_to_be_nontrivial: true,
+                        });
+                        state.clear_knowledge();
+                    }
+                    DataState::Unknown => {
+                        println!("Gave up on a loop, no hint could be emitted anyway");
+                        cmds.push(AST::Loop {
+                            elements,
+                            known_to_be_nontrivial,
+                            cond_dp_offset,
+                        });
+                        state.clear_knowledge();
+                    }
                 }
-                DataState::Unknown => {
-                    println!("Gave up on a loop, no hint could be emitted anyway");
-                    cmds.push(AST::Loop {
-                        elements,
-                        known_to_be_nontrivial,
-                        cond_dp_offset,
-                    });
-                    lost_track = true;
-                }
-            },
+                state.set_data(cond_dp_offset, DataState::Known(0));
+            }
             AST::ReadByte { dp_offset } => {
-                state.set_data(state.dp + dp_offset, DataState::Unknown);
+                state.set_data(dp_offset, DataState::Unknown);
                 cmds.push(AST::ReadByte { dp_offset });
             }
             AST::WriteByte { dp_offset } => {
                 // Note -- we could actually constant-ize these things, if the data is known in advance
-                match state.get_data(state.dp + dp_offset) {
+                match state.get_data(dp_offset) {
                     DataState::Unknown => {
                         cmds.push(AST::WriteByte { dp_offset });
                     }
@@ -202,8 +223,8 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                 target_dp_offset,
                 source_amt_mult,
             } => {
-                let start_data = state.get_data(state.dp + source_dp_offset);
-                let end_data = state.get_data(state.dp + target_dp_offset);
+                let start_data = state.get_data(source_dp_offset);
+                let end_data = state.get_data(target_dp_offset);
 
                 if source_amt_mult != 0 {
                     let end_state = match end_data {
@@ -214,9 +235,10 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                         },
                     };
 
-                    state.set_data(state.dp + target_dp_offset, end_state);
+                    state.set_data(target_dp_offset, end_state);
 
                     match end_state {
+                        // If we know the end, obviously set is best
                         DataState::Known(amount) => {
                             removed += 1;
                             println!("Constant-ized a combine data!");
@@ -225,12 +247,23 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                                 dp_offset: target_dp_offset,
                             });
                         }
+                        // TODO perf: is there an advtange to having a new command, like A = (const) + B * C ? instead of A += B * C ?
                         DataState::Unknown => {
-                            cmds.push(AST::CombineData {
-                                source_dp_offset,
-                                target_dp_offset,
-                                source_amt_mult,
-                            });
+                            // If we know the start, that's still good
+                            if let DataState::Known(a) = start_data {
+                                cmds.push(AST::ModData {
+                                    kind: DatamodKind::AddData {
+                                        amount: u8::wrapping_mul(a, source_amt_mult),
+                                    },
+                                    dp_offset: target_dp_offset,
+                                });
+                            } else {
+                                cmds.push(AST::CombineData {
+                                    source_dp_offset,
+                                    target_dp_offset,
+                                    source_amt_mult,
+                                });
+                            }
                         }
                     }
                 } else {
@@ -243,14 +276,14 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
             AST::ModData { kind, dp_offset } => {
                 match kind {
                     DatamodKind::SetData { amount } => {
-                        match state.get_data(state.dp + dp_offset) {
+                        match state.get_data(dp_offset) {
                             DataState::Known(x) if x == amount => {
                                 // no-op, it was already this
                                 println!("Removed useless set to {}; was already set to that", x);
                                 removed += 1;
                             }
                             _ => {
-                                state.set_data(state.dp + dp_offset, DataState::Known(amount));
+                                state.set_data(dp_offset, DataState::Known(amount));
                                 // this is already about as optimized as you can get?
                                 cmds.push(AST::ModData {
                                     kind: DatamodKind::SetData { amount },
@@ -259,7 +292,7 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                             }
                         }
                     }
-                    DatamodKind::AddData { amount } => match state.get_data(state.dp + dp_offset) {
+                    DatamodKind::AddData { amount } => match state.get_data(dp_offset) {
                         DataState::Unknown => {
                             cmds.push(AST::ModData {
                                 kind: DatamodKind::AddData { amount },
@@ -268,7 +301,7 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                         }
                         DataState::Known(old) => {
                             let new_val = u8::wrapping_add(old, amount);
-                            state.set_data(state.dp + dp_offset, DataState::Known(new_val));
+                            state.set_data(dp_offset, DataState::Known(new_val));
                             cmds.push(AST::ModData {
                                 kind: DatamodKind::SetData { amount: new_val },
                                 dp_offset,
@@ -278,7 +311,7 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                 }
             }
             _ => {
-                lost_track = true;
+                state.clear_knowledge();
                 println!("Gave up on {:?}", cmd);
                 cmds.push(cmd);
             }
