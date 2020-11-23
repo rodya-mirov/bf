@@ -23,7 +23,9 @@ impl SimpleVM {
     }
 
     pub(crate) fn run<I: Input, O: Output>(mut self, input: &mut I, output: &mut O) -> Result<(), Box<dyn Error>> {
+        let mut total_instructions = 0;
         while self.ip < self.instr.len() {
+            total_instructions += 1;
             match self.instr.get_mut(self.ip).unwrap() {
                 BfInstr::LoopEnd { start_ip, .. } => {
                     if self.data[self.dp] != 0 {
@@ -67,6 +69,8 @@ impl SimpleVM {
                 }
             }
         }
+
+        println!("Executing took {} instructions", total_instructions);
 
         Ok(())
     }

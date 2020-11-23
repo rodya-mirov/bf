@@ -194,7 +194,9 @@ fn eval_const(cmds: &mut Vec<AST>) -> usize {
                     }
                 }
             }
-            AST::WriteConst { .. } => {}
+            AST::WriteConst { .. } => {
+                cmds.push(cmd);
+            }
             AST::CombineData {
                 source_dp_offset,
                 target_dp_offset,
@@ -291,8 +293,12 @@ fn collapse_kinds(a: DatamodKind, b: DatamodKind) -> DatamodKind {
     match b {
         DatamodKind::SetData { amount } => DatamodKind::SetData { amount },
         DatamodKind::AddData { amount: b_amt } => match a {
-            DatamodKind::SetData { amount } => DatamodKind::SetData { amount: amount + b_amt },
-            DatamodKind::AddData { amount } => DatamodKind::AddData { amount: amount + b_amt },
+            DatamodKind::SetData { amount } => DatamodKind::SetData {
+                amount: u8::wrapping_add(amount, b_amt),
+            },
+            DatamodKind::AddData { amount } => DatamodKind::AddData {
+                amount: u8::wrapping_add(amount, b_amt),
+            },
         },
     }
 }
@@ -403,7 +409,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                     }
 
                     if offsets.len() == 1 {
-                        // TODO: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
+                        // TODO BUG: this is actually wrong; it should be "if the 2-ness of offsets[0] is <= the 2-ness of S, set 0; else inf loop"
                         // this won't actually detect an infinite loop, sadly
 
                         // Note we don't need the hint to eliminate the branch -- we know the offset
@@ -419,37 +425,86 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
 
                         // in this case it literally just iterates exactly data[dp] times, so it's really easy
                         // this seems like a weird special case but it's really common
-                        if zero_offset == (DatamodKind::AddData { amount: u8::max_value() }) {
-                            let mut loop_adds = Vec::new();
-                            for (target_dp_offset, kind) in offsets {
-                                match kind {
-                                    DatamodKind::AddData { amount: source_amt_mult } => {
-                                        loop_adds.push(AST::CombineData {
-                                            source_dp_offset: cond_dp_offset,
-                                            target_dp_offset,
-                                            source_amt_mult,
-                                        });
+                        if let DatamodKind::AddData { amount } = zero_offset {
+                            if amount != 1 && amount != u8::max_value() {
+                                // I mean this literally never happens in my benchmark???
+                                println!(
+                                    "Found a const loop with offsets {:?}, zero offset {:?}, which should be solvable, but which I could not kill",
+                                    offsets, zero_offset
+                                );
+                                cmds.push(cmd);
+                            } else {
+                                // Tthe number of loop repetitions is the value of zero, times this number
+                                let reps_mult = {
+                                    if amount == u8::max_value() {
+                                        1
+                                    } else if amount == 1 {
+                                        u8::max_value()
+                                    } else {
+                                        unreachable!()
                                     }
-                                    // Disappointingly never seems to happen?
-                                    DatamodKind::SetData { amount: target_set_amt } => {
-                                        loop_adds.push(AST::ModData {
-                                            kind: DatamodKind::SetData { amount: target_set_amt },
-                                            dp_offset: target_dp_offset,
-                                        });
+                                };
+
+                                let mut loop_adds = Vec::new();
+                                for (target_dp_offset, kind) in offsets {
+                                    match kind {
+                                        DatamodKind::AddData { amount: base_amt_mult } => {
+                                            loop_adds.push(AST::CombineData {
+                                                source_dp_offset: cond_dp_offset,
+                                                target_dp_offset,
+                                                // Each repetition adds base_amt_mult to the target
+                                                // We repeat this operation resp_mult * source_data times
+                                                // So equivalently target_data += base_amt_mult * source_data * reps_mult
+                                                // This is only confusing because everything has overflow, but modular + and * work so it's fine
+                                                source_amt_mult: u8::wrapping_mul(reps_mult, base_amt_mult),
+                                            });
+                                        }
+                                        // Disappointingly never seems to happen?
+                                        DatamodKind::SetData { amount: target_set_amt } => {
+                                            loop_adds.push(AST::ModData {
+                                                kind: DatamodKind::SetData { amount: target_set_amt },
+                                                dp_offset: target_dp_offset,
+                                            });
+                                        }
                                     }
+                                }
+                                loop_adds.push(AST::ModData {
+                                    kind: DatamodKind::SetData { amount: 0 },
+                                    dp_offset: cond_dp_offset,
+                                });
+
+                                total_removed += 1;
+
+                                if known_to_be_nontrivial {
+                                    for inner in loop_adds {
+                                        cmds.push(inner);
+                                    }
+                                } else {
+                                    cmds.push(AST::IfNonZero {
+                                        cond_dp_offset,
+                                        elements: loop_adds,
+                                    });
                                 }
                             }
-                            loop_adds.push(AST::ModData {
-                                kind: DatamodKind::SetData { amount: 0 },
-                                dp_offset: cond_dp_offset,
-                            });
-
-                            total_removed += 1;
-
-                            if known_to_be_nontrivial {
-                                for inner in loop_adds {
-                                    cmds.push(inner);
+                        } else if let DatamodKind::SetData { amount } = zero_offset {
+                            // then this is actually a single execution (if amount is zero) or an infinite loop (if it's not)
+                            let mut loop_adds = Vec::new();
+                            if amount != 0 {
+                                loop_adds.push(AST::InfiniteLoop);
+                            } else {
+                                for (target_dp_offset, kind) in offsets {
+                                    loop_adds.push(AST::ModData {
+                                        kind,
+                                        dp_offset: target_dp_offset,
+                                    });
                                 }
+                                loop_adds.push(AST::ModData {
+                                    kind: DatamodKind::SetData { amount: 0 },
+                                    dp_offset: cond_dp_offset,
+                                });
+                            }
+                            if known_to_be_nontrivial {
+                                loop_adds.into_iter().for_each(|e| cmds.push(e));
                             } else {
                                 cmds.push(AST::IfNonZero {
                                     cond_dp_offset,
@@ -547,12 +602,12 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                     } => {
                         if dp_offset == second_dp_offset {
                             let out_kind = match (kind, second_kind) {
-                                (DatamodKind::AddData { amount: a }, DatamodKind::AddData { amount: b }) => {
-                                    DatamodKind::AddData { amount: a + b }
-                                }
-                                (DatamodKind::SetData { amount: a }, DatamodKind::AddData { amount: b }) => {
-                                    DatamodKind::SetData { amount: a + b }
-                                }
+                                (DatamodKind::AddData { amount: a }, DatamodKind::AddData { amount: b }) => DatamodKind::AddData {
+                                    amount: u8::wrapping_add(a, b),
+                                },
+                                (DatamodKind::SetData { amount: a }, DatamodKind::AddData { amount: b }) => DatamodKind::SetData {
+                                    amount: u8::wrapping_add(a, b),
+                                },
                                 (_, DatamodKind::SetData { amount }) => DatamodKind::SetData { amount },
                             };
                             accumulator = Some(AST::ModData { kind: out_kind, dp_offset });
@@ -613,7 +668,7 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                         accumulator = Some(AST::CombineData {
                             source_dp_offset,
                             target_dp_offset,
-                            source_amt_mult: source_amt_mult + other_sam,
+                            source_amt_mult: u8::wrapping_add(source_amt_mult, other_sam),
                         });
                     } else {
                         cmds.push(acc);

@@ -1,18 +1,12 @@
 Swapped 6076 commands total
 Collapse 3011 consecutive pure commands total
-Found a const loop with offsets {38: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {48: AddData { amount: 255 }}, zero offset AddData { amount: 1 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {39: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Killed 81 const loops!
+Killed 82 const loops!
 Gave up on a loop, but emitted a 'will be executed' hint
 Killed 1 instructions by simulation.
-Step 0 did 9169 changes.
+Step 0 did 9170 changes.
 
 Swapped 0 commands total
 Collapse 2 consecutive pure commands total
-Found a const loop with offsets {38: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {48: AddData { amount: 255 }}, zero offset AddData { amount: 1 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {39: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
 Killed 0 const loops!
 Gave up on a loop, it already had the hint. State: { dp: 0, [21: 1, 30: 255]}, Elts: [
     ModData {
@@ -66,9 +60,6 @@ Step 1 did 2 changes.
 
 Swapped 0 commands total
 Collapse 0 consecutive pure commands total
-Found a const loop with offsets {38: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {48: AddData { amount: 255 }}, zero offset AddData { amount: 1 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {39: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
 Killed 0 const loops!
 Gave up on a loop, it already had the hint. State: { dp: 0, [21: 1, 30: 255]}, Elts: [
     ModData {
@@ -1257,8 +1248,7 @@ optimized AST [
                                                                                                         },
                                                                                                         dp_offset: 39,
                                                                                                     },
-                                                                                                    Loop {
-                                                                                                        known_to_be_nontrivial: false,
+                                                                                                    IfNonZero {
                                                                                                         cond_dp_offset: 39,
                                                                                                         elements: [
                                                                                                             ModData {
@@ -1368,12 +1358,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 35,
-                                        target_dp_offset: 38,
+                                        target_dp_offset: 39,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 35,
-                                        target_dp_offset: 39,
+                                        target_dp_offset: 38,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -1613,21 +1603,19 @@ optimized AST [
                                                                                                                         },
                                                                                                                         dp_offset: 47,
                                                                                                                     },
-                                                                                                                    Loop {
-                                                                                                                        known_to_be_nontrivial: false,
+                                                                                                                    IfNonZero {
                                                                                                                         cond_dp_offset: 47,
                                                                                                                         elements: [
-                                                                                                                            ModData {
-                                                                                                                                kind: AddData {
-                                                                                                                                    amount: 1,
-                                                                                                                                },
-                                                                                                                                dp_offset: 47,
+                                                                                                                            CombineData {
+                                                                                                                                source_dp_offset: 47,
+                                                                                                                                target_dp_offset: 48,
+                                                                                                                                source_amt_mult: 1,
                                                                                                                             },
                                                                                                                             ModData {
-                                                                                                                                kind: AddData {
-                                                                                                                                    amount: 255,
+                                                                                                                                kind: SetData {
+                                                                                                                                    amount: 0,
                                                                                                                                 },
-                                                                                                                                dp_offset: 48,
+                                                                                                                                dp_offset: 47,
                                                                                                                             },
                                                                                                                         ],
                                                                                                                     },
@@ -2633,12 +2621,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 32,
-                                target_dp_offset: 37,
+                                target_dp_offset: 39,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 32,
-                                target_dp_offset: 39,
+                                target_dp_offset: 37,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -2844,21 +2832,20 @@ optimized AST [
                                                                                                 },
                                                                                                 dp_offset: 38,
                                                                                             },
-                                                                                            Loop {
-                                                                                                known_to_be_nontrivial: false,
+                                                                                            IfNonZero {
                                                                                                 cond_dp_offset: 38,
                                                                                                 elements: [
-                                                                                                    ModData {
-                                                                                                        kind: SetData {
-                                                                                                            amount: 0,
-                                                                                                        },
-                                                                                                        dp_offset: 38,
-                                                                                                    },
                                                                                                     ModData {
                                                                                                         kind: AddData {
                                                                                                             amount: 1,
                                                                                                         },
                                                                                                         dp_offset: 39,
+                                                                                                    },
+                                                                                                    ModData {
+                                                                                                        kind: SetData {
+                                                                                                            amount: 0,
+                                                                                                        },
+                                                                                                        dp_offset: 38,
                                                                                                     },
                                                                                                 ],
                                                                                             },
@@ -3411,6 +3398,6 @@ optimized AST [
         amount: 30,
     },
 ]
-Post optimization, executing 762 code lines
+Post optimization, executing 759 code lines
 13333333333337: 149 21521 4158053
-Process took 1579881117 instructions
+Process took 1554380675 instructions

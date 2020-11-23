@@ -1,31 +1,5 @@
 Swapped 761668 commands total
 Collapse 42445 consecutive pure commands total
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {251: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 255: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {256: SetData { amount: 1 }, 254: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {262: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
 Killed 2487 const loops!
 Removed useless set to 0; was already set to that
 Removed useless set to 0; was already set to that
@@ -37,7 +11,7 @@ Removed useless set to 0; was already set to that
 Removed useless set to 0; was already set to that
 Removed useless set to 0; was already set to that
 Eliminated branch [CombineData { source_dp_offset: 245, target_dp_offset: 250, source_amt_mult: 1 }, ModData { kind: SetData { amount: 0 }, dp_offset: 245 }] (not executed)
-Eliminated branch [CombineData { source_dp_offset: 250, target_dp_offset: 249, source_amt_mult: 1 }, CombineData { source_dp_offset: 250, target_dp_offset: 245, source_amt_mult: 1 }, ModData { kind: SetData { amount: 0 }, dp_offset: 250 }] (not executed)
+Eliminated branch [CombineData { source_dp_offset: 250, target_dp_offset: 245, source_amt_mult: 1 }, CombineData { source_dp_offset: 250, target_dp_offset: 249, source_amt_mult: 1 }, ModData { kind: SetData { amount: 0 }, dp_offset: 250 }] (not executed)
 Removed useless set to 0; was already set to that
 Removed useless set to 0; was already set to that
 Removed useless set to 0; was already set to that
@@ -51,69 +25,16 @@ Killed 125 instructions by simulation.
 Step 0 did 806725 changes.
 
 Swapped 0 commands total
-Collapse 235 consecutive pure commands total
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {251: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 255: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 256: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {262: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
+Collapse 231 consecutive pure commands total
 Killed 0 const loops!
 Constant-ized a combine data!
 Gave up on a loop, but emitted a 'will be executed' hint
 Killed 2 instructions by simulation.
-Step 1 did 237 changes.
+Step 1 did 233 changes.
 
 Swapped 1 commands total
-Collapse 99 consecutive pure commands total
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {251: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 255: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 256: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {262: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
+Collapse 1 consecutive pure commands total
 Killed 0 const loops!
-Removed useless set to 0; was already set to that
 Removed useless set to 0; was already set to that
 Gave up on a loop, it already had the hint. State: { dp: 0, [246: 9, 247: 3, 251: 10]}, Elts: [
     IfNonZero {
@@ -139,37 +60,11 @@ Gave up on a loop, it already had the hint. State: { dp: 0, [246: 9, 247: 3, 251
         dp_offset: 248,
     },
 ]
-Killed 2 instructions by simulation.
-Step 2 did 102 changes.
+Killed 1 instructions by simulation.
+Step 2 did 3 changes.
 
 Swapped 0 commands total
 Collapse 0 consecutive pure commands total
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {255: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {251: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {250: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 255: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {254: SetData { amount: 1 }, 256: SetData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {266: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 5 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {262: AddData { amount: 10 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 251 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
-Found a const loop with offsets {261: AddData { amount: 1 }}, zero offset SetData { amount: 0 }, which should be solvable, but which I could not kill
 Killed 0 const loops!
 Gave up on a loop, it already had the hint. State: { dp: 0, [246: 9, 247: 3, 251: 10]}, Elts: [
     IfNonZero {
@@ -199,6 +94,915 @@ Killed 0 instructions by simulation.
 Step 3 did 0 changes.
 
 optimized AST [
+    ModData {
+        kind: SetData {
+            amount: 27,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 27,
+    },
+    ModData {
+        kind: SetData {
+            amount: 91,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 91,
+    },
+    ModData {
+        kind: SetData {
+            amount: 72,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 72,
+    },
+    ModData {
+        kind: SetData {
+            amount: 27,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 27,
+    },
+    ModData {
+        kind: SetData {
+            amount: 91,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 91,
+    },
+    ModData {
+        kind: SetData {
+            amount: 50,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 50,
+    },
+    ModData {
+        kind: SetData {
+            amount: 74,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 74,
+    },
+    ModData {
+        kind: SetData {
+            amount: 27,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 27,
+    },
+    ModData {
+        kind: SetData {
+            amount: 91,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 91,
+    },
+    ModData {
+        kind: SetData {
+            amount: 50,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 50,
+    },
+    ModData {
+        kind: SetData {
+            amount: 59,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 59,
+    },
+    ModData {
+        kind: SetData {
+            amount: 50,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 50,
+    },
+    ModData {
+        kind: SetData {
+            amount: 55,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 55,
+    },
+    ModData {
+        kind: SetData {
+            amount: 72,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 72,
+    },
+    ModData {
+        kind: SetData {
+            amount: 84,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 84,
+    },
+    ModData {
+        kind: SetData {
+            amount: 111,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 119,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 119,
+    },
+    ModData {
+        kind: SetData {
+            amount: 101,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 101,
+    },
+    ModData {
+        kind: SetData {
+            amount: 114,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 114,
+    },
+    ModData {
+        kind: SetData {
+            amount: 115,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 115,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 111,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 102,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 72,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 72,
+    },
+    ModData {
+        kind: SetData {
+            amount: 97,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 97,
+    },
+    ModData {
+        kind: SetData {
+            amount: 110,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 110,
+    },
+    ModData {
+        kind: SetData {
+            amount: 111,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 105,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 105,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 105,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 105,
+    },
+    ModData {
+        kind: SetData {
+            amount: 110,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 110,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 66,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 66,
+    },
+    ModData {
+        kind: SetData {
+            amount: 114,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 114,
+    },
+    ModData {
+        kind: SetData {
+            amount: 97,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 97,
+    },
+    ModData {
+        kind: SetData {
+            amount: 105,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 105,
+    },
+    ModData {
+        kind: SetData {
+            amount: 110,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 110,
+    },
+    ModData {
+        kind: SetData {
+            amount: 102,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 42,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 42,
+    },
+    ModData {
+        kind: SetData {
+            amount: 99,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 99,
+    },
+    ModData {
+        kind: SetData {
+            amount: 107,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 107,
+    },
+    ModData {
+        kind: SetData {
+            amount: 27,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 27,
+    },
+    ModData {
+        kind: SetData {
+            amount: 91,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 91,
+    },
+    ModData {
+        kind: SetData {
+            amount: 51,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 51,
+    },
+    ModData {
+        kind: SetData {
+            amount: 59,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 59,
+    },
+    ModData {
+        kind: SetData {
+            amount: 49,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 49,
+    },
+    ModData {
+        kind: SetData {
+            amount: 53,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 53,
+    },
+    ModData {
+        kind: SetData {
+            amount: 72,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 72,
+    },
+    ModData {
+        kind: SetData {
+            amount: 87,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 87,
+    },
+    ModData {
+        kind: SetData {
+            amount: 114,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 114,
+    },
+    ModData {
+        kind: SetData {
+            amount: 105,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 105,
+    },
+    ModData {
+        kind: SetData {
+            amount: 116,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 116,
+    },
+    WriteConst {
+        out: 116,
+    },
+    ModData {
+        kind: SetData {
+            amount: 101,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 101,
+    },
+    ModData {
+        kind: SetData {
+            amount: 110,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 110,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 98,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 98,
+    },
+    ModData {
+        kind: SetData {
+            amount: 121,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 121,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 67,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 67,
+    },
+    ModData {
+        kind: SetData {
+            amount: 108,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 108,
+    },
+    ModData {
+        kind: SetData {
+            amount: 105,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 105,
+    },
+    ModData {
+        kind: SetData {
+            amount: 102,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 102,
+    },
+    WriteConst {
+        out: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 111,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 114,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 114,
+    },
+    ModData {
+        kind: SetData {
+            amount: 100,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 100,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 87,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 87,
+    },
+    ModData {
+        kind: SetData {
+            amount: 111,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 108,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 108,
+    },
+    ModData {
+        kind: SetData {
+            amount: 102,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 32,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 32,
+    },
+    ModData {
+        kind: SetData {
+            amount: 60,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 60,
+    },
+    ModData {
+        kind: SetData {
+            amount: 104,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 104,
+    },
+    ModData {
+        kind: SetData {
+            amount: 116,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 116,
+    },
+    WriteConst {
+        out: 116,
+    },
+    ModData {
+        kind: SetData {
+            amount: 112,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 112,
+    },
+    ModData {
+        kind: SetData {
+            amount: 58,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 58,
+    },
+    ModData {
+        kind: SetData {
+            amount: 47,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 47,
+    },
+    WriteConst {
+        out: 47,
+    },
+    ModData {
+        kind: SetData {
+            amount: 119,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 119,
+    },
+    WriteConst {
+        out: 119,
+    },
+    WriteConst {
+        out: 119,
+    },
+    ModData {
+        kind: SetData {
+            amount: 46,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 46,
+    },
+    ModData {
+        kind: SetData {
+            amount: 99,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 99,
+    },
+    ModData {
+        kind: SetData {
+            amount: 108,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 108,
+    },
+    ModData {
+        kind: SetData {
+            amount: 105,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 105,
+    },
+    ModData {
+        kind: SetData {
+            amount: 102,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 102,
+    },
+    WriteConst {
+        out: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 111,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 114,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 114,
+    },
+    ModData {
+        kind: SetData {
+            amount: 100,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 100,
+    },
+    ModData {
+        kind: SetData {
+            amount: 46,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 46,
+    },
+    ModData {
+        kind: SetData {
+            amount: 97,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 97,
+    },
+    ModData {
+        kind: SetData {
+            amount: 116,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 116,
+    },
+    ModData {
+        kind: SetData {
+            amount: 47,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 47,
+    },
+    ModData {
+        kind: SetData {
+            amount: 98,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 98,
+    },
+    ModData {
+        kind: SetData {
+            amount: 102,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 99,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 99,
+    },
+    ModData {
+        kind: SetData {
+            amount: 112,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 112,
+    },
+    ModData {
+        kind: SetData {
+            amount: 117,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 117,
+    },
+    ModData {
+        kind: SetData {
+            amount: 47,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 47,
+    },
+    ModData {
+        kind: SetData {
+            amount: 62,
+        },
+        dp_offset: 245,
+    },
+    WriteConst {
+        out: 62,
+    },
+    ModData {
+        kind: SetData {
+            amount: 0,
+        },
+        dp_offset: 245,
+    },
     ModData {
         kind: SetData {
             amount: 9,
@@ -732,8 +1536,7 @@ optimized AST [
                             },
                         ],
                     },
-                    Loop {
-                        known_to_be_nontrivial: false,
+                    IfNonZero {
                         cond_dp_offset: 254,
                         elements: [
                             ModData {
@@ -783,12 +1586,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 247,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 255,
+                                target_dp_offset: 247,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -1117,8 +1920,7 @@ optimized AST [
                             },
                         ],
                     },
-                    Loop {
-                        known_to_be_nontrivial: false,
+                    IfNonZero {
                         cond_dp_offset: 254,
                         elements: [
                             ModData {
@@ -1303,13 +2105,13 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 246,
-                                source_amt_mult: 1,
+                                target_dp_offset: 250,
+                                source_amt_mult: 255,
                             },
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 250,
-                                source_amt_mult: 255,
+                                target_dp_offset: 246,
+                                source_amt_mult: 1,
                             },
                             ModData {
                                 kind: SetData {
@@ -1340,13 +2142,13 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 246,
-                                source_amt_mult: 1,
+                                target_dp_offset: 250,
+                                source_amt_mult: 255,
                             },
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 250,
-                                source_amt_mult: 255,
+                                target_dp_offset: 246,
+                                source_amt_mult: 1,
                             },
                             ModData {
                                 kind: SetData {
@@ -1389,12 +2191,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 255,
+                                target_dp_offset: 247,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 247,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -1723,8 +2525,7 @@ optimized AST [
                             },
                         ],
                     },
-                    Loop {
-                        known_to_be_nontrivial: false,
+                    IfNonZero {
                         cond_dp_offset: 254,
                         elements: [
                             ModData {
@@ -1829,12 +2630,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 255,
+                                target_dp_offset: 251,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 251,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -2664,8 +3465,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 262,
                                 elements: [
                                     ModData {
@@ -2711,12 +3511,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 255,
+                                target_dp_offset: 259,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 259,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -2776,12 +3576,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 260,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 260,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -3497,8 +4297,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 262,
                                 elements: [
                                     ModData {
@@ -3981,12 +4780,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 255,
+                                target_dp_offset: 259,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 259,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -4046,12 +4845,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 260,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 260,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -4330,8 +5129,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 262,
                                 elements: [
                                     ModData {
@@ -4625,12 +5423,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 259,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 255,
+                                target_dp_offset: 259,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -4690,12 +5488,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 260,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 260,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -4995,12 +5793,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 263,
-                                        target_dp_offset: 256,
+                                        target_dp_offset: 260,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 263,
-                                        target_dp_offset: 260,
+                                        target_dp_offset: 256,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -5062,12 +5860,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 255,
+                                target_dp_offset: 259,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 259,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -5411,8 +6209,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 262,
                                 elements: [
                                     ModData {
@@ -5895,12 +6692,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 259,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 255,
+                                target_dp_offset: 259,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -6244,8 +7041,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 262,
                                 elements: [
                                     ModData {
@@ -6291,12 +7087,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 259,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 260,
-                                target_dp_offset: 255,
+                                target_dp_offset: 259,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -6356,12 +7152,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 260,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 260,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -6793,12 +7589,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 260,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 260,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -7077,8 +7873,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 262,
                                 elements: [
                                     ModData {
@@ -7738,12 +8533,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 252,
+                                target_dp_offset: 246,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 246,
+                                target_dp_offset: 252,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -8434,12 +9229,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 251,
-                                target_dp_offset: 246,
+                                target_dp_offset: 243,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 251,
-                                target_dp_offset: 243,
+                                target_dp_offset: 246,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -9091,12 +9886,12 @@ optimized AST [
                 elements: [
                     CombineData {
                         source_dp_offset: 254,
-                        target_dp_offset: 249,
+                        target_dp_offset: 253,
                         source_amt_mult: 1,
                     },
                     CombineData {
                         source_dp_offset: 254,
-                        target_dp_offset: 253,
+                        target_dp_offset: 249,
                         source_amt_mult: 1,
                     },
                     ModData {
@@ -9856,8 +10651,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 257,
                                 elements: [
                                     ModData {
@@ -10247,8 +11041,7 @@ optimized AST [
                                     },
                                 ],
                             },
-                            Loop {
-                                known_to_be_nontrivial: false,
+                            IfNonZero {
                                 cond_dp_offset: 257,
                                 elements: [
                                     ModData {
@@ -10476,12 +11269,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 247,
+                                                target_dp_offset: 259,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 259,
+                                                target_dp_offset: 247,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -10553,12 +11346,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 258,
+                                                target_dp_offset: 40,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 40,
+                                                target_dp_offset: 258,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -10590,12 +11383,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 39,
+                                                target_dp_offset: 244,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 244,
+                                                target_dp_offset: 39,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -10780,12 +11573,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 244,
+                                                target_dp_offset: 79,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 260,
-                                                target_dp_offset: 79,
+                                                target_dp_offset: 244,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -11155,12 +11948,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 251,
+                                                target_dp_offset: 246,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 246,
+                                                target_dp_offset: 251,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -11241,12 +12034,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 251,
+                                                target_dp_offset: 247,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 247,
+                                                target_dp_offset: 251,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -11346,12 +12139,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 246,
+                                                target_dp_offset: 251,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 251,
+                                                target_dp_offset: 246,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -11432,12 +12225,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 251,
+                                                target_dp_offset: 245,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 258,
-                                                target_dp_offset: 245,
+                                                target_dp_offset: 251,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -11503,12 +12296,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 255,
-                                target_dp_offset: 249,
+                                target_dp_offset: 254,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 255,
-                                target_dp_offset: 254,
+                                target_dp_offset: 249,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -12308,12 +13101,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 245,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 245,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -12685,12 +13478,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 255,
+                                                target_dp_offset: 121,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 121,
+                                                target_dp_offset: 255,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -13737,12 +14530,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 245,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 245,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -14717,12 +15510,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 201,
+                                                target_dp_offset: 162,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 162,
+                                                target_dp_offset: 201,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -14787,12 +15580,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 199,
-                                                target_dp_offset: 201,
+                                                target_dp_offset: 202,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 199,
-                                                target_dp_offset: 202,
+                                                target_dp_offset: 201,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -14895,12 +15688,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 247,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 247,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -15315,12 +16108,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 242,
+                                                target_dp_offset: 203,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 203,
+                                                target_dp_offset: 242,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -15464,12 +16257,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 247,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 247,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -15890,12 +16683,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 160,
+                                                target_dp_offset: 121,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 121,
+                                                target_dp_offset: 160,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -16428,12 +17221,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 202,
+                                                target_dp_offset: 254,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 254,
+                                                target_dp_offset: 202,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -16614,12 +17407,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 247,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 247,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -16985,12 +17778,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 256,
+                                                target_dp_offset: 203,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 203,
+                                                target_dp_offset: 256,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -17464,12 +18257,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 247,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 260,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 247,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -17841,12 +18634,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 162,
+                                                target_dp_offset: 256,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 259,
-                                                target_dp_offset: 256,
+                                                target_dp_offset: 162,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -17950,12 +18743,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 263,
-                                                        target_dp_offset: 258,
+                                                        target_dp_offset: 245,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 263,
-                                                        target_dp_offset: 245,
+                                                        target_dp_offset: 258,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -17993,12 +18786,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 263,
-                                                        target_dp_offset: 259,
+                                                        target_dp_offset: 255,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 263,
-                                                        target_dp_offset: 255,
+                                                        target_dp_offset: 259,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -18109,12 +18902,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 263,
-                                                        target_dp_offset: 256,
+                                                        target_dp_offset: 259,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 263,
-                                                        target_dp_offset: 259,
+                                                        target_dp_offset: 256,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -18506,8 +19299,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 265,
                                         elements: [
                                             ModData {
@@ -18557,12 +19349,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 267,
-                                                target_dp_offset: 258,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 267,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 258,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -18891,8 +19683,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 265,
                                         elements: [
                                             ModData {
@@ -18995,12 +19786,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 267,
-                                                        target_dp_offset: 263,
+                                                        target_dp_offset: 266,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 267,
-                                                        target_dp_offset: 266,
+                                                        target_dp_offset: 263,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -19114,13 +19905,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 265,
-                                                target_dp_offset: 254,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 261,
+                                                source_amt_mult: 255,
                                             },
                                             CombineData {
                                                 source_dp_offset: 265,
-                                                target_dp_offset: 261,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 254,
+                                                source_amt_mult: 1,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -19163,12 +19954,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 267,
-                                                target_dp_offset: 258,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 267,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 258,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -19497,8 +20288,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 265,
                                         elements: [
                                             ModData {
@@ -19717,12 +20507,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 272,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 272,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -20438,8 +21228,7 @@ optimized AST [
                                                     },
                                                 ],
                                             },
-                                            Loop {
-                                                known_to_be_nontrivial: false,
+                                            IfNonZero {
                                                 cond_dp_offset: 273,
                                                 elements: [
                                                     ModData {
@@ -20550,12 +21339,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 272,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 272,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -20855,12 +21644,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 274,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 268,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 274,
-                                                        target_dp_offset: 268,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -20922,12 +21711,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 271,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 270,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 271,
-                                                target_dp_offset: 270,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -21271,8 +22060,7 @@ optimized AST [
                                                     },
                                                 ],
                                             },
-                                            Loop {
-                                                known_to_be_nontrivial: false,
+                                            IfNonZero {
                                                 cond_dp_offset: 273,
                                                 elements: [
                                                     ModData {
@@ -21820,12 +22608,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 272,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 272,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -22104,8 +22892,7 @@ optimized AST [
                                                     },
                                                 ],
                                             },
-                                            Loop {
-                                                known_to_be_nontrivial: false,
+                                            IfNonZero {
                                                 cond_dp_offset: 273,
                                                 elements: [
                                                     ModData {
@@ -22464,12 +23251,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 272,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 272,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -22836,12 +23623,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 271,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 270,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 271,
-                                                target_dp_offset: 270,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -23185,8 +23972,7 @@ optimized AST [
                                                     },
                                                 ],
                                             },
-                                            Loop {
-                                                known_to_be_nontrivial: false,
+                                            IfNonZero {
                                                 cond_dp_offset: 273,
                                                 elements: [
                                                     ModData {
@@ -23232,12 +24018,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 271,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 270,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 271,
-                                                target_dp_offset: 270,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -24018,8 +24804,7 @@ optimized AST [
                                                     },
                                                 ],
                                             },
-                                            Loop {
-                                                known_to_be_nontrivial: false,
+                                            IfNonZero {
                                                 cond_dp_offset: 273,
                                                 elements: [
                                                     ModData {
@@ -24130,12 +24915,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 272,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 273,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 272,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -24435,12 +25220,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 274,
-                                                        target_dp_offset: 269,
+                                                        target_dp_offset: 271,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 274,
-                                                        target_dp_offset: 271,
+                                                        target_dp_offset: 269,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -24851,8 +25636,7 @@ optimized AST [
                                                     },
                                                 ],
                                             },
-                                            Loop {
-                                                known_to_be_nontrivial: false,
+                                            IfNonZero {
                                                 cond_dp_offset: 273,
                                                 elements: [
                                                     ModData {
@@ -25097,12 +25881,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 267,
-                                                target_dp_offset: 260,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 267,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 260,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -26193,12 +26977,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 259,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 262,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 259,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -26242,12 +27026,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 265,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 265,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -26307,12 +27091,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 267,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 267,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -27028,8 +27812,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 268,
                                         elements: [
                                             ModData {
@@ -27140,12 +27923,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 267,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 267,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -27861,8 +28644,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 268,
                                         elements: [
                                             ModData {
@@ -27973,12 +28755,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 267,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 267,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -28345,12 +29127,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 265,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 265,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -28694,8 +29476,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 268,
                                         elements: [
                                             ModData {
@@ -29426,12 +30207,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 265,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 265,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -29491,12 +30272,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 267,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 267,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -29775,8 +30556,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 268,
                                         elements: [
                                             ModData {
@@ -29822,12 +30602,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 265,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 265,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -30192,12 +30972,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 269,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 263,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 269,
-                                                target_dp_offset: 263,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -30608,8 +31388,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 268,
                                         elements: [
                                             ModData {
@@ -30655,12 +31434,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 261,
+                                        target_dp_offset: 265,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 266,
-                                        target_dp_offset: 265,
+                                        target_dp_offset: 261,
                                         source_amt_mult: 1,
                                     },
                                     ModData {
@@ -31157,12 +31936,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 267,
+                                                target_dp_offset: 266,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 268,
-                                                target_dp_offset: 266,
+                                                target_dp_offset: 267,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -31441,8 +32220,7 @@ optimized AST [
                                             },
                                         ],
                                     },
-                                    Loop {
-                                        known_to_be_nontrivial: false,
+                                    IfNonZero {
                                         cond_dp_offset: 268,
                                         elements: [
                                             ModData {
@@ -31736,12 +32514,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 253,
+                                target_dp_offset: 249,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 254,
-                                target_dp_offset: 249,
+                                target_dp_offset: 253,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -32247,12 +33025,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 37,
-                                target_dp_offset: 39,
+                                target_dp_offset: 40,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 37,
-                                target_dp_offset: 40,
+                                target_dp_offset: 39,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -32371,12 +33149,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 253,
-                                target_dp_offset: 79,
+                                target_dp_offset: 244,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 253,
-                                target_dp_offset: 244,
+                                target_dp_offset: 79,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -33423,12 +34201,12 @@ optimized AST [
                         elements: [
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 245,
+                                target_dp_offset: 255,
                                 source_amt_mult: 1,
                             },
                             CombineData {
                                 source_dp_offset: 256,
-                                target_dp_offset: 255,
+                                target_dp_offset: 245,
                                 source_amt_mult: 1,
                             },
                             ModData {
@@ -34062,8 +34840,8 @@ optimized AST [
         amount: 287,
     },
 ]
-Post optimization, executing 6735 code lines
-[14;43H-----------------------------------[24;23H-----------------------------------[14;3H-----------------------------------[13;3HxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx[12;5HxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx[11;7HxXXXXXXXXXXXXXXXXXXXXXXXXXx[10;9HxXXXXXXXXXXXXXXXXXXXXXx[9;11HxXXXXXXXXXXXXXXXXXx[8;13HxXXXXXXXXXXXXXx[7;15HxXXXXXXXXXx[6;17HxXXXXXx[5;19HxXx[5;19H   [13;59HxXx
+Post optimization, executing 6913 code lines
+[H[2J[2;27HTowers of Hanoi in Brainf*ck[3;15HWritten by Clifford Wolf <http://www.clifford.at/bfcpu/>[14;43H-----------------------------------[24;23H-----------------------------------[14;3H-----------------------------------[13;3HxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx[12;5HxXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx[11;7HxXXXXXXXXXXXXXXXXXXXXXXXXXx[10;9HxXXXXXXXXXXXXXXXXXXXXXx[9;11HxXXXXXXXXXXXXXXXXXx[8;13HxXXXXXXXXXXXXXx[7;15HxXXXXXXXXXx[6;17HxXXXXXx[5;19HxXx[5;19H   [13;59HxXx
 [1;1H[6;17H       [23;37HxXXXXXx
 [1;1H[13;59H   [22;39HxXx
 [1;1H[7;15H           [13;55HxXXXXXXXXXx
@@ -34574,4 +35352,4 @@ Post optimization, executing 6735 code lines
 [1;1H[22;39H   [13;19HxXx
 [1;1H[23;37H       [6;57HxXXXXXx
 [1;1H[13;19H   [5;59HxXx
-[1;1HProcess took 8905887 instructions
+[1;1HProcess took 8900384 instructions

@@ -67,11 +67,11 @@ impl OptVM {
                     self.ip += 1;
                 }
                 CompiledInstr::AddPtr { amount } => {
-                    self.dp += amount;
+                    self.dp = usize::wrapping_add(self.dp, *amount);
                     self.ip += 1;
                 }
                 CompiledInstr::SubPtr { amount } => {
-                    self.dp -= amount;
+                    self.dp = usize::wrapping_sub(self.dp, *amount);
                     self.ip += 1;
                 }
                 CompiledInstr::ReadByte { dp_offset } => {

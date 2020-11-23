@@ -1,0 +1,1247 @@
+Swapped 50158 commands total
+Collapse 597 consecutive pure commands total
+Killed 8 const loops!
+Gave up on a loop, but emitted a 'will be executed' hint
+Killed 1 instructions by simulation.
+Step 0 did 50764 changes.
+
+Swapped 0 commands total
+Collapse 0 consecutive pure commands total
+Killed 0 const loops!
+Gave up on a loop, it already had the hint. State: { dp: 0, [0: 255, 1: 1, 2: 3, 4: 1, 5: 2, 6: 1, 7: 3, 9: 1, 10: 2, 13: 1, 14: 1, 15: 1, 16: 2, 17: 1, 21: 3, 22: 1, 24: 2, 25: 1, 26: 3, 28: 2, 29: 2, 31: 1, 33: 1, 34: 2, 35: 2, 36: 1, 40: 3, 41: 1, 45: 2, 46: 2, 50: 1, 52: 2, 53: 1, 54: 3, 57: 2, 59: 6, 61: 1, 63: 2, 64: 1, 68: 3, 70: 5, 72: 1, 73: 3, 76: 2, 78: 2, 80: 1, 82: 2, 83: 1, 84: 3, 87: 2, 89: 13, 91: 1, 93: 2, 94: 1, 95: 3, 96: 1, 97: 3, 100: 2, 102: 4, 104: 1, 106: 2, 107: 1, 111: 3, 113: 5, 117: 2, 121: 1, 122: 1, 123: 2, 125: 3, 126: 1, 130: 3, 131: 1, 135: 3, 136: 1, 140: 3, 142: 2, 143: 2, 144: 1, 145: 3, 146: 1, 147: 2, 148: 2, 154: 2, 155: 1, 156: 3, 161: 3, 164: 2, 165: 1, 166: 3, 167: 1, 168: 1, 169: 2, 175: 2, 178: 1, 181: 2, 182: 1, 186: 3, 187: 1, 190: 1, 192: 2, 193: 1, 194: 18, 198: 1, 199: 1, 202: 1, 204: 2, 205: 1, 206: 3, 209: 2, 211: 8, 213: 1, 215: 2, 216: 1, 220: 3, 222: 6, 225: 1, 226: 2, 228: 3, 229: 1, 230: 1, 231: 2, 232: 1, 233: 3, 238: 3, 241: 1, 242: 1, 244: 2, 245: 1, 246: 3, 249: 2, 251: 8, 253: 1, 255: 2, 256: 1, 260: 3, 262: 4, 264: 1, 265: 3, 271: 2, 272: 1, 273: 3, 275: 1, 276: 2, 280: 1, 281: 1, 282: 2, 283: 1, 287: 3, 289: 3, 292: 1]}, Elts: [
+    IfNonZero {
+        cond_dp_offset: 292,
+        elements: [
+            CombineData {
+                source_dp_offset: 292,
+                target_dp_offset: 294,
+                source_amt_mult: 1,
+            },
+            ModData {
+                kind: SetData {
+                    amount: 0,
+                },
+                dp_offset: 292,
+            },
+        ],
+    },
+    ModData {
+        kind: AddData {
+            amount: 1,
+        },
+        dp_offset: 291,
+    },
+    ShiftDataPtr {
+        amount: -1,
+    },
+]
+Killed 0 instructions by simulation.
+Step 1 did 0 changes.
+
+optimized AST [
+    ModData {
+        kind: SetData {
+            amount: 255,
+        },
+        dp_offset: 0,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 1,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 2,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 4,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 5,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 6,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 7,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 9,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 10,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 13,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 14,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 15,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 16,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 17,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 21,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 22,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 24,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 25,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 26,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 28,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 29,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 31,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 33,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 34,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 35,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 36,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 40,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 41,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 45,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 46,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 50,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 52,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 53,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 54,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 57,
+    },
+    ModData {
+        kind: SetData {
+            amount: 6,
+        },
+        dp_offset: 59,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 61,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 63,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 64,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 68,
+    },
+    ModData {
+        kind: SetData {
+            amount: 5,
+        },
+        dp_offset: 70,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 72,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 73,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 76,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 78,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 80,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 82,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 83,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 84,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 87,
+    },
+    ModData {
+        kind: SetData {
+            amount: 13,
+        },
+        dp_offset: 89,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 91,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 93,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 94,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 95,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 96,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 97,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 100,
+    },
+    ModData {
+        kind: SetData {
+            amount: 4,
+        },
+        dp_offset: 102,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 104,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 106,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 107,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 111,
+    },
+    ModData {
+        kind: SetData {
+            amount: 5,
+        },
+        dp_offset: 113,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 117,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 121,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 122,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 123,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 125,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 126,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 130,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 131,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 135,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 136,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 140,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 142,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 143,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 144,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 145,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 146,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 147,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 148,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 154,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 155,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 156,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 161,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 164,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 165,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 166,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 167,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 168,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 169,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 175,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 178,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 181,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 182,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 186,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 187,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 190,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 192,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 193,
+    },
+    ModData {
+        kind: SetData {
+            amount: 18,
+        },
+        dp_offset: 194,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 198,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 199,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 202,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 204,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 205,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 206,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 209,
+    },
+    ModData {
+        kind: SetData {
+            amount: 8,
+        },
+        dp_offset: 211,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 213,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 215,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 216,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 220,
+    },
+    ModData {
+        kind: SetData {
+            amount: 6,
+        },
+        dp_offset: 222,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 225,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 226,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 228,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 229,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 230,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 231,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 232,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 233,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 238,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 241,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 242,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 244,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 245,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 246,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 249,
+    },
+    ModData {
+        kind: SetData {
+            amount: 8,
+        },
+        dp_offset: 251,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 253,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 255,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 256,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 260,
+    },
+    ModData {
+        kind: SetData {
+            amount: 4,
+        },
+        dp_offset: 262,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 264,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 265,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 271,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 272,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 273,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 275,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 276,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 280,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 281,
+    },
+    ModData {
+        kind: SetData {
+            amount: 2,
+        },
+        dp_offset: 282,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 283,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 287,
+    },
+    ModData {
+        kind: SetData {
+            amount: 3,
+        },
+        dp_offset: 289,
+    },
+    ModData {
+        kind: SetData {
+            amount: 1,
+        },
+        dp_offset: 292,
+    },
+    Loop {
+        known_to_be_nontrivial: true,
+        cond_dp_offset: 292,
+        elements: [
+            IfNonZero {
+                cond_dp_offset: 292,
+                elements: [
+                    CombineData {
+                        source_dp_offset: 292,
+                        target_dp_offset: 294,
+                        source_amt_mult: 1,
+                    },
+                    ModData {
+                        kind: SetData {
+                            amount: 0,
+                        },
+                        dp_offset: 292,
+                    },
+                ],
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 291,
+            },
+            ShiftDataPtr {
+                amount: -1,
+            },
+        ],
+    },
+    ModData {
+        kind: AddData {
+            amount: 5,
+        },
+        dp_offset: 292,
+    },
+    IfNonZero {
+        cond_dp_offset: 292,
+        elements: [
+            CombineData {
+                source_dp_offset: 292,
+                target_dp_offset: 293,
+                source_amt_mult: 9,
+            },
+            ModData {
+                kind: SetData {
+                    amount: 0,
+                },
+                dp_offset: 292,
+            },
+        ],
+    },
+    WriteByte {
+        dp_offset: 293,
+    },
+    ModData {
+        kind: SetData {
+            amount: 0,
+        },
+        dp_offset: 293,
+    },
+    Loop {
+        known_to_be_nontrivial: false,
+        cond_dp_offset: 295,
+        elements: [
+            ModData {
+                kind: AddData {
+                    amount: 7,
+                },
+                dp_offset: 293,
+            },
+            IfNonZero {
+                cond_dp_offset: 293,
+                elements: [
+                    CombineData {
+                        source_dp_offset: 293,
+                        target_dp_offset: 294,
+                        source_amt_mult: 9,
+                    },
+                    ModData {
+                        kind: SetData {
+                            amount: 0,
+                        },
+                        dp_offset: 293,
+                    },
+                ],
+            },
+            ModData {
+                kind: AddData {
+                    amount: 255,
+                },
+                dp_offset: 294,
+            },
+            WriteByte {
+                dp_offset: 294,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 237,
+                },
+                dp_offset: 294,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 255,
+                },
+                dp_offset: 295,
+            },
+            Loop {
+                known_to_be_nontrivial: false,
+                cond_dp_offset: 295,
+                elements: [
+                    WriteByte {
+                        dp_offset: 294,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 1,
+                        },
+                        dp_offset: 293,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 255,
+                        },
+                        dp_offset: 295,
+                    },
+                ],
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 293,
+            },
+            ModData {
+                kind: SetData {
+                    amount: 0,
+                },
+                dp_offset: 294,
+            },
+            ShiftDataPtr {
+                amount: 1,
+            },
+        ],
+    },
+    Loop {
+        known_to_be_nontrivial: false,
+        cond_dp_offset: 292,
+        elements: [
+            ModData {
+                kind: AddData {
+                    amount: 255,
+                },
+                dp_offset: 292,
+            },
+            Loop {
+                known_to_be_nontrivial: false,
+                cond_dp_offset: 292,
+                elements: [
+                    ModData {
+                        kind: AddData {
+                            amount: 255,
+                        },
+                        dp_offset: 292,
+                    },
+                    Loop {
+                        known_to_be_nontrivial: false,
+                        cond_dp_offset: 292,
+                        elements: [
+                            ModData {
+                                kind: AddData {
+                                    amount: 255,
+                                },
+                                dp_offset: 292,
+                            },
+                            Loop {
+                                known_to_be_nontrivial: false,
+                                cond_dp_offset: 292,
+                                elements: [
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 6,
+                                        },
+                                        dp_offset: 293,
+                                    },
+                                    ModData {
+                                        kind: AddData {
+                                            amount: 1,
+                                        },
+                                        dp_offset: 294,
+                                    },
+                                    IfNonZero {
+                                        cond_dp_offset: 293,
+                                        elements: [
+                                            CombineData {
+                                                source_dp_offset: 293,
+                                                target_dp_offset: 294,
+                                                source_amt_mult: 5,
+                                            },
+                                            ModData {
+                                                kind: SetData {
+                                                    amount: 0,
+                                                },
+                                                dp_offset: 293,
+                                            },
+                                        ],
+                                    },
+                                    ShiftDataPtr {
+                                        amount: 1,
+                                    },
+                                ],
+                            },
+                            ModData {
+                                kind: AddData {
+                                    amount: 14,
+                                },
+                                dp_offset: 293,
+                            },
+                        ],
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 3,
+                        },
+                        dp_offset: 293,
+                    },
+                ],
+            },
+            ModData {
+                kind: AddData {
+                    amount: 6,
+                },
+                dp_offset: 292,
+            },
+            IfNonZero {
+                cond_dp_offset: 292,
+                elements: [
+                    CombineData {
+                        source_dp_offset: 292,
+                        target_dp_offset: 293,
+                        source_amt_mult: 7,
+                    },
+                    ModData {
+                        kind: SetData {
+                            amount: 0,
+                        },
+                        dp_offset: 292,
+                    },
+                ],
+            },
+            ModData {
+                kind: AddData {
+                    amount: 255,
+                },
+                dp_offset: 290,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 293,
+            },
+            IfNonZero {
+                cond_dp_offset: 290,
+                elements: [
+                    CombineData {
+                        source_dp_offset: 290,
+                        target_dp_offset: 293,
+                        source_amt_mult: 2,
+                    },
+                    ModData {
+                        kind: SetData {
+                            amount: 0,
+                        },
+                        dp_offset: 290,
+                    },
+                ],
+            },
+            Loop {
+                known_to_be_nontrivial: false,
+                cond_dp_offset: 291,
+                elements: [
+                    WriteByte {
+                        dp_offset: 293,
+                    },
+                    ModData {
+                        kind: AddData {
+                            amount: 255,
+                        },
+                        dp_offset: 291,
+                    },
+                ],
+            },
+            ShiftDataPtr {
+                amount: -3,
+            },
+        ],
+    },
+    ShiftDataPtr {
+        amount: 292,
+    },
+]
+Post optimization, executing 215 code lines
+->+>+++>>+>++>+>+++>>+>++>>>+>+>+>++>+>>>>+++>+>>++>+>+++>>++>++>>+>>+>++>++>+>>>>+++>+>>>>++>++>>>>+>>++>+>+++>>>++>>++++++>>+>>++>+>>>>+++>>+++++>>+>+++>>>++>>++>>+>>++>+>+++>>>++>>+++++++++++++>>+>>++>+>+++>+>+++>>>++>>++++>>+>>++>+>>>>+++>>+++++>>>>++>>>>+>+>++>>+++>+>>>>+++>+>>>>+++>+>>>>+++>>++>++>+>+++>+>++>++>>>>>>++>+>+++>>>>>+++>>>++>+>+++>+>+>++>>>>>>++>>>+>>>++>+>>>>+++>+>>>+>>++>+>++++++++++++++++++>>>>+>+>>>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++++>>>+>++>>+++>+>+>++>+>+++>>>>>+++>>>+>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++>>+>+++>>>>>>++>+>+++>>+>++>>>>+>+>++>+>>>>+++>>+++>>>+[[->>+<<]<+]+++++[->+++++++++<]>.[+]>>[<<+++++++[->+++++++++<]>-.------------------->-[-<.<+>>]<[+]<+>>>]<<<[-[-[-[>>+<++++++[->+++++<]]>++++++++++++++<]>+++<]++++++[->+++++++<]>+<<<-[->>>++<<<]>[->>.<<]<<]Process took 10765 instructions

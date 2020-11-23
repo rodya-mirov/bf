@@ -449,12 +449,12 @@ optimized AST [
                                 elements: [
                                     CombineData {
                                         source_dp_offset: 26,
-                                        target_dp_offset: 28,
+                                        target_dp_offset: 31,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
                                         source_dp_offset: 26,
-                                        target_dp_offset: 31,
+                                        target_dp_offset: 28,
                                         source_amt_mult: 1,
                                     },
                                     CombineData {
@@ -707,12 +707,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 25,
-                                                        target_dp_offset: 29,
+                                                        target_dp_offset: 27,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 25,
-                                                        target_dp_offset: 27,
+                                                        target_dp_offset: 29,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -992,12 +992,12 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 25,
-                                                        target_dp_offset: 29,
+                                                        target_dp_offset: 28,
                                                         source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 25,
-                                                        target_dp_offset: 28,
+                                                        target_dp_offset: 29,
                                                         source_amt_mult: 1,
                                                     },
                                                     ModData {
@@ -1552,16 +1552,16 @@ optimized AST [
                     IfNonZero {
                         cond_dp_offset: 43,
                         elements: [
+                            CombineData {
+                                source_dp_offset: 43,
+                                target_dp_offset: 47,
+                                source_amt_mult: 1,
+                            },
                             ModData {
                                 kind: SetData {
                                     amount: 0,
                                 },
                                 dp_offset: 45,
-                            },
-                            CombineData {
-                                source_dp_offset: 43,
-                                target_dp_offset: 47,
-                                source_amt_mult: 1,
                             },
                             ModData {
                                 kind: SetData {
@@ -1713,12 +1713,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 53,
+                                                target_dp_offset: 56,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 56,
+                                                target_dp_offset: 53,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -2426,13 +2426,13 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 42,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 37,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 37,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 42,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -2703,13 +2703,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 42,
-                                                target_dp_offset: 46,
-                                                source_amt_mult: 2,
+                                                target_dp_offset: 47,
+                                                source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 42,
-                                                target_dp_offset: 47,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 46,
+                                                source_amt_mult: 2,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -3219,13 +3219,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 48,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 48,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -3258,13 +3258,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 48,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 48,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -4669,13 +4669,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 46,
-                                                                target_dp_offset: 44,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 46,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 44,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -4899,13 +4899,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 44,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 44,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -4938,13 +4938,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 44,
+                                                                source_amt_mult: 255,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 44,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -5632,13 +5632,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 47,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 44,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 47,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -5905,13 +5905,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 47,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 47,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -5944,13 +5944,13 @@ optimized AST [
                                                                 elements: [
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 34,
-                                                                        source_amt_mult: 1,
+                                                                        target_dp_offset: 47,
+                                                                        source_amt_mult: 255,
                                                                     },
                                                                     CombineData {
                                                                         source_dp_offset: 45,
-                                                                        target_dp_offset: 47,
-                                                                        source_amt_mult: 255,
+                                                                        target_dp_offset: 34,
+                                                                        source_amt_mult: 1,
                                                                     },
                                                                     ModData {
                                                                         kind: SetData {
@@ -6052,12 +6052,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 42,
-                                                target_dp_offset: 49,
+                                                target_dp_offset: 47,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 42,
-                                                target_dp_offset: 47,
+                                                target_dp_offset: 49,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -6138,13 +6138,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -6177,13 +6177,13 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 34,
-                                                                source_amt_mult: 1,
+                                                                target_dp_offset: 47,
+                                                                source_amt_mult: 255,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 45,
-                                                                target_dp_offset: 47,
-                                                                source_amt_mult: 255,
+                                                                target_dp_offset: 34,
+                                                                source_amt_mult: 1,
                                                             },
                                                             ModData {
                                                                 kind: SetData {
@@ -6332,12 +6332,12 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 54,
+                                                target_dp_offset: 57,
                                                 source_amt_mult: 1,
                                             },
                                             CombineData {
                                                 source_dp_offset: 52,
-                                                target_dp_offset: 57,
+                                                target_dp_offset: 54,
                                                 source_amt_mult: 1,
                                             },
                                             ModData {
@@ -6833,12 +6833,12 @@ optimized AST [
                                                         elements: [
                                                             CombineData {
                                                                 source_dp_offset: 51,
-                                                                target_dp_offset: 55,
+                                                                target_dp_offset: 54,
                                                                 source_amt_mult: 1,
                                                             },
                                                             CombineData {
                                                                 source_dp_offset: 51,
-                                                                target_dp_offset: 54,
+                                                                target_dp_offset: 55,
                                                                 source_amt_mult: 1,
                                                             },
                                                             ModData {
@@ -6964,13 +6964,13 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 42,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 37,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 43,
-                                                        target_dp_offset: 37,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 42,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -7372,16 +7372,16 @@ optimized AST [
                             IfNonZero {
                                 cond_dp_offset: 69,
                                 elements: [
+                                    CombineData {
+                                        source_dp_offset: 69,
+                                        target_dp_offset: 73,
+                                        source_amt_mult: 1,
+                                    },
                                     ModData {
                                         kind: SetData {
                                             amount: 0,
                                         },
                                         dp_offset: 71,
-                                    },
-                                    CombineData {
-                                        source_dp_offset: 69,
-                                        target_dp_offset: 73,
-                                        source_amt_mult: 1,
                                     },
                                     ModData {
                                         kind: SetData {
@@ -8049,13 +8049,13 @@ optimized AST [
                                                 elements: [
                                                     CombineData {
                                                         source_dp_offset: 44,
-                                                        target_dp_offset: 43,
-                                                        source_amt_mult: 255,
+                                                        target_dp_offset: 41,
+                                                        source_amt_mult: 1,
                                                     },
                                                     CombineData {
                                                         source_dp_offset: 44,
-                                                        target_dp_offset: 41,
-                                                        source_amt_mult: 1,
+                                                        target_dp_offset: 43,
+                                                        source_amt_mult: 255,
                                                     },
                                                     ModData {
                                                         kind: SetData {
@@ -8782,13 +8782,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 15,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 16,
+                                                source_amt_mult: 255,
                                             },
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 16,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 15,
+                                                source_amt_mult: 1,
                                             },
                                             ModData {
                                                 kind: SetData {
@@ -8963,13 +8963,13 @@ optimized AST [
                                         elements: [
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 15,
-                                                source_amt_mult: 1,
+                                                target_dp_offset: 16,
+                                                source_amt_mult: 255,
                                             },
                                             CombineData {
                                                 source_dp_offset: 17,
-                                                target_dp_offset: 16,
-                                                source_amt_mult: 255,
+                                                target_dp_offset: 15,
+                                                source_amt_mult: 1,
                                             },
                                             ModData {
                                                 kind: SetData {
