@@ -5,69 +5,118 @@ Gave up on a loop, but emitted a 'will be executed' hint
 Eliminated branch (executed)
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
-Killed 2 instructions by simulation.
-Step 0 did 50765 changes.
+Killed 153 instructions by simulation.
+Deleted a branch (executed). CDO 292, State { default: ?, [292: !0]}
+Inner elements changed; not taking further optimizations at this time
+Loop terminated in one iteration; turned to branch. Was loop CDO 292, hint false, elements unchanged [
+    ModData {
+        kind: AddData {
+            amount: 255,
+        },
+        dp_offset: 292,
+    },
+    Loop {
+        known_to_be_nontrivial: false,
+        cond_dp_offset: 292,
+        elements: [
+            ModData {
+                kind: AddData {
+                    amount: 6,
+                },
+                dp_offset: 293,
+            },
+            ModData {
+                kind: AddData {
+                    amount: 1,
+                },
+                dp_offset: 294,
+            },
+            IfNonZero {
+                cond_dp_offset: 293,
+                elements: [
+                    CombineData {
+                        source_dp_offset: 293,
+                        target_dp_offset: 294,
+                        source_amt_mult: 5,
+                    },
+                    ModData {
+                        kind: SetData {
+                            amount: 0,
+                        },
+                        dp_offset: 293,
+                    },
+                ],
+            },
+            ShiftDataPtr {
+                amount: 1,
+            },
+        ],
+    },
+    ModData {
+        kind: AddData {
+            amount: 14,
+        },
+        dp_offset: 293,
+    },
+]. Old state { default: ?, []}, inner state { default: ?, [292: 0]}
+Inner elements changed; not taking further optimizations at this time
+Deleted a branch (executed). CDO 292, State { default: ?, [292: 6]}
+Inner elements changed; not taking further optimizations at this time
+Killed 3 instructions by one-step-loop simulation
+Step 0 did 50919 changes.
 
 Swapped 1 commands total
 Collapse 0 consecutive pure commands total
 Killed 0 const loops!
-Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [0: 255, 1: 1, 2: 3, 4: 1, 5: 2, 6: 1, 7: 3, 9: 1, 10: 2, 13: 1, 14: 1, 15: 1, 16: 2, 17: 1, 21: 3, 22: 1, 24: 2, 25: 1, 26: 3, 28: 2, 29: 2, 31: 1, 33: 1, 34: 2, 35: 2, 36: 1, 40: 3, 41: 1, 45: 2, 46: 2, 50: 1, 52: 2, 53: 1, 54: 3, 57: 2, 59: 6, 61: 1, 63: 2, 64: 1, 68: 3, 70: 5, 72: 1, 73: 3, 76: 2, 78: 2, 80: 1, 82: 2, 83: 1, 84: 3, 87: 2, 89: 13, 91: 1, 93: 2, 94: 1, 95: 3, 96: 1, 97: 3, 100: 2, 102: 4, 104: 1, 106: 2, 107: 1, 111: 3, 113: 5, 117: 2, 121: 1, 122: 1, 123: 2, 125: 3, 126: 1, 130: 3, 131: 1, 135: 3, 136: 1, 140: 3, 142: 2, 143: 2, 144: 1, 145: 3, 146: 1, 147: 2, 148: 2, 154: 2, 155: 1, 156: 3, 161: 3, 164: 2, 165: 1, 166: 3, 167: 1, 168: 1, 169: 2, 175: 2, 178: 1, 181: 2, 182: 1, 186: 3, 187: 1, 190: 1, 192: 2, 193: 1, 194: 18, 198: 1, 199: 1, 202: 1, 204: 2, 205: 1, 206: 3, 209: 2, 211: 8, 213: 1, 215: 2, 216: 1, 220: 3, 222: 6, 225: 1, 226: 2, 228: 3, 229: 1, 230: 1, 231: 2, 232: 1, 233: 3, 238: 3, 241: 1, 242: 1, 244: 2, 245: 1, 246: 3, 249: 2, 251: 8, 253: 1, 255: 2, 256: 1, 260: 3, 262: 4, 264: 1, 265: 3, 271: 2, 272: 1, 273: 3, 275: 1, 276: 2, 280: 1, 281: 1, 282: 2, 283: 1, 287: 3, 289: 3, 292: 1]}, Elts: [
-    IfNonZero {
-        cond_dp_offset: 292,
-        elements: [
-            CombineData {
-                source_dp_offset: 292,
-                target_dp_offset: 294,
-                source_amt_mult: 1,
-            },
-            ModData {
-                kind: SetData {
-                    amount: 0,
-                },
-                dp_offset: 292,
-            },
-        ],
-    },
+Gave up on a loop, it already had the hint. State: { default: 0, [0: 255, 1: 1, 2: 3, 4: 1, 5: 2, 6: 1, 7: 3, 9: 1, 10: 2, 13: 1, 14: 1, 15: 1, 16: 2, 17: 1, 21: 3, 22: 1, 24: 2, 25: 1, 26: 3, 28: 2, 29: 2, 31: 1, 33: 1, 34: 2, 35: 2, 36: 1, 40: 3, 41: 1, 45: 2, 46: 2, 50: 1, 52: 2, 53: 1, 54: 3, 57: 2, 59: 6, 61: 1, 63: 2, 64: 1, 68: 3, 70: 5, 72: 1, 73: 3, 76: 2, 78: 2, 80: 1, 82: 2, 83: 1, 84: 3, 87: 2, 89: 13, 91: 1, 93: 2, 94: 1, 95: 3, 96: 1, 97: 3, 100: 2, 102: 4, 104: 1, 106: 2, 107: 1, 111: 3, 113: 5, 117: 2, 121: 1, 122: 1, 123: 2, 125: 3, 126: 1, 130: 3, 131: 1, 135: 3, 136: 1, 140: 3, 142: 2, 143: 2, 144: 1, 145: 3, 146: 1, 147: 2, 148: 2, 154: 2, 155: 1, 156: 3, 161: 3, 164: 2, 165: 1, 166: 3, 167: 1, 168: 1, 169: 2, 175: 2, 178: 1, 181: 2, 182: 1, 186: 3, 187: 1, 190: 1, 192: 2, 193: 1, 194: 18, 198: 1, 199: 1, 202: 1, 204: 2, 205: 1, 206: 3, 209: 2, 211: 8, 213: 1, 215: 2, 216: 1, 220: 3, 222: 6, 225: 1, 226: 2, 228: 3, 229: 1, 230: 1, 231: 2, 232: 1, 233: 3, 238: 3, 241: 1, 242: 1, 244: 2, 245: 1, 246: 3, 249: 2, 251: 8, 253: 1, 255: 2, 256: 1, 260: 3, 262: 4, 264: 1, 265: 3, 271: 2, 272: 1, 273: 3, 275: 1, 276: 2, 280: 1, 281: 1, 282: 2, 283: 1, 287: 3, 289: 3, 292: 1]}, Elts: [
     ModData {
         kind: AddData {
             amount: 1,
         },
         dp_offset: 291,
     },
+    CombineData {
+        source_dp_offset: 292,
+        target_dp_offset: 294,
+        source_amt_mult: 1,
+    },
+    ModData {
+        kind: SetData {
+            amount: 0,
+        },
+        dp_offset: 292,
+    },
     ShiftDataPtr {
         amount: -1,
     },
 ]
+Combine turned to add
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
-Killed 0 instructions by simulation.
-Step 1 did 1 changes.
+Killed 1 instructions by simulation.
+Killed 0 instructions by one-step-loop simulation
+Step 1 did 2 changes.
 
 Swapped 0 commands total
 Collapse 0 consecutive pure commands total
 Killed 0 const loops!
-Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [0: 255, 1: 1, 2: 3, 4: 1, 5: 2, 6: 1, 7: 3, 9: 1, 10: 2, 13: 1, 14: 1, 15: 1, 16: 2, 17: 1, 21: 3, 22: 1, 24: 2, 25: 1, 26: 3, 28: 2, 29: 2, 31: 1, 33: 1, 34: 2, 35: 2, 36: 1, 40: 3, 41: 1, 45: 2, 46: 2, 50: 1, 52: 2, 53: 1, 54: 3, 57: 2, 59: 6, 61: 1, 63: 2, 64: 1, 68: 3, 70: 5, 72: 1, 73: 3, 76: 2, 78: 2, 80: 1, 82: 2, 83: 1, 84: 3, 87: 2, 89: 13, 91: 1, 93: 2, 94: 1, 95: 3, 96: 1, 97: 3, 100: 2, 102: 4, 104: 1, 106: 2, 107: 1, 111: 3, 113: 5, 117: 2, 121: 1, 122: 1, 123: 2, 125: 3, 126: 1, 130: 3, 131: 1, 135: 3, 136: 1, 140: 3, 142: 2, 143: 2, 144: 1, 145: 3, 146: 1, 147: 2, 148: 2, 154: 2, 155: 1, 156: 3, 161: 3, 164: 2, 165: 1, 166: 3, 167: 1, 168: 1, 169: 2, 175: 2, 178: 1, 181: 2, 182: 1, 186: 3, 187: 1, 190: 1, 192: 2, 193: 1, 194: 18, 198: 1, 199: 1, 202: 1, 204: 2, 205: 1, 206: 3, 209: 2, 211: 8, 213: 1, 215: 2, 216: 1, 220: 3, 222: 6, 225: 1, 226: 2, 228: 3, 229: 1, 230: 1, 231: 2, 232: 1, 233: 3, 238: 3, 241: 1, 242: 1, 244: 2, 245: 1, 246: 3, 249: 2, 251: 8, 253: 1, 255: 2, 256: 1, 260: 3, 262: 4, 264: 1, 265: 3, 271: 2, 272: 1, 273: 3, 275: 1, 276: 2, 280: 1, 281: 1, 282: 2, 283: 1, 287: 3, 289: 3, 292: 1]}, Elts: [
-    IfNonZero {
-        cond_dp_offset: 292,
-        elements: [
-            CombineData {
-                source_dp_offset: 292,
-                target_dp_offset: 294,
-                source_amt_mult: 1,
-            },
-            ModData {
-                kind: SetData {
-                    amount: 0,
-                },
-                dp_offset: 292,
-            },
-        ],
-    },
+Gave up on a loop, it already had the hint. State: { default: 0, [0: 255, 1: 1, 2: 3, 4: 1, 5: 2, 6: 1, 7: 3, 9: 1, 10: 2, 13: 1, 14: 1, 15: 1, 16: 2, 17: 1, 21: 3, 22: 1, 24: 2, 25: 1, 26: 3, 28: 2, 29: 2, 31: 1, 33: 1, 34: 2, 35: 2, 36: 1, 40: 3, 41: 1, 45: 2, 46: 2, 50: 1, 52: 2, 53: 1, 54: 3, 57: 2, 59: 6, 61: 1, 63: 2, 64: 1, 68: 3, 70: 5, 72: 1, 73: 3, 76: 2, 78: 2, 80: 1, 82: 2, 83: 1, 84: 3, 87: 2, 89: 13, 91: 1, 93: 2, 94: 1, 95: 3, 96: 1, 97: 3, 100: 2, 102: 4, 104: 1, 106: 2, 107: 1, 111: 3, 113: 5, 117: 2, 121: 1, 122: 1, 123: 2, 125: 3, 126: 1, 130: 3, 131: 1, 135: 3, 136: 1, 140: 3, 142: 2, 143: 2, 144: 1, 145: 3, 146: 1, 147: 2, 148: 2, 154: 2, 155: 1, 156: 3, 161: 3, 164: 2, 165: 1, 166: 3, 167: 1, 168: 1, 169: 2, 175: 2, 178: 1, 181: 2, 182: 1, 186: 3, 187: 1, 190: 1, 192: 2, 193: 1, 194: 18, 198: 1, 199: 1, 202: 1, 204: 2, 205: 1, 206: 3, 209: 2, 211: 8, 213: 1, 215: 2, 216: 1, 220: 3, 222: 6, 225: 1, 226: 2, 228: 3, 229: 1, 230: 1, 231: 2, 232: 1, 233: 3, 238: 3, 241: 1, 242: 1, 244: 2, 245: 1, 246: 3, 249: 2, 251: 8, 253: 1, 255: 2, 256: 1, 260: 3, 262: 4, 264: 1, 265: 3, 271: 2, 272: 1, 273: 3, 275: 1, 276: 2, 280: 1, 281: 1, 282: 2, 283: 1, 287: 3, 289: 3, 292: 1]}, Elts: [
     ModData {
         kind: AddData {
             amount: 1,
         },
         dp_offset: 291,
+    },
+    CombineData {
+        source_dp_offset: 292,
+        target_dp_offset: 294,
+        source_amt_mult: 1,
+    },
+    ModData {
+        kind: SetData {
+            amount: 0,
+        },
+        dp_offset: 292,
     },
     ShiftDataPtr {
         amount: -1,
@@ -76,6 +125,7 @@ Gave up on a loop, it already had the hint. State: { default: 0, dp: 0, [0: 255,
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
 Killed 0 instructions by simulation.
+Killed 0 instructions by one-step-loop simulation
 Step 2 did 0 changes.
 
 optimized AST [
@@ -983,27 +1033,22 @@ optimized AST [
         known_to_be_nontrivial: true,
         cond_dp_offset: 292,
         elements: [
-            IfNonZero {
-                cond_dp_offset: 292,
-                elements: [
-                    CombineData {
-                        source_dp_offset: 292,
-                        target_dp_offset: 294,
-                        source_amt_mult: 1,
-                    },
-                    ModData {
-                        kind: SetData {
-                            amount: 0,
-                        },
-                        dp_offset: 292,
-                    },
-                ],
-            },
             ModData {
                 kind: AddData {
                     amount: 1,
                 },
                 dp_offset: 291,
+            },
+            CombineData {
+                source_dp_offset: 292,
+                target_dp_offset: 294,
+                source_amt_mult: 1,
+            },
+            ModData {
+                kind: SetData {
+                    amount: 0,
+                },
+                dp_offset: 292,
             },
             ShiftDataPtr {
                 amount: -1,
@@ -1142,8 +1187,7 @@ optimized AST [
                         },
                         dp_offset: 292,
                     },
-                    Loop {
-                        known_to_be_nontrivial: false,
+                    IfNonZero {
                         cond_dp_offset: 292,
                         elements: [
                             ModData {
@@ -1195,6 +1239,10 @@ optimized AST [
                                 },
                                 dp_offset: 293,
                             },
+                            AssertEquals {
+                                dp_offset: 292,
+                                val: 0,
+                            },
                         ],
                     },
                     ModData {
@@ -1207,31 +1255,26 @@ optimized AST [
             },
             ModData {
                 kind: AddData {
+                    amount: 255,
+                },
+                dp_offset: 290,
+            },
+            ModData {
+                kind: AddData {
                     amount: 6,
                 },
                 dp_offset: 292,
             },
-            IfNonZero {
-                cond_dp_offset: 292,
-                elements: [
-                    CombineData {
-                        source_dp_offset: 292,
-                        target_dp_offset: 293,
-                        source_amt_mult: 7,
-                    },
-                    ModData {
-                        kind: SetData {
-                            amount: 0,
-                        },
-                        dp_offset: 292,
-                    },
-                ],
+            CombineData {
+                source_dp_offset: 292,
+                target_dp_offset: 293,
+                source_amt_mult: 7,
             },
             ModData {
-                kind: AddData {
-                    amount: 255,
+                kind: SetData {
+                    amount: 0,
                 },
-                dp_offset: 290,
+                dp_offset: 292,
             },
             ModData {
                 kind: AddData {
@@ -1279,5 +1322,5 @@ optimized AST [
         amount: 292,
     },
 ]
-Post optimization, executing 214 code lines
-->+>+++>>+>++>+>+++>>+>++>>>+>+>+>++>+>>>>+++>+>>++>+>+++>>++>++>>+>>+>++>++>+>>>>+++>+>>>>++>++>>>>+>>++>+>+++>>>++>>++++++>>+>>++>+>>>>+++>>+++++>>+>+++>>>++>>++>>+>>++>+>+++>>>++>>+++++++++++++>>+>>++>+>+++>+>+++>>>++>>++++>>+>>++>+>>>>+++>>+++++>>>>++>>>>+>+>++>>+++>+>>>>+++>+>>>>+++>+>>>>+++>>++>++>+>+++>+>++>++>>>>>>++>+>+++>>>>>+++>>>++>+>+++>+>+>++>>>>>>++>>>+>>>++>+>>>>+++>+>>>+>>++>+>++++++++++++++++++>>>>+>+>>>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++++>>>+>++>>+++>+>+>++>+>+++>>>>>+++>>>+>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++>>+>+++>>>>>>++>+>+++>>+>++>>>>+>+>++>+>>>>+++>>+++>>>+[[->>+<<]<+]+++++[->+++++++++<]>.[+]>>[<<+++++++[->+++++++++<]>-.------------------->-[-<.<+>>]<[+]<+>>>]<<<[-[-[-[>>+<++++++[->+++++<]]>++++++++++++++<]>+++<]++++++[->+++++++<]>+<<<-[->>>++<<<]>[->>.<<]<<]Process took 10764 instructions
+Post optimization, executing 211 code lines
+->+>+++>>+>++>+>+++>>+>++>>>+>+>+>++>+>>>>+++>+>>++>+>+++>>++>++>>+>>+>++>++>+>>>>+++>+>>>>++>++>>>>+>>++>+>+++>>>++>>++++++>>+>>++>+>>>>+++>>+++++>>+>+++>>>++>>++>>+>>++>+>+++>>>++>>+++++++++++++>>+>>++>+>+++>+>+++>>>++>>++++>>+>>++>+>>>>+++>>+++++>>>>++>>>>+>+>++>>+++>+>>>>+++>+>>>>+++>+>>>>+++>>++>++>+>+++>+>++>++>>>>>>++>+>+++>>>>>+++>>>++>+>+++>+>+>++>>>>>>++>>>+>>>++>+>>>>+++>+>>>+>>++>+>++++++++++++++++++>>>>+>+>>>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++++>>>+>++>>+++>+>+>++>+>+++>>>>>+++>>>+>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++>>+>+++>>>>>>++>+>+++>>+>++>>>>+>+>++>+>>>>+++>>+++>>>+[[->>+<<]<+]+++++[->+++++++++<]>.[+]>>[<<+++++++[->+++++++++<]>-.------------------->-[-<.<+>>]<[+]<+>>>]<<<[-[-[-[>>+<++++++[->+++++<]]>++++++++++++++<]>+++<]++++++[->+++++++<]>+<<<-[->>>++<<<]>[->>.<<]<<]Process took 10295 instructions

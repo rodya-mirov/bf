@@ -33,6 +33,11 @@ pub enum CompiledInstr {
         amount: u8,
         dp_offset: isize,
     },
+    // TODO: Put this behind a compile feature (it's a post-compile check for branch elimination optimizations)
+    AssertEquals {
+        dp_offset: isize,
+        val: u8,
+    },
     // data[dp + tdo] += data[dp + sdo] * sam
     AddTwoData {
         source_dp_offset: isize,
@@ -55,7 +60,7 @@ pub enum CompiledInstr {
 /// Very similar to the compiled situation, but nested for the benefit of loop folding
 /// This is structured for the benefit of compiling / optimizing; this is not the bytecode
 /// format for the interpreter.
-#[derive(Debug)]
+#[derive(Debug, Clone, Eq, PartialEq)]
 pub(crate) enum AST {
     Loop {
         // If this is true, it is known that it will be executed at least once
@@ -68,6 +73,11 @@ pub(crate) enum AST {
     IfNonZero {
         cond_dp_offset: isize,
         elements: Vec<AST>,
+    },
+    // TODO: Put this behind a compile feature (it's a post-compile check for branch elimination optimizations)
+    AssertEquals {
+        dp_offset: isize,
+        val: u8,
     },
     // Simplified loop variant; just "until data[dp+offset] == 0, apply shift"
     ShiftLoop {
@@ -352,6 +362,12 @@ fn compile_ast_helper(out: &mut Vec<CompiledInstr>, cmds: &[AST]) {
                     source_dp_offset: *source_dp_offset,
                     target_dp_offset: *target_dp_offset,
                     source_amt_mult: *source_amt_mult,
+                });
+            }
+            AST::AssertEquals { dp_offset, val } => {
+                out.push(CompiledInstr::AssertEquals {
+                    dp_offset: *dp_offset,
+                    val: *val,
                 });
             }
         }

@@ -17,7 +17,14 @@ fn run(input_str: String, is_opt: bool) -> Result<(), ()> {
     };
 
     let res = if is_opt {
+        let start = std::time::Instant::now();
+
         let code = optimized_parse(&input_str).map_err(handle_parse_error)?;
+
+        let compile_time = start.elapsed().as_secs_f64();
+
+        println!("Parse/opt/compile took {:.3} seconds.", compile_time);
+
         println!("Post optimization, executing {} code lines", code.len());
         let vm = opt_vm::OptVM::new(code);
 

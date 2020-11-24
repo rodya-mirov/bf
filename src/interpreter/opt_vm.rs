@@ -94,6 +94,13 @@ impl OptVM {
                     println!("ERR: Infinite non-IO loop detected (spin-loop); crashing out");
                     break;
                 }
+                CompiledInstr::AssertEquals { dp_offset, val } => {
+                    let actual_dp = (self.dp as isize + dp_offset) as usize;
+                    if *val != self.data[actual_dp] {
+                        println!("AssertErr: data[{}] is {}; expected {}:", actual_dp, self.data[actual_dp], val);
+                    }
+                    self.ip += 1;
+                }
             }
         }
 

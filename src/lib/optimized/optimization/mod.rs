@@ -34,16 +34,21 @@ fn opt_step(cmds: &mut Vec<AST>) -> usize {
     let simulate_removal = run_simulation(cmds);
     println!("Killed {} instructions by simulation.", simulate_removal);
 
-    swap + coll + deloop + simulate_removal
+    let one_step_loops = one_step_loops(cmds);
+    println!("Killed {} instructions by one-step-loop simulation", one_step_loops);
+
+    swap + coll + deloop + simulate_removal + one_step_loops
 }
 
 mod sim_state {
+    use crate::optimized::DatamodKind;
     use std::collections::HashMap;
     use std::fmt;
 
     #[derive(Copy, Clone, Eq, PartialEq)]
     pub enum DataState {
-        Unknown, // result of ReadByte, or any static analysis we simply do not wish to do
+        Unknown,        // result of ReadByte, or any static analysis we simply do not wish to do
+        UnknownNonzero, // kind of hacky? but really common
         Known(u8),
     }
 
@@ -51,6 +56,7 @@ mod sim_state {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
             match self {
                 DataState::Unknown => write!(f, "?"),
+                DataState::UnknownNonzero => write!(f, "!0"),
                 DataState::Known(v) => write!(f, "{}", v),
             }
         }
@@ -85,6 +91,38 @@ mod sim_state {
             self.dp += shift;
         }
 
+        pub(crate) fn process_mod_data(&mut self, kind: DatamodKind, dp_offset: isize) {
+            match kind {
+                DatamodKind::SetData { amount } => self.set_data(dp_offset, DataState::Known(amount)),
+                DatamodKind::AddData { amount: 0 } => {}
+                DatamodKind::AddData { amount } => match self.get_data(dp_offset) {
+                    DataState::Unknown | DataState::UnknownNonzero => {
+                        self.set_data(dp_offset, DataState::Unknown);
+                    }
+                    DataState::Known(old) => {
+                        self.set_data(dp_offset, DataState::Known(u8::wrapping_add(old, amount)));
+                    }
+                },
+            }
+        }
+
+        pub fn process_combine_data(&mut self, source_dp_offset: isize, target_dp_offset: isize, source_amt_mult: u8) {
+            if source_amt_mult == 0 {
+                return;
+            }
+
+            match (self.get_data(source_dp_offset), self.get_data(target_dp_offset)) {
+                (DataState::Known(0), _) => {}
+                (DataState::Known(a), DataState::Known(b)) => {
+                    let new_val = u8::wrapping_add(b, u8::wrapping_mul(a, source_amt_mult));
+                    self.set_data(target_dp_offset, DataState::Known(new_val));
+                }
+                (DataState::Unknown, _) | (DataState::UnknownNonzero, _) | (_, DataState::Unknown) | (_, DataState::UnknownNonzero) => {
+                    self.set_data(target_dp_offset, DataState::Unknown)
+                }
+            }
+        }
+
         pub fn clear_knowledge(&mut self) {
             self.data.clear();
             // Everything is relative anyway; dp is only maintained to address into the known datastores
@@ -95,7 +133,7 @@ mod sim_state {
 
     impl fmt::Debug for SimState {
         fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-            write!(f, "{{ default: {:?}, dp: {}, [", self.def_value, self.dp)?;
+            write!(f, "{{ default: {:?}, [", self.def_value)?;
 
             let mut first = true;
             let mut to_write = self.data.iter().filter(|(_k, v)| **v != self.def_value).collect::<Vec<_>>();
@@ -115,6 +153,163 @@ mod sim_state {
     }
 }
 
+fn one_step_loops(cmds: &mut Vec<AST>) -> usize {
+    use sim_state::{DataState, SimState};
+
+    fn one_step_loops_ctx(old: Vec<AST>, state: &mut SimState) -> (Vec<AST>, usize) {
+        let mut removed = 0;
+
+        let mut cmds = Vec::new();
+
+        for cmd in old {
+            match cmd {
+                AST::Loop {
+                    cond_dp_offset,
+                    elements,
+                    known_to_be_nontrivial,
+                } => {
+                    let mut inner_state = SimState::new(DataState::Unknown);
+                    inner_state.set_data(cond_dp_offset, DataState::UnknownNonzero);
+                    let old_elements = elements.clone();
+
+                    let (mut new_elements, inner_removed) = one_step_loops_ctx(elements, &mut inner_state);
+                    removed += inner_removed;
+
+                    if new_elements != old_elements {
+                        println!("Inner elements changed; not taking further optimizations at this time");
+                        cmds.push(AST::Loop {
+                            cond_dp_offset,
+                            elements: new_elements,
+                            known_to_be_nontrivial,
+                        });
+                    } else {
+                        if inner_state.get_data(cond_dp_offset) == DataState::Known(0) {
+                            if known_to_be_nontrivial {
+                                println!(
+                                    "Loop terminated in one iteration; branch always taken. Was loop CDO {}, hint {}, elements unchanged {:#?}. Old state {:?}, inner state {:?}",
+                                    cond_dp_offset, known_to_be_nontrivial, old_elements, state, inner_state
+                                );
+                                new_elements.push(AST::AssertEquals {
+                                    dp_offset: cond_dp_offset,
+                                    val: 0,
+                                });
+                                cmds.append(&mut new_elements);
+                                removed += 1;
+                            } else {
+                                println!(
+                                    "Loop terminated in one iteration; turned to branch. Was loop CDO {}, hint {}, elements unchanged {:#?}. Old state {:?}, inner state {:?}",
+                                    cond_dp_offset, known_to_be_nontrivial, old_elements, state, inner_state
+                                );
+                                new_elements.push(AST::AssertEquals {
+                                    dp_offset: cond_dp_offset,
+                                    val: 0,
+                                });
+                                cmds.push(AST::IfNonZero {
+                                    elements: new_elements,
+                                    cond_dp_offset,
+                                });
+                                removed += 1;
+                            }
+                        } else {
+                            cmds.push(AST::Loop {
+                                known_to_be_nontrivial,
+                                cond_dp_offset,
+                                elements: new_elements,
+                            });
+                        }
+                    }
+
+                    state.clear_knowledge();
+                    state.set_data(cond_dp_offset, DataState::Known(0));
+                }
+                AST::IfNonZero { elements, cond_dp_offset } => {
+                    match state.get_data(cond_dp_offset) {
+                        DataState::Known(0) => {
+                            println!("Deleted a branch (not executed)");
+                            removed += 1 + elements.len();
+                        }
+                        DataState::Known(_) | DataState::UnknownNonzero => {
+                            // Improvement was made, no need to analyze it now, we'll get it next time
+                            println!("Deleted a branch (executed). CDO {}, State {:?}", cond_dp_offset, state);
+                            removed += 1;
+                            let (mut new_elements, inner_removed) = one_step_loops_ctx(elements, state);
+                            removed += inner_removed;
+                            cmds.append(&mut new_elements);
+                        }
+                        DataState::Unknown => {
+                            // Walking the interior of the branch to see what we can do
+                            let mut interior_state = SimState::new(DataState::Unknown);
+                            interior_state.set_data(cond_dp_offset, DataState::UnknownNonzero);
+
+                            let (new_elements, inner_removed) = one_step_loops_ctx(elements, &mut interior_state);
+                            cmds.push(AST::IfNonZero {
+                                cond_dp_offset,
+                                elements: new_elements,
+                            });
+                            removed += inner_removed;
+                        }
+                    }
+                    state.clear_knowledge();
+                }
+                AST::ShiftLoop {
+                    known_to_be_nontrivial: _,
+                    cond_dp_offset,
+                    dp_shift: _,
+                } => {
+                    state.clear_knowledge();
+                    state.set_data(cond_dp_offset, DataState::Known(0));
+                    cmds.push(cmd);
+                }
+                AST::InfiniteLoop => {
+                    cmds.push(cmd);
+                }
+                AST::ShiftDataPtr { amount } => {
+                    state.shift_ptr(amount);
+                    cmds.push(cmd);
+                }
+                AST::ModData { kind, dp_offset } => {
+                    state.process_mod_data(kind, dp_offset);
+                    cmds.push(cmd);
+                }
+                AST::CombineData {
+                    source_dp_offset,
+                    target_dp_offset,
+                    source_amt_mult,
+                } => {
+                    state.process_combine_data(source_dp_offset, target_dp_offset, source_amt_mult);
+                    cmds.push(cmd);
+                }
+                AST::ReadByte { dp_offset } => {
+                    state.set_data(dp_offset, DataState::Unknown);
+                    cmds.push(cmd);
+                }
+                AST::WriteByte { .. } => {
+                    cmds.push(cmd);
+                }
+                AST::WriteConst { .. } => {
+                    cmds.push(cmd);
+                }
+                AST::AssertEquals { dp_offset, val } => {
+                    state.set_data(dp_offset, DataState::Known(val));
+                    cmds.push(cmd);
+                }
+                cmd => {
+                    state.clear_knowledge();
+                    cmds.push(cmd);
+                }
+            }
+        }
+
+        (cmds, removed)
+    }
+
+    let old = std::mem::replace(cmds, Vec::new());
+
+    let (new_cmds, removed) = one_step_loops_ctx(old, &mut SimState::new(DataState::Known(0)));
+    *cmds = new_cmds;
+    removed
+}
+
 // Do a one-pass simulation to see if we can use const analysis to eliminate branches, etc.
 // This is NOT gonna just be a "run the thing at compile time" situation because I consider that
 // cheating; this will be an O(n) operation where n is cmds.len(); we just sweep through and anything
@@ -122,229 +317,200 @@ mod sim_state {
 fn run_simulation(cmds: &mut Vec<AST>) -> usize {
     use sim_state::{DataState, SimState};
 
-    let mut removed = 0; // or simplified, or whatever
+    fn run_simulation_ctx(cmds: &mut Vec<AST>, state: &mut SimState) -> usize {
+        let mut removed = 0; // or simplified, or whatever
 
-    let mut state = SimState::new(DataState::Known(0));
+        let old = std::mem::replace(cmds, Vec::new());
 
-    let old = std::mem::replace(cmds, Vec::new());
+        for cmd in old {
+            match cmd {
+                AST::IfNonZero { cond_dp_offset, elements } => {
+                    match state.get_data(cond_dp_offset) {
+                        DataState::Unknown => {
+                            let cmd = AST::IfNonZero { cond_dp_offset, elements };
+                            let usage = track_usage(&cmd);
+                            cmds.push(cmd);
 
-    for cmd in old {
-        match cmd {
-            AST::IfNonZero { cond_dp_offset, elements } => {
-                match state.get_data(cond_dp_offset) {
-                    DataState::Unknown => {
-                        let cmd = AST::IfNonZero { cond_dp_offset, elements };
-                        let usage = track_usage(&cmd);
-                        cmds.push(cmd);
-
-                        match usage {
-                            DataUsage::DataTracked { dp_shift: 0, data_mods } => {
-                                for m in data_mods {
-                                    state.set_data(m, DataState::Unknown);
+                            match usage {
+                                DataUsage::DataTracked { dp_shift: 0, data_mods } => {
+                                    for m in data_mods {
+                                        state.set_data(m, DataState::Unknown);
+                                    }
                                 }
+                                DataUsage::DataTracked { dp_shift, data_mods } => {
+                                    println!("If statement has conditional shift, but it's unhandled; if you see this message, cover this case: shift: {}, mods: {:?}", dp_shift, data_mods);
+                                    state.clear_knowledge();
+                                }
+                                _ => state.clear_knowledge(),
                             }
-                            _ => state.clear_knowledge(),
                         }
-                    }
-                    DataState::Known(val) => {
-                        if val != 0 {
+                        DataState::Known(0) => {
+                            println!("Eliminated branch {:?} (not executed)", elements);
+                            removed += 1;
+                        }
+                        DataState::UnknownNonzero | DataState::Known(_) => {
                             println!("Eliminated branch (executed)");
                             // successive passes will manage this? I guess
                             for elt in elements {
                                 cmds.push(elt);
                             }
                             state.clear_knowledge();
-                        } else {
-                            println!("Eliminated branch {:?} (not executed)", elements);
-                        }
-
-                        // if val == 0, entire thing is skipped
-                        removed += 1;
-                    }
-                }
-            }
-            AST::ShiftDataPtr { amount } => {
-                state.shift_ptr(amount);
-                cmds.push(cmd);
-            }
-            AST::ShiftLoop { .. } => {
-                cmds.push(cmd);
-                state.clear_knowledge();
-                state.set_data(0, DataState::Known(0));
-            }
-            AST::Loop {
-                cond_dp_offset,
-                elements,
-                mut known_to_be_nontrivial,
-            } => {
-                let keep_loop: bool;
-
-                match state.get_data(cond_dp_offset) {
-                    DataState::Known(0) => {
-                        println!("Eliminated loop (not executed)");
-                        removed += 1;
-                        keep_loop = false;
-                    }
-                    DataState::Known(_other) => {
-                        if known_to_be_nontrivial {
-                            println!(
-                                "Gave up on a loop, it already had the hint. State: {:?}, Elts: {:#?}",
-                                state, elements
-                            );
-                            keep_loop = true;
-                        } else {
-                            println!("Gave up on a loop, but emitted a 'will be executed' hint");
-                            // not really removed, but at least simplified / improved?
-                            keep_loop = true;
-                            known_to_be_nontrivial = true;
                             removed += 1;
                         }
                     }
-                    DataState::Unknown => {
-                        println!("Gave up on a loop, no hint could be emitted anyway");
-                        keep_loop = true;
-                    }
                 }
-
-                if keep_loop {
-                    let cmd = AST::Loop {
-                        known_to_be_nontrivial,
-                        elements,
-                        cond_dp_offset,
-                    };
-                    let usage = track_usage(&cmd);
+                AST::ShiftDataPtr { amount } => {
+                    state.shift_ptr(amount);
                     cmds.push(cmd);
-
-                    if let DataUsage::DataTracked { dp_shift: 0, data_mods } = usage {
-                        for m in data_mods {
-                            state.set_data(m, DataState::Unknown);
-                        }
-                    } else {
-                        state.clear_knowledge();
-                    }
                 }
-                state.set_data(cond_dp_offset, DataState::Known(0));
-            }
-            AST::ReadByte { dp_offset } => {
-                state.set_data(dp_offset, DataState::Unknown);
-                cmds.push(AST::ReadByte { dp_offset });
-            }
-            AST::WriteByte { dp_offset } => {
-                // Note -- we could actually constant-ize these things, if the data is known in advance
-                match state.get_data(dp_offset) {
-                    DataState::Unknown => {
+                AST::ShiftLoop { .. } => {
+                    cmds.push(cmd);
+                    state.clear_knowledge();
+                    state.set_data(0, DataState::Known(0));
+                }
+                AST::Loop {
+                    cond_dp_offset,
+                    elements,
+                    mut known_to_be_nontrivial,
+                } => {
+                    let keep_loop: bool;
+
+                    match state.get_data(cond_dp_offset) {
+                        DataState::Known(0) => {
+                            println!("Eliminated loop (not executed)");
+                            removed += 1;
+                            keep_loop = false;
+                        }
+                        DataState::Known(_) | DataState::UnknownNonzero => {
+                            if known_to_be_nontrivial {
+                                println!(
+                                    "Gave up on a loop, it already had the hint. State: {:?}, Elts: {:#?}",
+                                    state, elements
+                                );
+                                keep_loop = true;
+                            } else {
+                                println!("Gave up on a loop, but emitted a 'will be executed' hint");
+                                // not really removed, but at least simplified / improved?
+                                keep_loop = true;
+                                known_to_be_nontrivial = true;
+                                removed += 1;
+                            }
+                        }
+                        DataState::Unknown => {
+                            println!("Gave up on a loop, no hint could be emitted anyway");
+                            keep_loop = true;
+                        }
+                    }
+
+                    if keep_loop {
+                        let cmd = AST::Loop {
+                            known_to_be_nontrivial,
+                            elements,
+                            cond_dp_offset,
+                        };
+                        let usage = track_usage(&cmd);
+                        cmds.push(cmd);
+
+                        if let DataUsage::DataTracked { dp_shift: 0, data_mods } = usage {
+                            for m in data_mods {
+                                state.set_data(m, DataState::Unknown);
+                            }
+                        } else {
+                            state.clear_knowledge();
+                        }
+                    }
+                    state.set_data(cond_dp_offset, DataState::Known(0));
+                }
+                AST::ReadByte { dp_offset } => {
+                    state.set_data(dp_offset, DataState::Unknown);
+                    cmds.push(AST::ReadByte { dp_offset });
+                }
+                AST::WriteByte { dp_offset } => match state.get_data(dp_offset) {
+                    DataState::Unknown | DataState::UnknownNonzero => {
                         cmds.push(AST::WriteByte { dp_offset });
                     }
                     DataState::Known(val) => {
                         removed += 1;
                         cmds.push(AST::WriteConst { out: val });
                     }
+                },
+                AST::WriteConst { .. } => {
+                    cmds.push(cmd);
                 }
-            }
-            AST::WriteConst { .. } => {
-                cmds.push(cmd);
-            }
-            AST::CombineData {
-                source_dp_offset,
-                target_dp_offset,
-                source_amt_mult,
-            } => {
-                let start_data = state.get_data(source_dp_offset);
-                let end_data = state.get_data(target_dp_offset);
+                AST::CombineData {
+                    source_dp_offset,
+                    target_dp_offset,
+                    source_amt_mult,
+                } => {
+                    if let DataState::Known(old) = state.get_data(source_dp_offset) {
+                        println!("Combine turned to add"); // if it's settable it'll be found on the next pass
+                        removed += 1;
+                        cmds.push(AST::ModData {
+                            dp_offset: target_dp_offset,
+                            kind: DatamodKind::AddData {
+                                amount: u8::wrapping_mul(source_amt_mult, old),
+                            },
+                        });
 
-                if source_amt_mult != 0 {
-                    let end_state = match end_data {
-                        DataState::Unknown => DataState::Unknown,
-                        DataState::Known(b) => match start_data {
-                            DataState::Unknown => DataState::Unknown,
-                            DataState::Known(a) => DataState::Known(u8::wrapping_add(b, u8::wrapping_mul(a, source_amt_mult))),
-                        },
-                    };
+                        state.process_combine_data(source_dp_offset, target_dp_offset, source_amt_mult);
+                    } else {
+                        state.process_combine_data(source_dp_offset, target_dp_offset, source_amt_mult);
 
-                    state.set_data(target_dp_offset, end_state);
+                        let end_data = state.get_data(target_dp_offset);
 
-                    match end_state {
-                        // If we know the end, obviously set is best
-                        DataState::Known(amount) => {
+                        if let DataState::Known(amount) = end_data {
+                            println!("Combine turned to set");
                             removed += 1;
-                            println!("Constant-ized a combine data!");
                             cmds.push(AST::ModData {
-                                kind: DatamodKind::SetData { amount },
                                 dp_offset: target_dp_offset,
+                                kind: DatamodKind::SetData { amount },
                             });
-                        }
-                        // TODO perf: is there an advtange to having a new command, like A = (const) + B * C ? instead of A += B * C ?
-                        DataState::Unknown => {
-                            // If we know the start, that's still good
-                            if let DataState::Known(a) = start_data {
-                                cmds.push(AST::ModData {
-                                    kind: DatamodKind::AddData {
-                                        amount: u8::wrapping_mul(a, source_amt_mult),
-                                    },
-                                    dp_offset: target_dp_offset,
-                                });
-                            } else {
-                                cmds.push(AST::CombineData {
-                                    source_dp_offset,
-                                    target_dp_offset,
-                                    source_amt_mult,
-                                });
-                            }
+                        } else {
+                            cmds.push(cmd);
                         }
                     }
-                } else {
-                    // else, skip the command entirely, it's a no-op
-                    // but i think this is actually unreachable in practice? other optimizations
-                    // shouldn't emit a no-op
-                    removed += 1;
                 }
-            }
-            AST::ModData { kind, dp_offset } => {
-                match kind {
-                    DatamodKind::SetData { amount } => {
-                        match state.get_data(dp_offset) {
-                            DataState::Known(x) if x == amount => {
-                                // no-op, it was already this
-                                println!("Removed useless set to {}; was already set to that", x);
-                                removed += 1;
+                AST::ModData { kind, dp_offset } => {
+                    let start_data = state.get_data(dp_offset);
+
+                    state.process_mod_data(kind, dp_offset);
+
+                    let end_data = state.get_data(dp_offset);
+
+                    if let DataState::Known(amount) = end_data {
+                        if start_data == end_data {
+                            println!("No-op mod data deleted");
+                            removed += 1;
+                        } else {
+                            let new_cmd = AST::ModData {
+                                kind: DatamodKind::SetData { amount },
+                                dp_offset,
+                            };
+                            match kind {
+                                DatamodKind::SetData { amount: _ } => {}
+                                DatamodKind::AddData { amount: _ } => {
+                                    removed += 1;
+                                }
                             }
-                            _ => {
-                                state.set_data(dp_offset, DataState::Known(amount));
-                                // this is already about as optimized as you can get?
-                                cmds.push(AST::ModData {
-                                    kind: DatamodKind::SetData { amount },
-                                    dp_offset,
-                                });
-                            }
+                            cmds.push(new_cmd);
                         }
+                    } else {
+                        cmds.push(cmd);
                     }
-                    DatamodKind::AddData { amount } => match state.get_data(dp_offset) {
-                        DataState::Unknown => {
-                            cmds.push(AST::ModData {
-                                kind: DatamodKind::AddData { amount },
-                                dp_offset,
-                            });
-                        }
-                        DataState::Known(old) => {
-                            let new_val = u8::wrapping_add(old, amount);
-                            state.set_data(dp_offset, DataState::Known(new_val));
-                            cmds.push(AST::ModData {
-                                kind: DatamodKind::SetData { amount: new_val },
-                                dp_offset,
-                            });
-                        }
-                    },
                 }
-            }
-            _ => {
-                state.clear_knowledge();
-                println!("Gave up on {:?}", cmd);
-                cmds.push(cmd);
+                _ => {
+                    state.clear_knowledge();
+                    println!("Gave up on {:?}", cmd);
+                    cmds.push(cmd);
+                }
             }
         }
+
+        removed
     }
 
-    removed
+    let mut state = SimState::new(DataState::Known(0));
+    run_simulation_ctx(cmds, &mut state)
 }
 
 // the result of "a, then b" on the same offset
@@ -434,6 +600,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                 AST::InfiniteLoop => {
                     update_err(NonConstResult::InfiniteLoop);
                 }
+                AST::AssertEquals { .. } => {}
             }
         }
 
@@ -770,6 +937,10 @@ fn collapse_consecutive(cmds: &mut Vec<AST>) -> usize {
                 cmds.push(acc);
                 accumulator = Some(cmd);
             }
+            AST::AssertEquals { .. } => {
+                cmds.push(acc);
+                accumulator = Some(cmd);
+            }
         }
     }
 
@@ -832,6 +1003,7 @@ fn sort_commands_step(cmds: &mut [AST]) -> usize {
             | AST::Loop { .. }
             | AST::ShiftLoop { .. }
             | AST::IfNonZero { .. }
+            | AST::AssertEquals { .. }
             | AST::InfiniteLoop => {}
             AST::ModData { kind: _, dp_offset } => match second {
                 AST::InfiniteLoop => swap = true,
@@ -973,6 +1145,9 @@ fn shift_command(cmd: &mut AST, dp_shift: isize) {
         AST::InfiniteLoop => {
             // It's fine, it's done
         }
+        AST::AssertEquals { ref mut dp_offset, val: _ } => {
+            *dp_offset += dp_shift;
+        }
     }
 }
 
@@ -1093,6 +1268,9 @@ fn track_usage(cmd: &AST) -> DataUsage {
             }
             AST::InfiniteLoop => {}
             AST::WriteConst { .. } => {}
+            AST::AssertEquals { dp_offset, val: _ } => {
+                tracker.data_used(*dp_offset);
+            }
         }
     }
 
