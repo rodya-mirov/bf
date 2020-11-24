@@ -7,63 +7,14 @@ Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
 Killed 153 instructions by simulation.
 Deleted a branch (executed). CDO 292, State { default: ?, [292: !0]}
-Inner elements changed; not taking further optimizations at this time
-Loop terminated in one iteration; turned to branch. Was loop CDO 292, hint false, elements unchanged [
-    ModData {
-        kind: AddData {
-            amount: 255,
-        },
-        dp_offset: 292,
-    },
-    Loop {
-        known_to_be_nontrivial: false,
-        cond_dp_offset: 292,
-        elements: [
-            ModData {
-                kind: AddData {
-                    amount: 6,
-                },
-                dp_offset: 293,
-            },
-            ModData {
-                kind: AddData {
-                    amount: 1,
-                },
-                dp_offset: 294,
-            },
-            IfNonZero {
-                cond_dp_offset: 293,
-                elements: [
-                    CombineData {
-                        source_dp_offset: 293,
-                        target_dp_offset: 294,
-                        source_amt_mult: 5,
-                    },
-                    ModData {
-                        kind: SetData {
-                            amount: 0,
-                        },
-                        dp_offset: 293,
-                    },
-                ],
-            },
-            ShiftDataPtr {
-                amount: 1,
-            },
-        ],
-    },
-    ModData {
-        kind: AddData {
-            amount: 14,
-        },
-        dp_offset: 293,
-    },
-]. Old state { default: ?, []}, inner state { default: ?, [292: 0]}
-Inner elements changed; not taking further optimizations at this time
+After merging states, still know 1 things
+After merging states, still know 2 things
+Loop terminated in one iteration; turned to branch. Was loop CDO 292, hint false, elements unchanged. Old state { default: ?, []}, inner state { default: ?, [292: 0]}
+Loop terminated in one iteration; turned to branch. Was loop CDO 292, hint false, elements unchanged. Old state { default: ?, []}, inner state { default: ?, [292: 0]}
 Deleted a branch (executed). CDO 292, State { default: ?, [292: 6]}
-Inner elements changed; not taking further optimizations at this time
-Killed 3 instructions by one-step-loop simulation
-Step 0 did 50919 changes.
+After merging states, still know 2 things
+Killed 4 instructions by one-step-loop simulation
+Step 0 did 50920 changes.
 
 Swapped 1 commands total
 Collapse 0 consecutive pure commands total
@@ -94,6 +45,9 @@ Combine turned to add
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
 Killed 1 instructions by simulation.
+After merging states, still know 1 things
+After merging states, still know 2 things
+After merging states, still know 2 things
 Killed 0 instructions by one-step-loop simulation
 Step 1 did 2 changes.
 
@@ -125,6 +79,9 @@ Gave up on a loop, it already had the hint. State: { default: 0, [0: 255, 1: 1, 
 Gave up on a loop, no hint could be emitted anyway
 Gave up on a loop, no hint could be emitted anyway
 Killed 0 instructions by simulation.
+After merging states, still know 1 things
+After merging states, still know 2 things
+After merging states, still know 2 things
 Killed 0 instructions by one-step-loop simulation
 Step 2 did 0 changes.
 
@@ -1177,8 +1134,7 @@ optimized AST [
                 },
                 dp_offset: 292,
             },
-            Loop {
-                known_to_be_nontrivial: false,
+            IfNonZero {
                 cond_dp_offset: 292,
                 elements: [
                     ModData {
@@ -1251,6 +1207,10 @@ optimized AST [
                         },
                         dp_offset: 293,
                     },
+                    AssertEquals {
+                        dp_offset: 292,
+                        val: 0,
+                    },
                 ],
             },
             ModData {
@@ -1322,5 +1282,6 @@ optimized AST [
         amount: 292,
     },
 ]
-Post optimization, executing 211 code lines
-->+>+++>>+>++>+>+++>>+>++>>>+>+>+>++>+>>>>+++>+>>++>+>+++>>++>++>>+>>+>++>++>+>>>>+++>+>>>>++>++>>>>+>>++>+>+++>>>++>>++++++>>+>>++>+>>>>+++>>+++++>>+>+++>>>++>>++>>+>>++>+>+++>>>++>>+++++++++++++>>+>>++>+>+++>+>+++>>>++>>++++>>+>>++>+>>>>+++>>+++++>>>>++>>>>+>+>++>>+++>+>>>>+++>+>>>>+++>+>>>>+++>>++>++>+>+++>+>++>++>>>>>>++>+>+++>>>>>+++>>>++>+>+++>+>+>++>>>>>>++>>>+>>>++>+>>>>+++>+>>>+>>++>+>++++++++++++++++++>>>>+>+>>>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++++>>>+>++>>+++>+>+>++>+>+++>>>>>+++>>>+>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++>>+>+++>>>>>>++>+>+++>>+>++>>>>+>+>++>+>>>>+++>>+++>>>+[[->>+<<]<+]+++++[->+++++++++<]>.[+]>>[<<+++++++[->+++++++++<]>-.------------------->-[-<.<+>>]<[+]<+>>>]<<<[-[-[-[>>+<++++++[->+++++<]]>++++++++++++++<]>+++<]++++++[->+++++++<]>+<<<-[->>>++<<<]>[->>.<<]<<]Process took 10295 instructions
+Parse/opt/compile took 0.004 seconds.
+Post optimization, executing 212 code lines
+->+>+++>>+>++>+>+++>>+>++>>>+>+>+>++>+>>>>+++>+>>++>+>+++>>++>++>>+>>+>++>++>+>>>>+++>+>>>>++>++>>>>+>>++>+>+++>>>++>>++++++>>+>>++>+>>>>+++>>+++++>>+>+++>>>++>>++>>+>>++>+>+++>>>++>>+++++++++++++>>+>>++>+>+++>+>+++>>>++>>++++>>+>>++>+>>>>+++>>+++++>>>>++>>>>+>+>++>>+++>+>>>>+++>+>>>>+++>+>>>>+++>>++>++>+>+++>+>++>++>>>>>>++>+>+++>>>>>+++>>>++>+>+++>+>+>++>>>>>>++>>>+>>>++>+>>>>+++>+>>>+>>++>+>++++++++++++++++++>>>>+>+>>>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++++>>>+>++>>+++>+>+>++>+>+++>>>>>+++>>>+>+>>++>+>+++>>>++>>++++++++>>+>>++>+>>>>+++>>++++>>+>+++>>>>>>++>+>+++>>+>++>>>>+>+>++>+>>>>+++>>+++>>>+[[->>+<<]<+]+++++[->+++++++++<]>.[+]>>[<<+++++++[->+++++++++<]>-.------------------->-[-<.<+>>]<[+]<+>>>]<<<[-[-[-[>>+<++++++[->+++++<]]>++++++++++++++<]>+++<]++++++[->+++++++<]>+<<<-[->>>++<<<]>[->>.<<]<<]Process took 10364 instructions

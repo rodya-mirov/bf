@@ -66,7 +66,11 @@ mod sim_state {
         data: HashMap<isize, DataState>,
         def_value: DataState,
         dp: isize,
+        wipes: usize,
     }
+
+    #[derive(Clone)]
+    pub struct BranchMarker(usize);
 
     impl SimState {
         pub fn new(def_value: DataState) -> Self {
@@ -74,6 +78,49 @@ mod sim_state {
                 data: HashMap::new(),
                 def_value,
                 dp: 0,
+                wipes: 0,
+            }
+        }
+
+        pub fn make_branch(&self) -> (SimState, BranchMarker) {
+            let branch = SimState {
+                data: self.data.clone(),
+                def_value: self.def_value,
+                dp: self.dp,
+                wipes: self.wipes,
+            };
+            (branch, BranchMarker(self.wipes))
+        }
+
+        pub fn merge_divergent(&mut self, branch: SimState, branch_marker: BranchMarker) {
+            let BranchMarker(wipes_at_split) = branch_marker;
+
+            if self.wipes != wipes_at_split || branch.wipes != wipes_at_split {
+                // No intersection can occur because we've lost track of dp entirely
+                self.clear_knowledge();
+                return;
+            }
+
+            if self.def_value != branch.def_value {
+                println!(
+                    "Default values differ ({:?} vs {:?}), not sure how this occurred",
+                    self.def_value, branch.def_value
+                );
+                self.clear_knowledge();
+                return;
+            }
+
+            if self.dp != branch.dp {
+                println!("Merging: dp differs, this is solveable but I didn't do it yet");
+                self.clear_knowledge();
+                return;
+            }
+
+            let old_data: HashMap<isize, DataState> = std::mem::replace(&mut self.data, HashMap::new());
+            for (k, v) in old_data {
+                if branch.data.get(&k) == Some(&v) {
+                    self.data.insert(k, v);
+                }
             }
         }
 
@@ -123,11 +170,13 @@ mod sim_state {
             }
         }
 
+        /// Clear everything we know about the state
         pub fn clear_knowledge(&mut self) {
             self.data.clear();
             // Everything is relative anyway; dp is only maintained to address into the known datastores
             self.dp = 0;
             self.def_value = DataState::Unknown;
+            self.wipes += 1;
         }
     }
 
@@ -170,53 +219,43 @@ fn one_step_loops(cmds: &mut Vec<AST>) -> usize {
                 } => {
                     let mut inner_state = SimState::new(DataState::Unknown);
                     inner_state.set_data(cond_dp_offset, DataState::UnknownNonzero);
-                    let old_elements = elements.clone();
 
                     let (mut new_elements, inner_removed) = one_step_loops_ctx(elements, &mut inner_state);
                     removed += inner_removed;
 
-                    if new_elements != old_elements {
-                        println!("Inner elements changed; not taking further optimizations at this time");
+                    if inner_state.get_data(cond_dp_offset) == DataState::Known(0) {
+                        if known_to_be_nontrivial {
+                            println!(
+                                    "Loop terminated in one iteration; branch always taken. Was loop CDO {}, hint {}, elements unchanged. Old state {:?}, inner state {:?}",
+                                    cond_dp_offset, known_to_be_nontrivial, state, inner_state
+                                );
+                            new_elements.push(AST::AssertEquals {
+                                dp_offset: cond_dp_offset,
+                                val: 0,
+                            });
+                            cmds.append(&mut new_elements);
+                            removed += 1;
+                        } else {
+                            println!(
+                                    "Loop terminated in one iteration; turned to branch. Was loop CDO {}, hint {}, elements unchanged. Old state {:?}, inner state {:?}",
+                                    cond_dp_offset, known_to_be_nontrivial, state, inner_state
+                                );
+                            new_elements.push(AST::AssertEquals {
+                                dp_offset: cond_dp_offset,
+                                val: 0,
+                            });
+                            cmds.push(AST::IfNonZero {
+                                elements: new_elements,
+                                cond_dp_offset,
+                            });
+                            removed += 1;
+                        }
+                    } else {
                         cmds.push(AST::Loop {
+                            known_to_be_nontrivial,
                             cond_dp_offset,
                             elements: new_elements,
-                            known_to_be_nontrivial,
                         });
-                    } else {
-                        if inner_state.get_data(cond_dp_offset) == DataState::Known(0) {
-                            if known_to_be_nontrivial {
-                                println!(
-                                    "Loop terminated in one iteration; branch always taken. Was loop CDO {}, hint {}, elements unchanged {:#?}. Old state {:?}, inner state {:?}",
-                                    cond_dp_offset, known_to_be_nontrivial, old_elements, state, inner_state
-                                );
-                                new_elements.push(AST::AssertEquals {
-                                    dp_offset: cond_dp_offset,
-                                    val: 0,
-                                });
-                                cmds.append(&mut new_elements);
-                                removed += 1;
-                            } else {
-                                println!(
-                                    "Loop terminated in one iteration; turned to branch. Was loop CDO {}, hint {}, elements unchanged {:#?}. Old state {:?}, inner state {:?}",
-                                    cond_dp_offset, known_to_be_nontrivial, old_elements, state, inner_state
-                                );
-                                new_elements.push(AST::AssertEquals {
-                                    dp_offset: cond_dp_offset,
-                                    val: 0,
-                                });
-                                cmds.push(AST::IfNonZero {
-                                    elements: new_elements,
-                                    cond_dp_offset,
-                                });
-                                removed += 1;
-                            }
-                        } else {
-                            cmds.push(AST::Loop {
-                                known_to_be_nontrivial,
-                                cond_dp_offset,
-                                elements: new_elements,
-                            });
-                        }
                     }
 
                     state.clear_knowledge();
@@ -238,18 +277,20 @@ fn one_step_loops(cmds: &mut Vec<AST>) -> usize {
                         }
                         DataState::Unknown => {
                             // Walking the interior of the branch to see what we can do
-                            let mut interior_state = SimState::new(DataState::Unknown);
-                            interior_state.set_data(cond_dp_offset, DataState::UnknownNonzero);
+                            let (mut branch_state, marker) = state.make_branch();
 
-                            let (new_elements, inner_removed) = one_step_loops_ctx(elements, &mut interior_state);
+                            branch_state.set_data(cond_dp_offset, DataState::UnknownNonzero);
+
+                            let (new_elements, inner_removed) = one_step_loops_ctx(elements, &mut branch_state);
                             cmds.push(AST::IfNonZero {
                                 cond_dp_offset,
                                 elements: new_elements,
                             });
                             removed += inner_removed;
+
+                            state.merge_divergent(branch_state, marker);
                         }
                     }
-                    state.clear_knowledge();
                 }
                 AST::ShiftLoop {
                     known_to_be_nontrivial: _,
@@ -291,10 +332,6 @@ fn one_step_loops(cmds: &mut Vec<AST>) -> usize {
                 }
                 AST::AssertEquals { dp_offset, val } => {
                     state.set_data(dp_offset, DataState::Known(val));
-                    cmds.push(cmd);
-                }
-                cmd => {
-                    state.clear_knowledge();
                     cmds.push(cmd);
                 }
             }
@@ -660,7 +697,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                                 );
                                 cmds.push(cmd);
                             } else {
-                                // Tthe number of loop repetitions is the value of zero, times this number
+                                // The number of loop repetitions is the value of zero, times this number
                                 let reps_mult = {
                                     if amount == u8::max_value() {
                                         1
@@ -694,6 +731,7 @@ fn const_loop_remove(cmds: &mut Vec<AST>) -> usize {
                                         }
                                     }
                                 }
+
                                 loop_adds.push(AST::ModData {
                                     kind: DatamodKind::SetData { amount: 0 },
                                     dp_offset: cond_dp_offset,

@@ -32,7 +32,7 @@ Available optimizations:
         a lot of useful work. Every time we "lose" dp, we have to
         erase the state, but we can still keep going.
 
-    - [ ] Improvement: we can have "constraints" on a datapoint instead
+    - [x] Improvement: we can have "constraints" on a datapoint instead
         of only known/unknown; useful examples:
          - At the inside of a loop, we can assume the loop datum is
             nonzero at the first point which can do some loop hinting
@@ -45,9 +45,16 @@ Available optimizations:
         "unknown" out everything, and continue on
     
     - [x] Following a loop, we can assume the cond_dp is zero
+        At the beginning of a loop, can assume the cond_dp is nonzero.
     
-    - [ ] Simulate a loop for ONE ITERATION; if it's guaranteed to terminate
+    - [x] Simulate a loop for ONE ITERATION; if it's guaranteed to terminate
         based on what we know going into it, replace it with an IfNonzero,
         or with a hint, just the code itself.
         
         - I think this does happen with the quine
+    
+    - [x] Branch state intersections; if (e.g.) a variable is zero
+        regardless of whether a branch is taken, it would be useful to know that.
+        
+        Note -- did it, it worked, but didn't help much. In most cases no change
+        in compiled code; in hanoi, saved about 0.2% of final instruction count.
